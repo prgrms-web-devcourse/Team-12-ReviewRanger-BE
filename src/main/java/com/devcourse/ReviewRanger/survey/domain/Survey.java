@@ -1,8 +1,11 @@
 package com.devcourse.ReviewRanger.survey.domain;
 
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape.*;
+
 import java.time.LocalDateTime;
 
 import com.devcourse.ReviewRanger.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,6 +31,7 @@ public class Survey extends BaseEntity {
 	SurveyType type;
 
 	@Column(name = "closed_at", nullable = false)
+	@JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
 	LocalDateTime closedAt;
 
 	protected Survey() {
