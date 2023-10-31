@@ -60,6 +60,9 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.JAVA_DISTRIBUTION }}
 
+      - name: Wrapper gradle
+        run: gradle wrapper   
+
       - name: Clean Build w/o CHECK
         uses: gradle/gradle-build-action@v2
         with:
