@@ -40,6 +40,9 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Wrapper gradle
+        run: gradle wrapper   
+
       - name: Check Tests
         run: ./gradlew test
 
