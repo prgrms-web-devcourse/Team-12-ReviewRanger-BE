@@ -17,7 +17,20 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// bean Validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// db
+	runtimeOnly 'com.mysql:mysql-connector-j'
+ 	runtimeOnly 'com.h2database:h2'
+
+	//lombok
+ 	compileOnly 'org.projectlombok:lombok'
+ 	annotationProcessor 'org.projectlombok:lombok'
+
 }
 
 tasks.named('test') {
