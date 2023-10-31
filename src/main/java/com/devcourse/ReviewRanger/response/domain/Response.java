@@ -15,23 +15,23 @@ import lombok.Getter;
 public class Response extends BaseEntity {
 
 	@Column(name = "responser_id", nullable = false)
-	@NotBlank(message = "설문 작성자 Id는 빈값 일 수 없습니다.")
-	private Long responserId;//설문 작성자 Id
+	@NotBlank(message = "응답자 Id는 빈값 일 수 없습니다.")
+	private Long responserId;
 
 	@Column(name = "each_survey_result_id", nullable = false)
 	@NotBlank(message = "개별 설문 결과 Id는 빈값 일 수 없습니다.")
-	private Long eachSurveyResultId;//개별 설문 결과 Id
+	private Long eachSurveyResultId;
 
 	@Column(name = "question_id", nullable = false)
 	@NotBlank(message = "질문 Id는 빈값 일 수 없습니다.")
-	private Long questionId;//질문 Id
+	private Long questionId;
 
 	@Column(name = "option_id", nullable = true)
-	private Long optionId;//응답 내용(다중 선택)
+	private Long optionId;
 
 	@Lob
 	@Column(name = "answer_text", nullable = true)
-	private String answerText;//응답 내용(텍스트)
+	private String answerText;
 
 	protected Response() {
 	}
