@@ -15,7 +15,7 @@ import lombok.Getter;
 @Table(name = "surveys")
 public class Survey extends BaseEntity {
 
-	@Column(nullable = false)
+	@Column(name = "requester_id", nullable = false)
 	Long requesterId;
 
 	@Column(nullable = false)
@@ -27,6 +27,7 @@ public class Survey extends BaseEntity {
 	@Column(nullable = false)
 	SurveyType type;
 
+	@Column(name = "closed_at", nullable = false)
 	LocalDateTime closedAt;
 
 	protected Survey() {

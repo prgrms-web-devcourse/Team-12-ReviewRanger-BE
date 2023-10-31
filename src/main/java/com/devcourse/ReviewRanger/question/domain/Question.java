@@ -13,7 +13,7 @@ import lombok.Getter;
 @Table(name = "questions")
 public class Question extends BaseEntity {
 
-	@Column(nullable = false)
+	@Column(name = "survey_id", nullable = false)
 	Long surveyId;
 
 	@Column(nullable = false)
@@ -26,16 +26,16 @@ public class Question extends BaseEntity {
 	@Column(nullable = false)
 	int sequence;
 
-	@Column(nullable = false)
+	@Column(name = "is_required", nullable = false)
 	boolean isRequired;
 
-	@Column(nullable = false)
+	@Column(name = "is_duplicated", nullable = false)
 	boolean isDuplicated;
 
 	protected Question() {
 	}
 
-	public Question(String title, QuestionType type, String options, int sequence, boolean isRequired,
+	public Question(String title, QuestionType type, int sequence, boolean isRequired,
 		boolean isDuplicated) {
 		this.title = title;
 		this.type = type;

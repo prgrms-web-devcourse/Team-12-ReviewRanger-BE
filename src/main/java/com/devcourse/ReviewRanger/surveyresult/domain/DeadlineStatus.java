@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum DeadlineStatus {
 	PROCEEDING("진행중"),
 	DEADLINE("제출"),
-	END("마감");
+	END("마감")
+	;
 
 	private final String displayName;
 

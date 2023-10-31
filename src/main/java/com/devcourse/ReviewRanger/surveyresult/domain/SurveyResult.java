@@ -12,16 +12,16 @@ import lombok.Getter;
 @Table(name = "survey_results")
 public class SurveyResult extends BaseEntity {
 
-	@Column(nullable = false)
+	@Column(name = "survey_id", nullable = false)
 	private Long surveyId;
 
-	@Column(nullable = false)
+	@Column(name = "responser_id", nullable = false)
 	private Long responserId;
 
-	@Column(nullable = false)
+	@Column(name = "deadline_status", nullable = false)
 	private DeadlineStatus deadlineStatus;
 
-	@Column(nullable = false)
+	@Column(name = "question_answered_status", nullable = false)
 	private boolean questionAnsweredStatus;
 
 	protected SurveyResult() {

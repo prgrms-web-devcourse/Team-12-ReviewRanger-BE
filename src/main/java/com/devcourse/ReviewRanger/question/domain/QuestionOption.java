@@ -13,10 +13,10 @@ import lombok.Getter;
 @Table(name = "question_options")
 public class QuestionOption extends BaseEntity {
 
-	@Column(nullable = false)
+	@Column(name = "question_id", nullable = false)
 	Long questionId;
 
-	@Column(nullable = false)
+	@Column(name = "option_context", nullable = false)
 	@NotBlank(message = "옵션 내용은 빈값 일 수 없습니다.")
 	String optionContext;
 
