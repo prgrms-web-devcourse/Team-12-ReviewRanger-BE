@@ -11,6 +11,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
@@ -19,12 +20,16 @@ import lombok.Getter;
 public class Survey extends BaseEntity {
 
 	@Column(name = "requester_id", nullable = false)
+	@NotBlank(message = "요청자 Id는 빈값 일 수 없습니다.")
 	Long requesterId;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 50)
 	@NotBlank(message = "설문제목은 빈값 일 수 없습니다.")
+	@Size(max = 50, message = "50자 이하로 입력하세요.")
 	String title;
 
+	@Column(length = 100)
+	@Size(max = 100, message = "100자 이하로 입력하세요.")
 	String description;
 
 	@Column(nullable = false)
