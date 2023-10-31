@@ -37,6 +37,9 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.JAVA_DISTRIBUTION }}
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Check Tests
         run: ./gradlew test
 
