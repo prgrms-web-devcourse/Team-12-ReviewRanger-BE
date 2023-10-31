@@ -16,7 +16,7 @@ import lombok.Getter;
 @Table(name = "users")
 public class User extends BaseEntity {
 
-	@Column(nullable = false, length = 10)
+	@Column(nullable = false, length = 20)
 	@NotBlank(message = "이름은 빈값 일 수 없습니다.")
 	@Pattern(regexp = NAME_REGEXP, message = "이름 형식이 맞지 않습니다.")
 	private String name;
