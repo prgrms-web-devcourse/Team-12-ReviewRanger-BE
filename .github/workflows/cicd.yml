@@ -73,8 +73,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Build with gradle
-        run: ./gradlew build
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25
+        with:
+          arguments: bootJar
 
       - name: Make Zip File
         run: zip -qq -r ./$GITHUB_SHA.zip .
