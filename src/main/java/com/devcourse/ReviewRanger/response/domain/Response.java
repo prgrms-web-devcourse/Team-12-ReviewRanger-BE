@@ -9,9 +9,9 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "responses")
-@Getter
 public class Response extends BaseEntity {
 
 	@Column(name = "responser_id", nullable = false)
@@ -36,18 +36,20 @@ public class Response extends BaseEntity {
 	protected Response() {
 	}
 
-	public Response(Long responserId, Long eachSurveyResultId, Long questionId,
-		String answerText) {
+	public Response(Long responserId, Long eachSurveyResultId, Long questionId) {
 		this.responserId = responserId;
 		this.eachSurveyResultId = eachSurveyResultId;
 		this.questionId = questionId;
+	}
+
+	public Response(Long responserId, Long eachSurveyResultId, Long questionId,
+		String answerText) {
+		this(responserId, eachSurveyResultId, questionId);
 		this.answerText = answerText;
 	}
 
 	public Response(Long responserId, Long eachSurveyResultId, Long questionId, Long optionId) {
-		this.responserId = responserId;
-		this.eachSurveyResultId = eachSurveyResultId;
-		this.questionId = questionId;
+		this(responserId, eachSurveyResultId, questionId);
 		this.optionId = optionId;
 	}
 }

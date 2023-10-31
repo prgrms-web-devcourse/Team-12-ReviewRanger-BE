@@ -8,9 +8,9 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "each_survey_results")
-@Getter
 public class EachSurveyResult extends BaseEntity {
 
 	@Column(name = "subject_id", nullable = false)
