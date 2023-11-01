@@ -24,10 +24,10 @@ public class AfterResponse extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private QuestionType questionType;
 
-	@Column(name = "question_content", nullable = false)
+	@Column(name = "question_title", nullable = false)
 	@NotBlank(message = "질문제목은 빈값 일 수 없습니다.")
 	@Size(max = 150, message = "150자 이하로 입력하세요.")
-	private String questionContent;
+	private String questionTitle;
 
 	@Lob
 	@Column(nullable = false)
