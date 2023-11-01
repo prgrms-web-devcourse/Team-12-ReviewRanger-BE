@@ -12,6 +12,7 @@ import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.survey.application.SurveyService;
 import com.devcourse.ReviewRanger.survey.domain.Survey;
 import com.devcourse.ReviewRanger.survey.dto.request.CreateSurveyRequest;
+import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 
 @RestController
 public class SurveyController {
@@ -27,7 +28,8 @@ public class SurveyController {
 		Survey survey = createSurveyRequest.toSurvey();
 		survey.assignRequesterId(1L);
 		List<Question> questions = createSurveyRequest.toQuestions();
-		Boolean result = surveyService.createSurvey(survey, questions);
+		List<SurveyResult> surveyResults = createSurveyRequest.toSurveyResult();
+		Boolean result = surveyService.createSurvey(survey, questions, surveyResults);
 
 		return new ResponseEntity<Boolean>(result, HttpStatus.CREATED);
 	}
