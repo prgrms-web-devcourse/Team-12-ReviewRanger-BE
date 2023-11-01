@@ -4,6 +4,8 @@ import com.devcourse.ReviewRanger.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -22,10 +24,11 @@ public class SurveyResult extends BaseEntity {
 	private Long responserId;
 
 	@Column(name = "deadline_status", nullable = false)
+	@Enumerated(EnumType.STRING)
 	private DeadlineStatus deadlineStatus;
 
 	@Column(name = "question_answered_status", nullable = false)
-	private boolean questionAnsweredStatus;
+	private Boolean questionAnsweredStatus;
 
 	protected SurveyResult() {
 	}
