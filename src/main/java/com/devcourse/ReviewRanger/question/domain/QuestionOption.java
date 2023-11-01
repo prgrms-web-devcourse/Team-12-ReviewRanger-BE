@@ -32,4 +32,7 @@ public class QuestionOption extends BaseEntity {
 		this.optionContext = optionContext;
 	}
 
+	public void setQuestion(Question question) {
+		this.question = question;
+	}
 }

@@ -21,7 +21,6 @@ import lombok.Getter;
 public class Question extends BaseEntity {
 
 	@Column(name = "survey_id", nullable = false)
-	@NotBlank(message = "설문지 Id는 빈값 일 수 없습니다.")
 	private Long surveyId;
 
 	@Column(nullable = false, length = 150)

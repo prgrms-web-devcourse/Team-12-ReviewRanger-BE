@@ -22,7 +22,6 @@ import lombok.Getter;
 public class Survey extends BaseEntity {
 
 	@Column(name = "requester_id", nullable = false)
-	@NotBlank(message = "요청자 Id는 빈값 일 수 없습니다.")
 	private Long requesterId;
 
 	@Column(nullable = false, length = 50)
@@ -45,13 +44,14 @@ public class Survey extends BaseEntity {
 	protected Survey() {
 	}
 
-	public Survey(String title, String description, SurveyType type) {
+	public Survey(String title, String description, SurveyType type, LocalDateTime closedAt) {
 		this.title = title;
 		this.description = description;
 		this.type = type;
+		this.closedAt = closedAt;
 	}
 
-	public void assignSurveyId(Long requesterId) {
+	public void assignRequesterId(Long requesterId) {
 		this.requesterId = requesterId;
 	}
 }
