@@ -23,4 +23,8 @@ public class SurveyResultService {
 		surveyResults.forEach(surveyResult -> surveyResult.assignSurveyId(surveyId));
 		surveyResultRepository.saveAll(surveyResults);
 	}
+
+	public List<SurveyResult> getResponserSurveyResult(Long responserId) {
+		return surveyResultRepository.findByResponserId(responserId);
+	}
 }
