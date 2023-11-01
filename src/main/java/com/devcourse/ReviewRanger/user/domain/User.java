@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.user;
+package com.devcourse.ReviewRanger.user.domain;
 
 import static com.devcourse.ReviewRanger.common.regex.UserRegex.*;
 
@@ -28,7 +28,6 @@ public class User extends BaseEntity {
 
 	@Column(nullable = false)
 	@NotBlank(message = "비밀번호는 빈값 일 수 없습니다.")
-	@Pattern(regexp = PASSWORD_REGEXP, message = "비밀번호 형식이 맞지 않습니다.")
 	private String password;
 
 	protected User() {
