@@ -13,12 +13,16 @@ import com.devcourse.ReviewRanger.question.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class QuestionService {
 
 	private final QuestionRepository questionRepository;
 	private final QuestionOptionRepository questionOptionRepository;
+
+	public QuestionService(QuestionRepository questionRepository, QuestionOptionRepository questionOptionRepository) {
+		this.questionRepository = questionRepository;
+		this.questionOptionRepository = questionOptionRepository;
+	}
 
 	@Transactional
 	public List<Question> createQuestionInSurvey(Long surveyId, List<Question> questions) {

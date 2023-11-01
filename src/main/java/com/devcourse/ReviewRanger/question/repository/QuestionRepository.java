@@ -5,6 +5,5 @@ import org.springframework.stereotype.Repository;
 
 import com.devcourse.ReviewRanger.question.domain.Question;
 
-@Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 }

@@ -43,7 +43,7 @@ public class Question extends BaseEntity {
 	private Boolean isDuplicated;
 
 	@Transient
-	String options;
+	private String options;
 
 	protected Question() {
 	}
