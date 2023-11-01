@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.response.application.ResponseService;
 import com.devcourse.ReviewRanger.response.dto.request.CreateResponse;
+import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
+import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 
 import jakarta.validation.Valid;
 
@@ -15,14 +17,19 @@ import jakarta.validation.Valid;
 public class ResponseRestController {
 
 	private final ResponseService responseService;
+	private final SurveyResultService surveyResultService;
 
-	public ResponseRestController(ResponseService responseService) {
+	public ResponseRestController(ResponseService responseService, SurveyResultService surveyResultService) {
 		this.responseService = responseService;
+		this.surveyResultService = surveyResultService;
 	}
 
 	@PostMapping(value = "/invited-surveys")
 	public ResponseEntity<Boolean> create(@RequestBody @Valid CreateResponse request) {
+		SurveyResult surveyResult = surveyResultService.findSurveyResult(request.surveyId(), request.responserId());
+		Boolean response = responseService.createResponse(request.responserId(), surveyResult.getId(), request);
+
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(responseService.createResponse(request));
+			.body(response);
 	}
 }

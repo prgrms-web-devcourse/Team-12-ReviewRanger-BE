@@ -12,8 +12,6 @@ import com.devcourse.ReviewRanger.response.dto.request.CreateResponse;
 import com.devcourse.ReviewRanger.response.dto.request.Results;
 import com.devcourse.ReviewRanger.response.repository.EachSurveyResultRepository;
 import com.devcourse.ReviewRanger.response.repository.ResponseRepository;
-import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
-import com.devcourse.ReviewRanger.surveyresult.repository.SurveyResultRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,23 +19,15 @@ public class ResponseService {
 
 	private final ResponseRepository responseRepository;
 	private final EachSurveyResultRepository eachSurveyResultRepository;
-	private final SurveyResultRepository surveyResultRepository;
 
-	public ResponseService(ResponseRepository responseRepository, EachSurveyResultRepository eachSurveyResultRepository,
-		SurveyResultRepository surveyResultRepository) {
+	public ResponseService(ResponseRepository responseRepository,
+		EachSurveyResultRepository eachSurveyResultRepository) {
 		this.responseRepository = responseRepository;
 		this.eachSurveyResultRepository = eachSurveyResultRepository;
-		this.surveyResultRepository = surveyResultRepository;
 	}
 
 	@Transactional
-	public Boolean createResponse(CreateResponse request) {
-		Long surveyId = request.surveyId();
-		Long responserId = request.responserId();
-
-		SurveyResult surveyResult = surveyResultRepository.findBySurveyIdAndResponserId(surveyId, responserId);
-		Long surveyResultId = surveyResult.getId();
-
+	public Boolean createResponse(Long responserId, Long surveyResultId, CreateResponse request) {
 		for (Results result : request.results()) {
 			Long reviewerId = result.reviewerId();
 
