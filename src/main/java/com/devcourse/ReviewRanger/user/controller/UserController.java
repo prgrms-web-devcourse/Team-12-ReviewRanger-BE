@@ -27,11 +27,11 @@ public class UserController {
 
 	@PostMapping("/members/check-name")
 	public Boolean checkname(@RequestBody @Valid ValidateNameRequest request) {
-		return !userService.checkName(request.name());
+		return userService.isNotExistName(request.name());
 	}
 
 	@PostMapping("/members/check-email")
 	public Boolean checkEmail(@RequestBody @Valid ValidateEmailRequest request) {
-		return !userService.checkEmail(request.email());
+		return userService.isNotExistEmail(request.email());
 	}
 }

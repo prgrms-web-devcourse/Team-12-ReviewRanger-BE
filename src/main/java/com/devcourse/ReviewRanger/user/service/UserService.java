@@ -28,22 +28,22 @@ public class UserService {
 		String encodedPassword = passwordEncoder.encode(request.password());
 		User newUser = request.toEntity(encodedPassword);
 
-		if (checkName(request.name())) {
+		if (!isNotExistName(request.name())) {
 			throw new RangerException(EXIST_SAME_NAME);
 		}
 
-		if (checkEmail(request.email())) {
+		if (!isNotExistEmail(request.email())) {
 			throw new RangerException(EXIST_SAME_EMAIL);
 		}
 
 		return (userRepository.save(newUser).getId()) > 0;
 	}
 
-	public boolean checkName(String name) {
-		return userRepository.existsByName(name);
+	public boolean isNotExistName(String name) {
+		return !userRepository.existsByName(name);
 	}
 
-	public boolean checkEmail(String email) {
-		return userRepository.existsByEmail(email);
+	public boolean isNotExistEmail(String email) {
+		return !userRepository.existsByEmail(email);
 	}
 }
