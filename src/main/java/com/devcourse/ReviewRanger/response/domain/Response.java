@@ -42,8 +42,7 @@ public class Response extends BaseEntity {
 		this.questionId = questionId;
 	}
 
-	public Response(Long responserId, Long eachSurveyResultId, Long questionId,
-		String answerText) {
+	public Response(Long responserId, Long eachSurveyResultId, Long questionId, String answerText) {
 		this(responserId, eachSurveyResultId, questionId);
 		this.answerText = answerText;
 	}
