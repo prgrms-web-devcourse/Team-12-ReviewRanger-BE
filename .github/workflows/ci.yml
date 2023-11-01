@@ -2,8 +2,7 @@ name: ReviewRanger Default CI
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [ "main" ]
 
 env:
   REVIEWERS: sujjangOvO, beombu, JuwoongKim
@@ -41,7 +40,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Wrapper gradle
-        run: gradle wrapper   
+        run: gradle wrapper
 
       - name: Check Tests
         run: ./gradlew test
@@ -61,7 +60,7 @@ jobs:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
 
       - name: Wrapper gradle
-        run: gradle wrapper   
+        run: gradle wrapper
 
       - name: Clean Build w/o CHECK
         uses: gradle/gradle-build-action@v2
