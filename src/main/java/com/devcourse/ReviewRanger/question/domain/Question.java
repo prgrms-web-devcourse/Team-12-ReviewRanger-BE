@@ -4,6 +4,8 @@ import com.devcourse.ReviewRanger.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -16,24 +18,25 @@ public class Question extends BaseEntity {
 
 	@Column(name = "survey_id", nullable = false)
 	@NotBlank(message = "설문지 Id는 빈값 일 수 없습니다.")
-	Long surveyId;
+	private Long surveyId;
 
 	@Column(nullable = false, length = 150)
 	@NotBlank(message = "질문제목은 빈값 일 수 없습니다.")
 	@Size(max = 150, message = "150자 이하로 입력하세요.")
-	String title;
+	private String title;
 
 	@Column(nullable = false)
-	QuestionType type;
+	@Enumerated(EnumType.STRING)
+	private QuestionType type;
 
 	@Column(nullable = false)
-	int sequence;
+	private Integer sequence;
 
 	@Column(name = "is_required", nullable = false)
-	boolean isRequired;
+	private Boolean isRequired;
 
 	@Column(name = "is_duplicated", nullable = false)
-	boolean isDuplicated;
+	private Boolean isDuplicated;
 
 	protected Question() {
 	}

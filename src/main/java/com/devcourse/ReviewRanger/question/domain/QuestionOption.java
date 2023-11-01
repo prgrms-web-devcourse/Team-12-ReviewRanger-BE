@@ -16,12 +16,12 @@ public class QuestionOption extends BaseEntity {
 
 	@Column(name = "question_id", nullable = false)
 	@NotBlank(message = "질문 Id는 빈값 일 수 없습니다.")
-	Long questionId;
+	private Long questionId;
 
 	@Column(name = "option_context", nullable = false, length = 100)
 	@NotBlank(message = "옵션 내용은 빈값 일 수 없습니다.")
 	@Size(max = 100, message = "150자 이하로 입력하세요.")
-	String optionContext;
+	private String optionContext;
 
 	protected QuestionOption() {
 	}
