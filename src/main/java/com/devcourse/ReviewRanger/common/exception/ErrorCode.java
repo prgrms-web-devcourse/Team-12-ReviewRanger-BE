@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
+	// 409 error
 	EXIST_SAME_NAME("이미 사용중인 이름 입니다."),
 	EXIST_SAME_EMAIL("이미 사용중인 이메일 입니다.");
 
