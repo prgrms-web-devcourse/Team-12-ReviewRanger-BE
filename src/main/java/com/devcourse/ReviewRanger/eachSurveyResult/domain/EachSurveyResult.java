@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.response.domain;
+package com.devcourse.ReviewRanger.eachSurveyResult.domain;
 
 import com.devcourse.ReviewRanger.BaseEntity;
 

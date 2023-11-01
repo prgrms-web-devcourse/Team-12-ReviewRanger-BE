@@ -5,12 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.devcourse.ReviewRanger.response.domain.EachSurveyResult;
+import com.devcourse.ReviewRanger.eachSurveyResult.application.EachSurveyResultService;
+import com.devcourse.ReviewRanger.eachSurveyResult.domain.EachSurveyResult;
 import com.devcourse.ReviewRanger.response.domain.Response;
 import com.devcourse.ReviewRanger.response.dto.request.Answers;
 import com.devcourse.ReviewRanger.response.dto.request.CreateResponse;
 import com.devcourse.ReviewRanger.response.dto.request.Results;
-import com.devcourse.ReviewRanger.response.repository.EachSurveyResultRepository;
 import com.devcourse.ReviewRanger.response.repository.ResponseRepository;
 import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
@@ -20,13 +20,13 @@ import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 public class ResponseService {
 
 	private final ResponseRepository responseRepository;
-	private final EachSurveyResultRepository eachSurveyResultRepository;
+	private final EachSurveyResultService eachSurveyResultService;
 	private final SurveyResultService surveyResultService;
 
-	public ResponseService(ResponseRepository responseRepository,
-		EachSurveyResultRepository eachSurveyResultRepository, SurveyResultService surveyResultService) {
+	public ResponseService(ResponseRepository responseRepository, EachSurveyResultService eachSurveyResultService,
+		SurveyResultService surveyResultService) {
 		this.responseRepository = responseRepository;
-		this.eachSurveyResultRepository = eachSurveyResultRepository;
+		this.eachSurveyResultService = eachSurveyResultService;
 		this.surveyResultService = surveyResultService;
 	}
 
@@ -38,8 +38,8 @@ public class ResponseService {
 		for (Results result : request.results()) {
 			Long reviewerId = result.reviewerId();
 
-			EachSurveyResult eachSurveyResult = new EachSurveyResult(reviewerId, surveyResultId);
-			Long savedEachSurveyResultId = eachSurveyResultRepository.save(eachSurveyResult).getId();
+			Long savedEachSurveyResultId = eachSurveyResultService.createEachSurveyResult(
+				new EachSurveyResult(reviewerId, surveyResultId));
 
 			for (Answers answer : result.answers()) {
 				Long questionId = answer.questionId();
