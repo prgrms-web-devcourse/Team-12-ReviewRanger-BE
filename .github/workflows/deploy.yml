@@ -1,12 +1,10 @@
-name: ReviewRanger Default CI
+name: ReviewRanger Default CD
 
 on:
-  pull_request:
-    branches:
-      - main
+  push:
+    branches: [ "main" ]
 
 env:
-  REVIEWERS: sujjangOvO, beombu, JuwoongKim
   GRADLE_VERSION: 8.3
   JAVA_VERSION: '17'
   JAVA_DISTRIBUTION: 'temurin'
@@ -17,61 +15,6 @@ env:
   DEPLOYMENT_GROUP_NAME: team12
 
 jobs:
-  assign-reviewer:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Assign Reviewer
-        uses: hkusu/review-assign-action@v1
-        with:
-          assignees: ${{ github.actor }}
-          reviewers: ${{ env.REVIEWERS }}
-
-  check:
-    needs: assign-reviewer
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Branch
-        uses: actions/checkout@v3
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
-      - name: Wrapper gradle
-        run: gradle wrapper
-
-      - name: Check Tests
-        run: ./gradlew test
-
-  build:
-    needs: check
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Branch
-        uses: actions/checkout@v3
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
-
-      - name: Wrapper gradle
-        run: gradle wrapper
-
-      - name: Clean Build w/o CHECK
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: clean build -x check
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
