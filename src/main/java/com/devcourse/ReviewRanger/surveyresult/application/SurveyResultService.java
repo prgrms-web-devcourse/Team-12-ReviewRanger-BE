@@ -1,5 +1,6 @@
 package com.devcourse.ReviewRanger.surveyresult.application;
 
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -26,5 +27,9 @@ public class SurveyResultService {
 
 	public List<SurveyResult> getResponserSurveyResult(Long responserId) {
 		return surveyResultRepository.findByResponserId(responserId);
+  }
+  
+	public SurveyResult findSurveyResult(Long surveyId, Long responserId) {
+		return surveyResultRepository.findBySurveyIdAndResponserId(surveyId, responserId);
 	}
 }

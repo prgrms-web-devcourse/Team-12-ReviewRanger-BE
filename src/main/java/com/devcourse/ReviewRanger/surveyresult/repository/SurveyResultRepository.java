@@ -9,4 +9,6 @@ import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 public interface SurveyResultRepository extends JpaRepository<SurveyResult, Long> {
 
 	List<SurveyResult> findByResponserId(Long responserId);
+
+	SurveyResult findBySurveyIdAndResponserId(Long surveyId, Long responserId);
 }
