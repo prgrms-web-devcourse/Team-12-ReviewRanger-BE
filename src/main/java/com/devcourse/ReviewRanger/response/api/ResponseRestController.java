@@ -23,6 +23,6 @@ public class ResponseRestController {
 	@PostMapping(value = "/invited-surveys")
 	public ResponseEntity<Boolean> create(@RequestBody @Valid CreateResponse request) {
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(responseService.create(request));
+			.body(responseService.createResponse(request));
 	}
 }

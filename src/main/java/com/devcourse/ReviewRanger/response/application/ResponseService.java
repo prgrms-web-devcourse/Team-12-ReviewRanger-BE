@@ -18,6 +18,7 @@ import com.devcourse.ReviewRanger.surveyresult.repository.SurveyResultRepository
 @Service
 @Transactional(readOnly = true)
 public class ResponseService {
+
 	private final ResponseRepository responseRepository;
 	private final EachSurveyResultRepository eachSurveyResultRepository;
 	private final SurveyResultRepository surveyResultRepository;
@@ -30,7 +31,7 @@ public class ResponseService {
 	}
 
 	@Transactional
-	public Boolean create(CreateResponse request) {
+	public Boolean createResponse(CreateResponse request) {
 		Long surveyId = request.surveyId();
 		Long responserId = request.responserId();
 
@@ -45,7 +46,7 @@ public class ResponseService {
 
 			for (Answers answer : result.answers()) {
 				Long questionId = answer.questionId();
-				String questionType = answer.questionType();
+				String questionType = answer.questionType().getDisplayName();
 				List<String> list = answer.answer();
 
 				switch (questionType) {//오버로딩 적용하기
