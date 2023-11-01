@@ -5,7 +5,6 @@ import com.devcourse.ReviewRanger.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Getter
@@ -14,11 +13,9 @@ import lombok.Getter;
 public class SurveyResult extends BaseEntity {
 
 	@Column(name = "survey_id", nullable = false)
-	@NotBlank(message = "설문 Id는 빈값 일 수 없습니다.")
 	private Long surveyId;
 
 	@Column(name = "responser_id", nullable = false)
-	@NotBlank(message = "응답자 Id는 빈값 일 수 없습니다.")
 	private Long responserId;
 
 	@Column(name = "deadline_status", nullable = false)

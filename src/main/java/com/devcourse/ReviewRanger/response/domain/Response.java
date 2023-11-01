@@ -6,7 +6,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Getter
@@ -15,15 +14,12 @@ import lombok.Getter;
 public class Response extends BaseEntity {
 
 	@Column(name = "responser_id", nullable = false)
-	@NotBlank(message = "응답자 Id는 빈값 일 수 없습니다.")
 	private Long responserId;
 
 	@Column(name = "each_survey_result_id", nullable = false)
-	@NotBlank(message = "개별 설문 결과 Id는 빈값 일 수 없습니다.")
 	private Long eachSurveyResultId;
 
 	@Column(name = "question_id", nullable = false)
-	@NotBlank(message = "질문 Id는 빈값 일 수 없습니다.")
 	private Long questionId;
 
 	@Column(name = "option_id", nullable = true)
