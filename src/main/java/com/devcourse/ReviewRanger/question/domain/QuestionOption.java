@@ -4,6 +4,8 @@ import com.devcourse.ReviewRanger.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -14,9 +16,9 @@ import lombok.Getter;
 @Table(name = "question_options")
 public class QuestionOption extends BaseEntity {
 
-	@Column(name = "question_id", nullable = false)
-	@NotBlank(message = "질문 Id는 빈값 일 수 없습니다.")
-	private Long questionId;
+	@ManyToOne
+	@JoinColumn(name = "question_id")
+	private Question question;
 
 	@Column(name = "option_context", nullable = false, length = 100)
 	@NotBlank(message = "옵션 내용은 빈값 일 수 없습니다.")
@@ -30,7 +32,7 @@ public class QuestionOption extends BaseEntity {
 		this.optionContext = optionContext;
 	}
 
-	public void assignedQuestionId(Long questionId) {
-		this.questionId = questionId;
+	public void setQuestion(Question question) {
+		this.question = question;
 	}
 }

@@ -1,6 +1,6 @@
 package com.devcourse.ReviewRanger.question.domain;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.devcourse.ReviewRanger.BaseEntity;
@@ -9,8 +9,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -21,7 +21,6 @@ import lombok.Getter;
 public class Question extends BaseEntity {
 
 	@Column(name = "survey_id", nullable = false)
-	@NotBlank(message = "설문지 Id는 빈값 일 수 없습니다.")
 	private Long surveyId;
 
 	@Column(nullable = false, length = 150)
@@ -42,28 +41,24 @@ public class Question extends BaseEntity {
 	@Column(name = "is_duplicated", nullable = false)
 	private Boolean isDuplicated;
 
-	@Transient
-	private String options;
+	@OneToMany(mappedBy = "question")
+	private List<QuestionOption> questionOptions = new ArrayList<>();
 
 	protected Question() {
 	}
 
-	public Question(String title, QuestionType type, Integer sequence, Boolean isRequired,
-		boolean isDuplicated, String options) {
+	public Question(String title, QuestionType type, Integer sequence, Boolean isRequired, boolean isDuplicated,
+		List<QuestionOption> questionOptions) {
 		this.title = title;
 		this.type = type;
 		this.sequence = sequence;
 		this.isRequired = isRequired;
 		this.isDuplicated = isDuplicated;
+		this.questionOptions = questionOptions;
 	}
 
 	public void assignSurveyId(Long surveyId) {
 		this.surveyId = surveyId;
 	}
 
-	public List<QuestionOption> createQuestionOptions() {
-		return Arrays.stream(options.split(","))
-			.map(optionContext -> new QuestionOption(optionContext))
-			.toList();
-	}
 }
