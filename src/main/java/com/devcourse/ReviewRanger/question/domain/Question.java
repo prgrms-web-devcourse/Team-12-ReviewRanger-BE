@@ -1,5 +1,8 @@
 package com.devcourse.ReviewRanger.question.domain;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.devcourse.ReviewRanger.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -7,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -38,11 +42,14 @@ public class Question extends BaseEntity {
 	@Column(name = "is_duplicated", nullable = false)
 	private Boolean isDuplicated;
 
+	@Transient
+	String options;
+
 	protected Question() {
 	}
 
-	public Question(String title, QuestionType type, int sequence, boolean isRequired,
-		boolean isDuplicated) {
+	public Question(String title, QuestionType type, Integer sequence, Boolean isRequired,
+		boolean isDuplicated, String options) {
 		this.title = title;
 		this.type = type;
 		this.sequence = sequence;
@@ -52,5 +59,15 @@ public class Question extends BaseEntity {
 
 	public void assignSurveyId(Long surveyId) {
 		this.surveyId = surveyId;
+	}
+
+	public boolean isAnswerDuplicated() {
+		return this.isDuplicated;
+	}
+
+	public List<QuestionOption> createQuestionOptions() {
+		return Arrays.stream(options.split(","))
+			.map(optionContext -> new QuestionOption(optionContext))
+			.toList();
 	}
 }

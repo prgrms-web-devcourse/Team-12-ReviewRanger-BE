@@ -26,8 +26,11 @@ public class QuestionOption extends BaseEntity {
 	protected QuestionOption() {
 	}
 
-	public QuestionOption(Long questionId, String optionContext) {
-		this.questionId = questionId;
+	public QuestionOption(String optionContext) {
 		this.optionContext = optionContext;
+	}
+
+	public void assignedQuestionId(Long questionId) {
+		this.questionId = questionId;
 	}
 }
