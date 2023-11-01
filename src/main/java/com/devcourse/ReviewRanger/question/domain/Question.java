@@ -61,10 +61,6 @@ public class Question extends BaseEntity {
 		this.surveyId = surveyId;
 	}
 
-	public boolean isAnswerDuplicated() {
-		return this.isDuplicated;
-	}
-
 	public List<QuestionOption> createQuestionOptions() {
 		return Arrays.stream(options.split(","))
 			.map(optionContext -> new QuestionOption(optionContext))

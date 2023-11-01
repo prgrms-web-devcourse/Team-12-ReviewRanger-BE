@@ -1,5 +1,6 @@
 package com.devcourse.ReviewRanger.question.application;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -26,15 +27,17 @@ public class QuestionService {
 
 	@Transactional
 	public List<Question> createQuestionInSurvey(Long surveyId, List<Question> questions) {
-		questions.forEach(question -> question.assignSurveyId(surveyId));
-		List<Question> createdQuestions = questionRepository.saveAll(questions);
+		List<Question> createdQuestions = new ArrayList<>();
 
 		for (Question question : questions) {
 			question.assignSurveyId(surveyId);
 			Question createdQuestion = questionRepository.save(question);
+			createdQuestions.add(createdQuestion);
 
-			if (question.isAnswerDuplicated()) {
-				createQuestionOptionsInQuestion(createdQuestion.getId(), question.createQuestionOptions());
+			if (question.getIsDuplicated()) {
+				Long questionId = createdQuestion.getId();
+				List<QuestionOption> questionOptions = question.createQuestionOptions();
+				createQuestionOptionsInQuestion(questionId, questionOptions);
 			}
 		}
 
@@ -48,5 +51,4 @@ public class QuestionService {
 
 		return createdQuestionOptions;
 	}
-
 }
