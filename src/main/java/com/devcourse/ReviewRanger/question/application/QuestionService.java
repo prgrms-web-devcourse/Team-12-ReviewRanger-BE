@@ -1,6 +1,5 @@
 package com.devcourse.ReviewRanger.question.application;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -10,8 +9,6 @@ import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.question.domain.QuestionOption;
 import com.devcourse.ReviewRanger.question.repository.QuestionOptionRepository;
 import com.devcourse.ReviewRanger.question.repository.QuestionRepository;
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,29 +23,22 @@ public class QuestionService {
 	}
 
 	@Transactional
-	public List<Question> createQuestionInSurvey(Long surveyId, List<Question> questions) {
-		List<Question> createdQuestions = new ArrayList<>();
+	public void createQuestionInSurvey(Long surveyId, List<Question> questions) {
+		questions.forEach(question -> question.assignSurveyId(surveyId));
+		List<Question> createdQuestion = questionRepository.saveAll(questions);
 
-		for (Question question : questions) {
-			question.assignSurveyId(surveyId);
-			Question createdQuestion = questionRepository.save(question);
-			createdQuestions.add(createdQuestion);
-
+		for (Question question : createdQuestion) {
 			if (question.getIsDuplicated()) {
-				Long questionId = createdQuestion.getId();
-				List<QuestionOption> questionOptions = question.createQuestionOptions();
-				createQuestionOptionsInQuestion(questionId, questionOptions);
+				List<QuestionOption> questionOptions = question.getQuestionOptions();
+				createQuestionOptionsInQuestion(question, questionOptions);
 			}
 		}
-
-		return createdQuestions;
 	}
 
 	@Transactional
-	public List<QuestionOption> createQuestionOptionsInQuestion(Long questionId, List<QuestionOption> questionOptions) {
-		questionOptions.forEach(question -> question.assignedQuestionId(questionId));
+	public void createQuestionOptionsInQuestion(Question question,
+		List<QuestionOption> questionOptions) {
+		questionOptions.forEach(questionOption -> questionOption.setQuestion(question));
 		List<QuestionOption> createdQuestionOptions = questionOptionRepository.saveAll(questionOptions);
-
-		return createdQuestionOptions;
 	}
 }
