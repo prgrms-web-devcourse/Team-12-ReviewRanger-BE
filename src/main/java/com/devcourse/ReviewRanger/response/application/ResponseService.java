@@ -12,6 +12,8 @@ import com.devcourse.ReviewRanger.response.dto.request.CreateResponse;
 import com.devcourse.ReviewRanger.response.dto.request.Results;
 import com.devcourse.ReviewRanger.response.repository.EachSurveyResultRepository;
 import com.devcourse.ReviewRanger.response.repository.ResponseRepository;
+import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
+import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 
 @Service
 @Transactional(readOnly = true)
@@ -19,15 +21,20 @@ public class ResponseService {
 
 	private final ResponseRepository responseRepository;
 	private final EachSurveyResultRepository eachSurveyResultRepository;
+	private final SurveyResultService surveyResultService;
 
 	public ResponseService(ResponseRepository responseRepository,
-		EachSurveyResultRepository eachSurveyResultRepository) {
+		EachSurveyResultRepository eachSurveyResultRepository, SurveyResultService surveyResultService) {
 		this.responseRepository = responseRepository;
 		this.eachSurveyResultRepository = eachSurveyResultRepository;
+		this.surveyResultService = surveyResultService;
 	}
 
 	@Transactional
-	public Boolean createResponse(Long responserId, Long surveyResultId, CreateResponse request) {
+	public Boolean createResponse(CreateResponse request) {
+		Long responserId = request.responserId();
+		Long surveyResultId = getSurveyResult(request, responserId).getId();
+
 		for (Results result : request.results()) {
 			Long reviewerId = result.reviewerId();
 
@@ -49,6 +56,10 @@ public class ResponseService {
 		}
 
 		return true;
+	}
+
+	private SurveyResult getSurveyResult(CreateResponse request, Long responserId) {
+		return surveyResultService.findSurveyResult(request.surveyId(), responserId);
 	}
 
 	private void saveSubjective(Long responserId, Long savedEachSurveyResultId, Long questionId, String answer) {
