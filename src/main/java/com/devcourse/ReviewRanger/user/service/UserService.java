@@ -29,7 +29,7 @@ public class UserService {
 		User newUser = request.toEntity(encodedPassword);
 
 		if (checkName(request.name())) {
-			throw new RangerException(EXIST_SAME_ID);
+			throw new RangerException(EXIST_SAME_NAME);
 		}
 
 		if (checkEmail(request.email())) {
