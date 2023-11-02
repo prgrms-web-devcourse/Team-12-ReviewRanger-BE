@@ -1,11 +1,12 @@
 package com.devcourse.ReviewRanger.response.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+
 import com.devcourse.ReviewRanger.BaseEntity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
 import lombok.Getter;
 
 @Getter

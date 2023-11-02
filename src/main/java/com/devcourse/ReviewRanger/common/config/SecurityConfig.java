@@ -2,6 +2,8 @@ package com.devcourse.ReviewRanger.common.config;
 
 import static org.springframework.security.config.Customizer.*;
 
+import javax.servlet.DispatcherType;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,8 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.devcourse.ReviewRanger.common.jwt.JwtProvider;
-
-import jakarta.servlet.DispatcherType;
 
 @EnableWebSecurity
 @Configuration
@@ -33,7 +33,7 @@ public class SecurityConfig {
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
-		return (web) -> web.ignoring().requestMatchers(permitUrls);
+		return (web) -> web.ignoring().requestMatchers();
 	}
 
 	@Bean

@@ -1,12 +1,12 @@
 package com.devcourse.ReviewRanger.afterresult.domain;
 
-import com.devcourse.ReviewRanger.BaseEntity;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.devcourse.ReviewRanger.BaseEntity;
 
 @Entity
 @Table(name = "after_results")
