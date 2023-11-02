@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserResultResponseDto;
@@ -32,11 +33,15 @@ public class SurveyResultController {
 	 * 설문에 참여한 모든 응답자 조회
 	 */
 	@GetMapping("/created-surveys/{surveyId}/responser")
-	public ResponseEntity<AllResponserResultResponseDto> getAllReponserParticipateInSurvey(
+	public RangerResponse<AllResponserResultResponseDto> getAllReponserParticipateInSurvey(
 		@PathVariable Long surveyId) {
 		AllResponserResultResponseDto allReponserSurveyResult = surveyResultService.getAllReponserParticipateInSurveyOrThrow(
 			surveyId);
 
-		return ResponseEntity.status(HttpStatus.OK).body(allReponserSurveyResult);
+		return RangerResponse.ok(allReponserSurveyResult);
 	}
+
+	/**
+	 * 리뷰를 받은 사용자 리스트 조회 기능
+	 */
 }
