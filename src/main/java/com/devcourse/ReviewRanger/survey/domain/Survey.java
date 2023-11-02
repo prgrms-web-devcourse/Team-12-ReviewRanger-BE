@@ -1,5 +1,6 @@
 package com.devcourse.ReviewRanger.survey.domain;
 
+import static com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus.*;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.*;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.devcourse.ReviewRanger.BaseEntity;
+import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
@@ -44,7 +46,7 @@ public class Survey extends BaseEntity {
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private SurveyStatus status;
+	private DeadlineStatus status;
 
 	protected Survey() {
 	}
@@ -54,14 +56,14 @@ public class Survey extends BaseEntity {
 		this.description = description;
 		this.type = type;
 		this.closedAt = closedAt;
-		this.status = SurveyStatus.PROCEEDING;
+		this.status = PROCEEDING;
 	}
 
 	public void assignRequesterId(Long requesterId) {
 		this.requesterId = requesterId;
 	}
 
-	public void changeStatus(SurveyStatus status) {
+	public void changeStatus(DeadlineStatus status) {
 		this.status = status;
 	}
 }

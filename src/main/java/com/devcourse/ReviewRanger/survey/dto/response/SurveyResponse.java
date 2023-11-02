@@ -3,14 +3,14 @@ package com.devcourse.ReviewRanger.survey.dto.response;
 import java.time.LocalDateTime;
 
 import com.devcourse.ReviewRanger.survey.domain.Survey;
-import com.devcourse.ReviewRanger.survey.domain.SurveyStatus;
 import com.devcourse.ReviewRanger.survey.domain.SurveyType;
+import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
 
 public record SurveyResponse(
 	Long surveyId,
 	String title,
 	String description,
-	SurveyStatus surveyStatus,
+	DeadlineStatus deadlineStatus,
 	SurveyType surveyType,
 	LocalDateTime createdAt,
 	Long responserCount
