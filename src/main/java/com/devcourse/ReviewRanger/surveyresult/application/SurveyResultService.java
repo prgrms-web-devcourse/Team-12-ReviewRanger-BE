@@ -46,6 +46,14 @@ public class SurveyResultService {
 		return surveyResultRepository.findBySurveyIdAndResponserId(surveyId, responserId);
 	}
 
+	public Long getResponserCount(Long surveyId) {
+		List<SurveyResult> surveyResults = surveyResultRepository.findBySurveyId(surveyId);
+
+		return surveyResults.stream()
+			.filter(surveyResult -> surveyResult.getQuestionAnsweredStatus())
+			.count();
+	}
+
 	public AllResponserResultResponseDto getAllReponserSurveyResult(Long surveyId, Long userId) {
 		Survey survey = surveyRepository.findById(surveyId)
 			.orElseThrow(() -> new NoSuchElementException("설문이 존재하지 않습니다."));

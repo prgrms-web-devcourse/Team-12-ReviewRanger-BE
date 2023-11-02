@@ -1,5 +1,6 @@
 package com.devcourse.ReviewRanger.survey.application;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devcourse.ReviewRanger.question.application.QuestionService;
 import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.survey.domain.Survey;
+import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponse;
 import com.devcourse.ReviewRanger.survey.repository.SurveyRepository;
 import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
@@ -35,5 +37,19 @@ public class SurveyService {
 		surveyResultService.createSurveyResult(createdSurvey.getId(), surveyResults);
 
 		return true;
+	}
+
+	public List<SurveyResponse> getRequesterSurveys(Long requesterId) {
+		List<Survey> requesterSurveys = surveyRepository.findByRequesterId(requesterId);
+
+		List<SurveyResponse> surveyResponses = new ArrayList<>();
+		for (Survey requesterSurvey : requesterSurveys) {
+			Long surveyId = requesterSurvey.getId();
+			Long responserCount = surveyResultService.getResponserCount(surveyId);
+			SurveyResponse surveyResponse = new SurveyResponse(requesterSurvey, responserCount);
+			surveyResponses.add(surveyResponse);
+		}
+
+		return surveyResponses;
 	}
 }
