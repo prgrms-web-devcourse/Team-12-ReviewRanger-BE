@@ -45,7 +45,7 @@ public class SurveyController {
 	}
 
 	@PostMapping("/surveys/{surveyId}/closed")
-	public ResponseEntity<Boolean> createSurvey(@PathVariable Long surveyId) {
+	public ResponseEntity<Boolean> closeSurvey(@PathVariable Long surveyId) {
 		Boolean result = surveyService.closeSurveyOrThrow(surveyId);
 
 		return new ResponseEntity<>(result, HttpStatus.OK);

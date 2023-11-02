@@ -60,8 +60,7 @@ public class SurveyService {
 	public Boolean closeSurveyOrThrow(Long surveyId) {
 		Survey survey = surveyRepository.findById(surveyId).orElseThrow(EntityNotFoundException::new);
 		survey.changeStatus(DeadlineStatus.END);
-		Boolean result = surveyResultService.closeSurveyResultOrThrow(surveyId);
 
-		return result;
+		return surveyResultService.closeSurveyResultOrThrow(surveyId);
 	}
 }
