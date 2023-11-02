@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponseDto;
 
-public record AllResponserResultResponseDto(
+public record AllResponserParticipateInSurveyDto(
 	int responserCount,
 
 	SurveyResponseDto surveyResponseDto,
