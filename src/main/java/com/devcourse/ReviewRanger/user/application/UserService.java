@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.user.service;
+package com.devcourse.ReviewRanger.user.application;
 
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 

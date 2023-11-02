@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.user.controller;
+package com.devcourse.ReviewRanger.user.api;
 
 import javax.validation.Valid;
 
@@ -12,7 +12,7 @@ import com.devcourse.ReviewRanger.user.dto.LoginRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginResponse;
 import com.devcourse.ReviewRanger.user.dto.ValidateEmailRequest;
 import com.devcourse.ReviewRanger.user.dto.ValidateNameRequest;
-import com.devcourse.ReviewRanger.user.service.UserService;
+import com.devcourse.ReviewRanger.user.application.UserService;
 
 @RestController
 public class UserController {
