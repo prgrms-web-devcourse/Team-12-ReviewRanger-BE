@@ -40,4 +40,8 @@ public class SurveyResult extends BaseEntity {
 	public void assignSurveyId(Long surveyId) {
 		this.surveyId = surveyId;
 	}
+
+	public void changeStatus(DeadlineStatus status) {
+		this.deadlineStatus = status;
+	}
 }

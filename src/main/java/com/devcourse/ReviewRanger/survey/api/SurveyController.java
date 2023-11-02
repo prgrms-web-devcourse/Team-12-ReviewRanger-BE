@@ -41,6 +41,13 @@ public class SurveyController {
 	public ResponseEntity<List<SurveyResponse>> getRequesterSurveys(@PathVariable Long requesterId) {
 		List<SurveyResponse> requesterSurveys = surveyService.getRequesterSurveys(requesterId);
 
-		return new ResponseEntity<List<SurveyResponse>>(requesterSurveys, HttpStatus.OK);
+		return new ResponseEntity<>(requesterSurveys, HttpStatus.OK);
+	}
+
+	@PostMapping("/surveys/{surveyId}/closed")
+	public ResponseEntity<Boolean> closeSurvey(@PathVariable Long surveyId) {
+		Boolean result = surveyService.closeSurveyOrThrow(surveyId);
+
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 }
