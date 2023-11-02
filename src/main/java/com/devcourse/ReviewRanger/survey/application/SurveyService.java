@@ -3,6 +3,8 @@ package com.devcourse.ReviewRanger.survey.application;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +14,7 @@ import com.devcourse.ReviewRanger.survey.domain.Survey;
 import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponse;
 import com.devcourse.ReviewRanger.survey.repository.SurveyRepository;
 import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
+import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 
 @Service
@@ -51,5 +54,14 @@ public class SurveyService {
 		}
 
 		return surveyResponses;
+	}
+
+	@Transactional
+	public Boolean closeSurveyOrThrow(Long surveyId) {
+		Survey survey = surveyRepository.findById(surveyId).orElseThrow(EntityNotFoundException::new);
+		survey.changeStatus(DeadlineStatus.END);
+		Boolean result = surveyResultService.closeSurveyResultOrThrow(surveyId);
+
+		return result;
 	}
 }

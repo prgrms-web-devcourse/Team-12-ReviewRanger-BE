@@ -36,8 +36,14 @@ public class SurveyResultService {
 	public Long getResponserCount(Long surveyId) {
 		List<SurveyResult> surveyResults = surveyResultRepository.findBySurveyId(surveyId);
 
-		return surveyResults.stream()
-			.filter(surveyResult -> surveyResult.getQuestionAnsweredStatus())
-			.count();
+		return surveyResults.stream().filter(surveyResult -> surveyResult.getQuestionAnsweredStatus()).count();
+	}
+
+	@Transactional
+	public Boolean closeSurveyResultOrThrow(Long surveyId) {
+		List<SurveyResult> surveyResults = surveyResultRepository.findBySurveyId(surveyId);
+		surveyResults.stream().forEach(surveyResult -> surveyResult.changeStatus(DeadlineStatus.END));
+
+		return true;
 	}
 }
