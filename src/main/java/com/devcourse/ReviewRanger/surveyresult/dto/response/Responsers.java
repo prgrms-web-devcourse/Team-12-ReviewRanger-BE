@@ -2,12 +2,16 @@ package com.devcourse.ReviewRanger.surveyresult.dto.response;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public record Responsers(
 	Long surveyResultId,
 
-	Long id, //responserId
+	@JsonProperty("id")
+	Long responserId,
 
-	String name, //responserName
+	@JsonProperty("name")
+	String responserName,
 
 	LocalDateTime updatedAt
 ) {
