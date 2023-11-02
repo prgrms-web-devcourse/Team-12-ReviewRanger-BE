@@ -1,11 +1,11 @@
 package com.devcourse.ReviewRanger.surveyresult.application;
 
-
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 import com.devcourse.ReviewRanger.surveyresult.repository.SurveyResultRepository;
 
@@ -27,9 +27,17 @@ public class SurveyResultService {
 
 	public List<SurveyResult> getResponserSurveyResult(Long responserId) {
 		return surveyResultRepository.findByResponserId(responserId);
-  }
-  
+	}
+
 	public SurveyResult findSurveyResult(Long surveyId, Long responserId) {
 		return surveyResultRepository.findBySurveyIdAndResponserId(surveyId, responserId);
+	}
+
+	public Long getResponserCount(Long surveyId) {
+		List<SurveyResult> surveyResults = surveyResultRepository.findBySurveyId(surveyId);
+
+		return surveyResults.stream()
+			.filter(surveyResult -> surveyResult.getQuestionAnsweredStatus())
+			.count();
 	}
 }
