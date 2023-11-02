@@ -10,5 +10,7 @@ public interface SurveyResultRepository extends JpaRepository<SurveyResult, Long
 
 	List<SurveyResult> findByResponserId(Long responserId);
 
+	List<SurveyResult> findBySurveyId(Long surveyId);
+
 	SurveyResult findBySurveyIdAndResponserId(Long surveyId, Long responserId);
 }
