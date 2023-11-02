@@ -54,7 +54,7 @@ public class SurveyResultService {
 			.count();
 	}
 
-	public AllResponserResultResponseDto getAllReponserSurveyResult(Long surveyId, Long userId) {
+	public AllResponserResultResponseDto getAllReponserParticipateInSurveyOrThrow(Long surveyId) {
 		Survey survey = surveyRepository.findById(surveyId)
 			.orElseThrow(() -> new NoSuchElementException("설문이 존재하지 않습니다."));
 

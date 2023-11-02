@@ -28,11 +28,14 @@ public class SurveyResultController {
 		return new ResponseEntity<List<SurveyResult>>(sersurveyResults, HttpStatus.OK);
 	}
 
-	@GetMapping("/created-surveys/{surveyId}/responser/{userId}")
-	public ResponseEntity<AllResponserResultResponseDto> getAllReponserServeyResult(@PathVariable Long surveyId,
-		@PathVariable Long userId) {
-		AllResponserResultResponseDto allReponserSurveyResult = surveyResultService.getAllReponserSurveyResult(
-			surveyId, userId);
+	/**
+	 * 설문에 참여한 모든 응답자 조회
+	 */
+	@GetMapping("/created-surveys/{surveyId}/responser")
+	public ResponseEntity<AllResponserResultResponseDto> getAllReponserParticipateInSurvey(
+		@PathVariable Long surveyId) {
+		AllResponserResultResponseDto allReponserSurveyResult = surveyResultService.getAllReponserParticipateInSurveyOrThrow(
+			surveyId);
 
 		return ResponseEntity.status(HttpStatus.OK).body(allReponserSurveyResult);
 	}
