@@ -21,6 +21,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.devcourse.ReviewRanger.common.exception.RangerException;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -59,7 +61,7 @@ public class JwtTokenProvider {
 		Claims claims = parseClaims(accessToken);
 
 		if (claims.get("auth") == null) {
-			throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+			throw new RangerException(NOT_AUTHORIZED_TOKEN);
 		}
 
 		Collection<? extends GrantedAuthority> authorities =
