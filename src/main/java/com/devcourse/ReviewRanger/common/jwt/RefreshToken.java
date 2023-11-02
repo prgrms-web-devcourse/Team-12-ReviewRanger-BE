@@ -6,11 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.devcourse.ReviewRanger.BaseEntity;
+
 import lombok.Getter;
 
 @Getter
 @Entity
-public class RefreshToken {
+public class RefreshToken extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
