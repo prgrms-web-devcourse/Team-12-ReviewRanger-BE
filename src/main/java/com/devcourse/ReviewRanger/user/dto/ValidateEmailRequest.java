@@ -2,9 +2,9 @@ package com.devcourse.ReviewRanger.user.dto;
 
 import static com.devcourse.ReviewRanger.common.regex.UserRegex.*;
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import javax.persistence.Column;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 public record ValidateEmailRequest(
 	@Column(nullable = false, length = 30)
