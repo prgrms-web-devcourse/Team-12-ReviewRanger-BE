@@ -42,6 +42,10 @@ public class Survey extends BaseEntity {
 	@JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime closedAt;
 
+	@Column(name = "status", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private SurveyStatus status;
+
 	protected Survey() {
 	}
 
@@ -50,9 +54,14 @@ public class Survey extends BaseEntity {
 		this.description = description;
 		this.type = type;
 		this.closedAt = closedAt;
+		this.status = SurveyStatus.PROCEEDING;
 	}
 
 	public void assignRequesterId(Long requesterId) {
 		this.requesterId = requesterId;
+	}
+
+	public void changeStatus(SurveyStatus status) {
+		this.status = status;
 	}
 }
