@@ -3,6 +3,9 @@ package com.devcourse.ReviewRanger.common.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import lombok.Getter;
+
+@Getter
 @JsonPropertyOrder({"success", "data"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RangerResponse<T> {
