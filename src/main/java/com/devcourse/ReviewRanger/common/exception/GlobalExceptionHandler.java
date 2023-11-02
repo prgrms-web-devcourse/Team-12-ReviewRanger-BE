@@ -1,8 +1,8 @@
 package com.devcourse.ReviewRanger.common.exception;
 
-import static com.devcourse.ReviewRanger.common.exception.RangerException.*;
 import static org.springframework.http.HttpStatus.*;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,24 +11,31 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+	public record ErrorResponse(
+		HttpStatus status,
+		String errorCode,
+		String message
+	) {
+	}
+
 	@ExceptionHandler(RangerException.class)
 	@ResponseBody
 	public ErrorResponse handleRangerException(RangerException e) {
 		ErrorCode errorCode = e.getErrorCode();
-		return new ErrorResponse(errorCode.name(), errorCode.getMessage());
+		return new ErrorResponse(errorCode.getHttpStatus(), errorCode.name(), errorCode.getMessage());
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseBody
 	public ErrorResponse handleRangerException(MethodArgumentNotValidException e) {
 		String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-		return new ErrorResponse(BAD_REQUEST.name(), errorMessage);
+		return new ErrorResponse(BAD_REQUEST, BAD_REQUEST.name(), errorMessage);
 	}
 
 	@ExceptionHandler(RuntimeException.class)
 	@ResponseBody
 	public ErrorResponse handleRuntimeException(RuntimeException e) {
-		return new ErrorResponse(INTERNAL_SERVER_ERROR.name(), e.getMessage());
+		return new ErrorResponse(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR.name(), e.getMessage());
 	}
 
 }
