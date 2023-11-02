@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devcourse.ReviewRanger.survey.domain.Survey;
 import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponseDto;
 import com.devcourse.ReviewRanger.survey.repository.SurveyRepository;
+import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserResultResponseDto;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.Responsers;
