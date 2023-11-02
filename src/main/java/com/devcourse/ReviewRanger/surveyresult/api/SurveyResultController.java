@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
+import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserResultResponseDto;
 
 @RestController
 public class SurveyResultController {
@@ -27,4 +28,12 @@ public class SurveyResultController {
 		return new ResponseEntity<List<SurveyResult>>(sersurveyResults, HttpStatus.OK);
 	}
 
+	@GetMapping("/created-surveys/{surveyId}/responser/{userId}")
+	public ResponseEntity<AllResponserResultResponseDto> getAllReponserServeyResult(@PathVariable Long surveyId,
+		@PathVariable Long userId) {
+		AllResponserResultResponseDto allReponserSurveyResult = surveyResultService.getAllReponserSurveyResult(
+			surveyId, userId);
+
+		return ResponseEntity.status(HttpStatus.OK).body(allReponserSurveyResult);
+	}
 }

@@ -1,6 +1,9 @@
 package com.devcourse.ReviewRanger.survey.application;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devcourse.ReviewRanger.question.application.QuestionService;
 import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.survey.domain.Survey;
+import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponse;
 import com.devcourse.ReviewRanger.survey.repository.SurveyRepository;
 import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
+import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 
 @Service
@@ -35,5 +40,27 @@ public class SurveyService {
 		surveyResultService.createSurveyResult(createdSurvey.getId(), surveyResults);
 
 		return true;
+	}
+
+	public List<SurveyResponse> getRequesterSurveys(Long requesterId) {
+		List<Survey> requesterSurveys = surveyRepository.findByRequesterId(requesterId);
+
+		List<SurveyResponse> surveyResponses = new ArrayList<>();
+		for (Survey requesterSurvey : requesterSurveys) {
+			Long surveyId = requesterSurvey.getId();
+			Long responserCount = surveyResultService.getResponserCount(surveyId);
+			SurveyResponse surveyResponse = new SurveyResponse(requesterSurvey, responserCount);
+			surveyResponses.add(surveyResponse);
+		}
+
+		return surveyResponses;
+	}
+
+	@Transactional
+	public Boolean closeSurveyOrThrow(Long surveyId) {
+		Survey survey = surveyRepository.findById(surveyId).orElseThrow(EntityNotFoundException::new);
+		survey.changeStatus(DeadlineStatus.END);
+
+		return surveyResultService.closeSurveyResultOrThrow(surveyId);
 	}
 }

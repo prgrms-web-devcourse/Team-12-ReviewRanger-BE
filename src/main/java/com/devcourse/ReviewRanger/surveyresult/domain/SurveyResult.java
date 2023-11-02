@@ -23,8 +23,7 @@ public class SurveyResult extends BaseEntity {
 
 	@Column(name = "deadline_status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private DeadlineStatus deadlineStatus = DeadlineStatus.PROCEEDING;
-	;
+	private DeadlineStatus deadlineStatus;
 
 	@Column(name = "question_answered_status", nullable = false)
 	private Boolean questionAnsweredStatus = false;
@@ -40,5 +39,9 @@ public class SurveyResult extends BaseEntity {
 
 	public void assignSurveyId(Long surveyId) {
 		this.surveyId = surveyId;
+	}
+
+	public void changeStatus(DeadlineStatus status) {
+		this.deadlineStatus = status;
 	}
 }
