@@ -31,6 +31,7 @@ public class SurveyController {
 		Survey survey = createSurveyRequest.toSurvey();
 		survey.assignRequesterId(1L);
 		List<Question> questions = createSurveyRequest.toQuestions();
+
 		List<SurveyResult> surveyResults = createSurveyRequest.toSurveyResult();
 		Boolean result = surveyService.createSurvey(survey, questions, surveyResults);
 
@@ -38,8 +39,8 @@ public class SurveyController {
 	}
 
 	@GetMapping("/created-surveys/{requesterId}")
-	public ResponseEntity<List<SurveyResponse>> getRequesterSurveys(@PathVariable Long requesterId) {
-		List<SurveyResponse> requesterSurveys = surveyService.getRequesterSurveys(requesterId);
+	public ResponseEntity<List<SurveyResponse>> getAllCreatedSurveysByRequester(@PathVariable Long requesterId) {
+		List<SurveyResponse> requesterSurveys = surveyService.getAllCreatedSurveysByRequester(requesterId);
 
 		return new ResponseEntity<>(requesterSurveys, HttpStatus.OK);
 	}
