@@ -60,7 +60,7 @@ public class UserService {
 		// token 생성
 		String accessToken = jwtTokenProvider.createToken(authentication);
 
-		return new LoginResponse(accessToken, "Bearer ");
+		return new LoginResponse(accessToken, "Bearer");
 	}
 
 	public boolean isNotExistName(String name) {
