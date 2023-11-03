@@ -93,7 +93,8 @@ public class SurveyResultService {
 	public AllRecipientParticipateInSurveyDto getAllRecipientParticipateInSurveyOrThrow(Long surveyId) {
 		AllRecipientParticipateInSurveyDto allRecipientParticipateInSurveyDto = new AllRecipientParticipateInSurveyDto(
 			new ArrayList<>());
-		Map<Long, Integer> map = new HashMap<>();
+		Map<Long, List<Long>> subjectToResponsersMap = new HashMap<>();
+
 		List<SurveyResult> surveyResults = surveyResultRepository.findBySurveyId(surveyId);
 
 		for (SurveyResult surveyResult : surveyResults) {
@@ -101,15 +102,19 @@ public class SurveyResultService {
 				surveyResult.getId());
 
 			for (EachSurveyResult eachSurveyResult : eachSurveyResults) {
-				map.put(eachSurveyResult.getSubjectId(), map.getOrDefault(eachSurveyResult.getSubjectId(), 0) + 1);
+				Long subjectId = eachSurveyResult.getSubjectId();
+				List<Long> responers = subjectToResponsersMap.getOrDefault(subjectId, new ArrayList<>());
+				responers.add(surveyResult.getResponserId());
+				subjectToResponsersMap.put(subjectId, responers);
 			}
 		}
 
-		for (Map.Entry<Long, Integer> recipient : map.entrySet()) {
+		for (Map.Entry<Long, List<Long>> recipient : subjectToResponsersMap.entrySet()) {
 			User user = userRepository.findById(recipient.getKey())
 				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 
-			Recipients response = new Recipients(recipient.getKey(), user.getName(), recipient.getValue());
+			Recipients response = new Recipients(recipient.getKey(), user.getName(), recipient.getValue().size(),
+				recipient.getValue());
 			allRecipientParticipateInSurveyDto.recipients().add(response);
 		}
 
