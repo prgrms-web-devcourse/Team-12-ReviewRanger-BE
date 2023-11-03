@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devcourse.ReviewRanger.question.application.QuestionService;
 import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.survey.domain.Survey;
+import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponseWithResponserCount;
 import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponse;
 import com.devcourse.ReviewRanger.survey.repository.SurveyRepository;
 import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
@@ -46,14 +47,20 @@ public class SurveyService {
 		return true;
 	}
 
-	public List<SurveyResponse> getAllCreatedSurveysByRequester(Long requesterId) {
+	public SurveyResponse getSurvey(Long id) {
+		Survey survey = surveyRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+		return new SurveyResponse(survey);
+	}
+
+	public List<SurveyResponseWithResponserCount> getAllCreatedSurveysByRequester(Long requesterId) {
 		List<Survey> surveys = surveyRepository.findByRequesterId(requesterId);
 
-		List<SurveyResponse> surveyResponses = new ArrayList<>();
+		List<SurveyResponseWithResponserCount> surveyResponses = new ArrayList<>();
 		for (Survey survey : surveys) {
 			Long surveyId = survey.getId();
 			Long responserCount = surveyResultService.getResponserCount(surveyId);
-			SurveyResponse surveyResponse = new SurveyResponse(survey, responserCount);
+			SurveyResponseWithResponserCount surveyResponse = new SurveyResponseWithResponserCount(survey, responserCount);
 			surveyResponses.add(surveyResponse);
 		}
 

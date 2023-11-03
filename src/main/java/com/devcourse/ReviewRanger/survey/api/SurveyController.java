@@ -14,6 +14,7 @@ import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.survey.application.SurveyService;
 import com.devcourse.ReviewRanger.survey.domain.Survey;
 import com.devcourse.ReviewRanger.survey.dto.request.CreateSurveyRequest;
+import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponseWithResponserCount;
 import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponse;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 
@@ -38,9 +39,15 @@ public class SurveyController {
 		return new ResponseEntity<Boolean>(result, HttpStatus.CREATED);
 	}
 
+	@GetMapping("/surveys/{id}")
+	public ResponseEntity<SurveyResponse> getSurvey(@PathVariable Long id) {
+		SurveyResponse tempSurveyResponse = surveyService.getSurvey(id);
+		return new ResponseEntity<>(tempSurveyResponse, HttpStatus.OK);
+	}
+
 	@GetMapping("/created-surveys/{requesterId}")
-	public ResponseEntity<List<SurveyResponse>> getAllCreatedSurveysByRequester(@PathVariable Long requesterId) {
-		List<SurveyResponse> requesterSurveys = surveyService.getAllCreatedSurveysByRequester(requesterId);
+	public ResponseEntity<List<SurveyResponseWithResponserCount>> getAllCreatedSurveysByRequester(@PathVariable Long requesterId) {
+		List<SurveyResponseWithResponserCount> requesterSurveys = surveyService.getAllCreatedSurveysByRequester(requesterId);
 
 		return new ResponseEntity<>(requesterSurveys, HttpStatus.OK);
 	}
