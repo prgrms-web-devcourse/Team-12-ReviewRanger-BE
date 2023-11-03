@@ -15,7 +15,7 @@ import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponseWithResponse
 import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponse;
 import com.devcourse.ReviewRanger.survey.repository.SurveyRepository;
 import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
-import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
+import com.devcourse.ReviewRanger.common.constant.Status;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 
 @Service
@@ -70,7 +70,7 @@ public class SurveyService {
 	@Transactional
 	public Boolean closeSurveyOrThrow(Long surveyId) {
 		Survey survey = surveyRepository.findById(surveyId).orElseThrow(EntityNotFoundException::new);
-		survey.changeStatus(DeadlineStatus.END);
+		survey.changeStatus(Status.END);
 
 		return surveyResultService.closeSurveyResultOrThrow(surveyId);
 	}

@@ -6,13 +6,13 @@ import java.util.List;
 import com.devcourse.ReviewRanger.question.dto.reponse.QuestionResponse;
 import com.devcourse.ReviewRanger.survey.domain.Survey;
 import com.devcourse.ReviewRanger.survey.domain.SurveyType;
-import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
+import com.devcourse.ReviewRanger.common.constant.Status;
 
 public record SurveyResponse(
 	Long surveyId,
 	String title,
 	String description,
-	DeadlineStatus deadlineStatus,
+	Status deadlineStatus,
 	SurveyType surveyType,
 	LocalDateTime createdAt,
 	List<QuestionResponse> questionResponse

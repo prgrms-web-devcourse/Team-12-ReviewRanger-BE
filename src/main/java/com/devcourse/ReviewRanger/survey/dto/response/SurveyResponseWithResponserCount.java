@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 
 import com.devcourse.ReviewRanger.survey.domain.Survey;
 import com.devcourse.ReviewRanger.survey.domain.SurveyType;
-import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
+import com.devcourse.ReviewRanger.common.constant.Status;
 
 public record SurveyResponseWithResponserCount(
 	Long surveyId,
 	String title,
 	String description,
-	DeadlineStatus deadlineStatus,
+	Status deadlineStatus,
 	SurveyType surveyType,
 	LocalDateTime createdAt,
 	Long responserCount

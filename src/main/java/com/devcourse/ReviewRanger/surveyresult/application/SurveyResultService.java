@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devcourse.ReviewRanger.survey.domain.Survey;
 import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponseDto;
 import com.devcourse.ReviewRanger.survey.repository.SurveyRepository;
-import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
+import com.devcourse.ReviewRanger.common.constant.Status;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserResultResponseDto;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.Responsers;
@@ -32,7 +32,7 @@ public class SurveyResultService {
 		this.userRepository = userRepository;
 		this.surveyRepository = surveyRepository;
 	}
-	
+
 	@Transactional
 	public void createAllSurveyResults(List<SurveyResult> surveyResults) {
 		surveyResultRepository.saveAll(surveyResults);
@@ -55,7 +55,7 @@ public class SurveyResultService {
 	@Transactional
 	public Boolean closeSurveyResultOrThrow(Long surveyId) {
 		List<SurveyResult> surveyResults = surveyResultRepository.findBySurveyId(surveyId);
-		surveyResults.stream().forEach(surveyResult -> surveyResult.changeStatus(DeadlineStatus.END));
+		surveyResults.stream().forEach(surveyResult -> surveyResult.changeStatus(Status.END));
 
 		return true;
 	}

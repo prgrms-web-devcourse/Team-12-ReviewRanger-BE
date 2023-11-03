@@ -1,9 +1,9 @@
-package com.devcourse.ReviewRanger.surveyresult.domain;
+package com.devcourse.ReviewRanger.common.constant;
 
 import lombok.Getter;
 
 @Getter
-public enum DeadlineStatus {
+public enum Status {
 	PROCEEDING("진행중"),
 	DEADLINE("제출"),
 	END("마감")
@@ -11,7 +11,7 @@ public enum DeadlineStatus {
 
 	private final String displayName;
 
-	DeadlineStatus(String displayName) {
+	Status(String displayName) {
 		this.displayName = displayName;
 	}
 }

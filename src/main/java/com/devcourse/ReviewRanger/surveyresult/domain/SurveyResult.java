@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.devcourse.ReviewRanger.BaseEntity;
+import com.devcourse.ReviewRanger.common.constant.Status;
 import com.devcourse.ReviewRanger.survey.domain.Survey;
 
 import lombok.Getter;
@@ -18,15 +19,12 @@ import lombok.Getter;
 @Table(name = "survey_results")
 public class SurveyResult extends BaseEntity {
 
-	// @Column(name = "survey_id", nullable = false)
-	// private Long surveyId;
-
 	@Column(name = "responser_id", nullable = false)
 	private Long responserId;
 
 	@Column(name = "deadline_status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private DeadlineStatus deadlineStatus;
+	private Status deadlineStatus;
 
 	@Column(name = "question_answered_status", nullable = false)
 	private Boolean questionAnsweredStatus = false;
@@ -40,7 +38,7 @@ public class SurveyResult extends BaseEntity {
 
 	public SurveyResult(Long responserId) {
 		this.responserId = responserId;
-		this.deadlineStatus = DeadlineStatus.PROCEEDING;
+		this.deadlineStatus = Status.PROCEEDING;
 		this.questionAnsweredStatus = false;
 	}
 
@@ -48,7 +46,7 @@ public class SurveyResult extends BaseEntity {
 		this.survey = survey;
 	}
 
-	public void changeStatus(DeadlineStatus status) {
+	public void changeStatus(Status status) {
 		this.deadlineStatus = status;
 	}
 }

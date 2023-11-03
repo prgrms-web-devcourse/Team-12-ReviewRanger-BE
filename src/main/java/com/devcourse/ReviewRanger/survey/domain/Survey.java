@@ -1,6 +1,6 @@
 package com.devcourse.ReviewRanger.survey.domain;
 
-import static com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus.*;
+import static com.devcourse.ReviewRanger.common.constant.Status.*;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.*;
 
 import java.time.LocalDateTime;
@@ -18,8 +18,7 @@ import javax.validation.constraints.Size;
 
 import com.devcourse.ReviewRanger.BaseEntity;
 import com.devcourse.ReviewRanger.question.domain.Question;
-import com.devcourse.ReviewRanger.question.domain.QuestionOption;
-import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
+import com.devcourse.ReviewRanger.common.constant.Status;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -52,7 +51,7 @@ public class Survey extends BaseEntity {
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private DeadlineStatus status;
+	private Status status;
 
 	@OneToMany(mappedBy = "survey")
 	private List<Question> questions = new ArrayList<>();
@@ -75,7 +74,7 @@ public class Survey extends BaseEntity {
 		this.requesterId = requesterId;
 	}
 
-	public void changeStatus(DeadlineStatus status) {
+	public void changeStatus(Status status) {
 		this.status = status;
 	}
 }
