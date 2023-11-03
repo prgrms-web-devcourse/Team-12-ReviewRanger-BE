@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
-import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
+
 import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserResultResponseDto;
+import com.devcourse.ReviewRanger.surveyresult.dto.response.SurveyResultResponse;
 
 @RestController
 public class SurveyResultController {
@@ -22,17 +23,17 @@ public class SurveyResultController {
 	}
 
 	@GetMapping("/invited-surveys/{responserId}")
-	public ResponseEntity<List<SurveyResult>> getResponserSurveyResult(@PathVariable Long responserId) {
-		List<SurveyResult> sersurveyResults = surveyResultService.getResponserSurveyResult(responserId);
+	public ResponseEntity<List<SurveyResultResponse>> getResponserSurveyResult(@PathVariable Long responserId) {
+		List<SurveyResultResponse> surveyResultResponses = surveyResultService.getResponserSurveyResult(responserId);
 
-		return new ResponseEntity<List<SurveyResult>>(sersurveyResults, HttpStatus.OK);
+		return new ResponseEntity<>(surveyResultResponses, HttpStatus.OK);
 	}
 
 	@GetMapping("/created-surveys/{surveyId}/responser/{userId}")
 	public ResponseEntity<AllResponserResultResponseDto> getAllReponserServeyResult(@PathVariable Long surveyId,
 		@PathVariable Long userId) {
-		AllResponserResultResponseDto allReponserSurveyResult = surveyResultService.getAllReponserSurveyResult(
-			surveyId, userId);
+		AllResponserResultResponseDto allReponserSurveyResult = surveyResultService.getAllReponserSurveyResult(surveyId,
+			userId);
 
 		return ResponseEntity.status(HttpStatus.OK).body(allReponserSurveyResult);
 	}

@@ -14,6 +14,7 @@ import com.devcourse.ReviewRanger.common.constant.Status;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserResultResponseDto;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.Responsers;
+import com.devcourse.ReviewRanger.surveyresult.dto.response.SurveyResultResponse;
 import com.devcourse.ReviewRanger.surveyresult.repository.SurveyResultRepository;
 import com.devcourse.ReviewRanger.user.domain.User;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
@@ -38,8 +39,12 @@ public class SurveyResultService {
 		surveyResultRepository.saveAll(surveyResults);
 	}
 
-	public List<SurveyResult> getResponserSurveyResult(Long responserId) {
-		return surveyResultRepository.findByResponserId(responserId);
+	public List<SurveyResultResponse> getResponserSurveyResult(Long responserId) {
+
+		List<SurveyResult> surveyResults = surveyResultRepository.findByResponserId(responserId);
+		return surveyResults.stream()
+			.map(surveyResult -> new SurveyResultResponse(surveyResult))
+			.toList();
 	}
 
 	public SurveyResult findSurveyResult(Long surveyId, Long responserId) {
