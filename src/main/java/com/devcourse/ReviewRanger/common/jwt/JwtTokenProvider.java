@@ -17,11 +17,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
+import com.devcourse.ReviewRanger.user.application.CustomUserDetailsService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -35,11 +35,13 @@ import io.jsonwebtoken.security.Keys;
 public class JwtTokenProvider {
 	private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
 	private static final long EXPIRATION_TIME = 30 * 60 * 1000L;
-	private static final String AUTHORITY = "authority";
+	private static final String AUTHORITY = "auth";
 
 	private final Key key;
+	private final CustomUserDetailsService userDetailService;
 
-	public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
+	public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailsService userDetailService) {
+		this.userDetailService = userDetailService;
 		byte[] secretByteKey = DatatypeConverter.parseBase64Binary(secretKey);
 		this.key = Keys.hmacShaKeyFor(secretByteKey);
 	}
@@ -67,10 +69,12 @@ public class JwtTokenProvider {
 		Collection<? extends GrantedAuthority> authorities =
 			Arrays.stream(claims.get("auth").toString().split(","))
 				.map(SimpleGrantedAuthority::new)
-				.collect(Collectors.toList());
+				.toList();
 
-		UserDetails principal = new User(claims.getSubject(), "", authorities);
-		return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+		String username = claims.getSubject();
+		UserDetails user = userDetailService.loadUserByUsername(username);
+
+		return new UsernamePasswordAuthenticationToken(user, "", authorities);
 	}
 
 	public boolean isValidToken(String token) {
