@@ -4,16 +4,21 @@ import static com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus.*;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.devcourse.ReviewRanger.BaseEntity;
+import com.devcourse.ReviewRanger.question.domain.Question;
+import com.devcourse.ReviewRanger.question.domain.QuestionOption;
 import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -47,6 +52,9 @@ public class Survey extends BaseEntity {
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private DeadlineStatus status;
+
+	@OneToMany(mappedBy = "survey")
+	private List<Question> questions = new ArrayList<>();
 
 	protected Survey() {
 	}

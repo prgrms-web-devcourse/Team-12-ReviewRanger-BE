@@ -7,12 +7,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.devcourse.ReviewRanger.BaseEntity;
+import com.devcourse.ReviewRanger.survey.domain.Survey;
 
 import lombok.Getter;
 
@@ -20,9 +23,6 @@ import lombok.Getter;
 @Entity
 @Table(name = "questions")
 public class Question extends BaseEntity {
-
-	@Column(name = "survey_id", nullable = false)
-	private Long surveyId;
 
 	@Column(nullable = false, length = 150)
 	@NotBlank(message = "질문제목은 빈값 일 수 없습니다.")
@@ -42,6 +42,10 @@ public class Question extends BaseEntity {
 	@Column(name = "is_duplicated", nullable = false)
 	private Boolean isDuplicated;
 
+	@ManyToOne
+	@JoinColumn(name = "survey_id")
+	private Survey survey;
+
 	@OneToMany(mappedBy = "question")
 	private List<QuestionOption> questionOptions = new ArrayList<>();
 
@@ -58,8 +62,7 @@ public class Question extends BaseEntity {
 		this.questionOptions = questionOptions;
 	}
 
-	public void assignSurveyId(Long surveyId) {
-		this.surveyId = surveyId;
+	public void setSurvey(Survey survey) {
+		this.survey = survey;
 	}
-
 }
