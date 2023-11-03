@@ -32,10 +32,9 @@ public class SurveyResultService {
 		this.userRepository = userRepository;
 		this.surveyRepository = surveyRepository;
 	}
-
+	
 	@Transactional
-	public void createSurveyResult(Long surveyId, List<SurveyResult> surveyResults) {
-		surveyResults.forEach(surveyResult -> surveyResult.assignSurveyId(surveyId));
+	public void createAllSurveyResults(List<SurveyResult> surveyResults) {
 		surveyResultRepository.saveAll(surveyResults);
 	}
 

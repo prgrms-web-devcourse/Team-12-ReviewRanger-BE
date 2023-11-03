@@ -40,7 +40,9 @@ public class SurveyService {
 		questions.forEach(question -> question.setSurvey(createdSurvey));
 		questionService.createAllQuestions(questions);
 
-		surveyResultService.createSurveyResult(createdSurvey.getId(), surveyResults);
+		surveyResults.forEach(surveyResult -> surveyResult.setSurvey(createdSurvey));
+		surveyResultService.createAllSurveyResults(surveyResults);
+
 		return true;
 	}
 
