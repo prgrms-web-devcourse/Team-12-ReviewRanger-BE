@@ -2,6 +2,7 @@ package com.devcourse.ReviewRanger.question.application;
 
 import java.util.List;
 
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,13 +25,20 @@ public class QuestionService {
 
 	@Transactional
 	public void createAllQuestions(List<Question> questions) {
-		questionRepository.saveAll(questions);
+		questions.forEach(question -> createQuestion(question));
 	}
 
 	@Transactional
-	public void createQuestionOptionsInQuestion(Question question,
-		List<QuestionOption> questionOptions) {
-		questionOptions.forEach(questionOption -> questionOption.setQuestion(question));
-		List<QuestionOption> createdQuestionOptions = questionOptionRepository.saveAll(questionOptions);
+	public void createQuestion(Question question) {
+		Question createdQuestion = questionRepository.save(question);
+
+		List<QuestionOption> questionOptions = createdQuestion.getQuestionOptions();
+		questionOptions.forEach(questionOption -> questionOption.setQuestion(createdQuestion));
+		createAllQuestionOptions(questionOptions);
+	}
+
+	@Transactional
+	public void createAllQuestionOptions(List<QuestionOption> questionOptions) {
+		questionOptionRepository.saveAll(questionOptions);
 	}
 }
