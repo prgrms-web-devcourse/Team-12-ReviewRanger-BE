@@ -20,6 +20,7 @@ import com.devcourse.ReviewRanger.BaseEntity;
 import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.question.domain.QuestionOption;
 import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
+import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
@@ -55,6 +56,9 @@ public class Survey extends BaseEntity {
 
 	@OneToMany(mappedBy = "survey")
 	private List<Question> questions = new ArrayList<>();
+
+	@OneToMany(mappedBy = "survey")
+	private List<SurveyResult> surveyResults = new ArrayList<>();
 
 	protected Survey() {
 	}
