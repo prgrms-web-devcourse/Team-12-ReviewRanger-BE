@@ -23,16 +23,8 @@ public class QuestionService {
 	}
 
 	@Transactional
-	public void createQuestionInSurvey(Long surveyId, List<Question> questions) {
-		questions.forEach(question -> question.assignSurveyId(surveyId));
-		List<Question> createdQuestion = questionRepository.saveAll(questions);
-
-		for (Question question : createdQuestion) {
-			if (question.getIsDuplicated()) {
-				List<QuestionOption> questionOptions = question.getQuestionOptions();
-				createQuestionOptionsInQuestion(question, questionOptions);
-			}
-		}
+	public void createAllQuestions(List<Question> questions) {
+		questionRepository.saveAll(questions);
 	}
 
 	@Transactional

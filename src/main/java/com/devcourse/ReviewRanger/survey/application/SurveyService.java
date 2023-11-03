@@ -36,20 +36,22 @@ public class SurveyService {
 	@Transactional
 	public boolean createSurvey(Survey survey, List<Question> questions, List<SurveyResult> surveyResults) {
 		Survey createdSurvey = surveyRepository.save(survey);
-		questionService.createQuestionInSurvey(createdSurvey.getId(), questions);
-		surveyResultService.createSurveyResult(createdSurvey.getId(), surveyResults);
 
+		questions.forEach(question -> question.setSurvey(createdSurvey));
+		questionService.createAllQuestions(questions);
+
+		surveyResultService.createSurveyResult(createdSurvey.getId(), surveyResults);
 		return true;
 	}
 
-	public List<SurveyResponse> getRequesterSurveys(Long requesterId) {
-		List<Survey> requesterSurveys = surveyRepository.findByRequesterId(requesterId);
+	public List<SurveyResponse> getAllCreatedSurveysByRequester(Long requesterId) {
+		List<Survey> surveys = surveyRepository.findByRequesterId(requesterId);
 
 		List<SurveyResponse> surveyResponses = new ArrayList<>();
-		for (Survey requesterSurvey : requesterSurveys) {
-			Long surveyId = requesterSurvey.getId();
+		for (Survey survey : surveys) {
+			Long surveyId = survey.getId();
 			Long responserCount = surveyResultService.getResponserCount(surveyId);
-			SurveyResponse surveyResponse = new SurveyResponse(requesterSurvey, responserCount);
+			SurveyResponse surveyResponse = new SurveyResponse(survey, responserCount);
 			surveyResponses.add(surveyResponse);
 		}
 
