@@ -2,23 +2,24 @@ server:
   port: 8080
 
 spring:
+  profiles:
+    include:
+      - jwt
   datasource:
-    url: jdbc:h2:mem:test
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-
-  h2:
-    console:
-      enabled: true
+    url: jdbc:mysql://localhost:3306/${DB_NAME}?useSSL=false
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: true
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MySQL57Dialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
+      generate-ddl: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
-        show_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+
