@@ -18,7 +18,7 @@ import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 public class SecurityConfig {
 
 	private final JwtTokenProvider jwtTokenProvider;
-	private final String[] permitUrls = {"/login", "/sign-up", "/check-id", "/check-email"};
+	private final String[] permitUrls = {"/login", "/sign-up", "/members/check-id", "/members/check-email"};
 
 	public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
 		this.jwtTokenProvider = jwtTokenProvider;
