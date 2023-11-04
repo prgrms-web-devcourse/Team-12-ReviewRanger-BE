@@ -18,9 +18,8 @@ import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponseDto;
 import com.devcourse.ReviewRanger.survey.repository.SurveyRepository;
 import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
-import com.devcourse.ReviewRanger.surveyresult.dto.response.AllRecipientParticipateInSurveyDto;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserParticipateInSurveyDto;
-import com.devcourse.ReviewRanger.surveyresult.dto.response.Recipients;
+import com.devcourse.ReviewRanger.surveyresult.dto.response.Recipient;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.Responsers;
 import com.devcourse.ReviewRanger.surveyresult.repository.SurveyResultRepository;
 import com.devcourse.ReviewRanger.user.domain.User;
@@ -97,9 +96,8 @@ public class SurveyResultService {
 		return allResponserParticipateInsurveyDto;
 	}
 
-	public AllRecipientParticipateInSurveyDto getAllRecipientParticipateInSurveyOrThrow(Long surveyId) {
-		AllRecipientParticipateInSurveyDto allRecipientParticipateInSurveyDto = new AllRecipientParticipateInSurveyDto(
-			new ArrayList<>());
+	public List<Recipient> getAllRecipientParticipateInSurveyOrThrow(Long surveyId) {
+		List<Recipient> responses = new ArrayList<>();
 		Map<Long, List<Long>> subjectToResponsersMap = new HashMap<>();
 
 		List<SurveyResult> surveyResults = surveyResultRepository.findBySurveyId(surveyId);
@@ -120,11 +118,11 @@ public class SurveyResultService {
 			User user = userRepository.findById(recipient.getKey())
 				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 
-			Recipients response = new Recipients(recipient.getKey(), user.getName(), recipient.getValue().size(),
+			Recipient response = new Recipient(recipient.getKey(), user.getName(), recipient.getValue().size(),
 				recipient.getValue());
-			allRecipientParticipateInSurveyDto.recipients().add(response);
+			responses.add(response);
 		}
 
-		return allRecipientParticipateInSurveyDto;
+		return responses;
 	}
 }

@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
-import com.devcourse.ReviewRanger.surveyresult.dto.response.AllRecipientParticipateInSurveyDto;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserParticipateInSurveyDto;
+import com.devcourse.ReviewRanger.surveyresult.dto.response.Recipient;
 
 @RestController
 public class SurveyResultController {
@@ -46,10 +46,10 @@ public class SurveyResultController {
 	 * 리뷰를 받은 사용자 전체 조회 기능
 	 */
 	@GetMapping("/created-surveys/{surveyId}/recipient")
-	public RangerResponse<AllRecipientParticipateInSurveyDto> getAllRecipientParticipateInSurvey(
+	public RangerResponse<List<Recipient>> getAllRecipientParticipateInSurvey(
 		@PathVariable Long surveyId
 	) {
-		AllRecipientParticipateInSurveyDto response = surveyResultService.getAllRecipientParticipateInSurveyOrThrow(
+		List<Recipient> response = surveyResultService.getAllRecipientParticipateInSurveyOrThrow(
 			surveyId);
 
 		return RangerResponse.ok(response);
