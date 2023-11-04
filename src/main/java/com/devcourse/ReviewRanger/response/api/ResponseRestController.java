@@ -21,6 +21,8 @@ public class ResponseRestController {
 
 	@PostMapping(value = "/invited-surveys")
 	public RangerResponse<Void> create(@RequestBody @Valid CreateResponse request) {
-		return RangerResponse.ok(responseService.createResponse(request));
+		Boolean response = responseService.createResponse(request);
+
+		return RangerResponse.ok(response);
 	}
 }
