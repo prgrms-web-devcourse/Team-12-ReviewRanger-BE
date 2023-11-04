@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
-import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserResultResponseDto;
+import com.devcourse.ReviewRanger.surveyresult.dto.response.AllRecipientParticipateInSurveyDto;
+import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserParticipateInSurveyDto;
 
 @RestController
 public class SurveyResultController {
@@ -28,12 +30,28 @@ public class SurveyResultController {
 		return new ResponseEntity<List<SurveyResult>>(sersurveyResults, HttpStatus.OK);
 	}
 
-	@GetMapping("/created-surveys/{surveyId}/responser/{userId}")
-	public ResponseEntity<AllResponserResultResponseDto> getAllReponserServeyResult(@PathVariable Long surveyId,
-		@PathVariable Long userId) {
-		AllResponserResultResponseDto allReponserSurveyResult = surveyResultService.getAllReponserSurveyResult(
-			surveyId, userId);
+	/**
+	 * 설문에 참여한 모든 응답자 조회
+	 */
+	@GetMapping("/created-surveys/{surveyId}/responser")
+	public RangerResponse<AllResponserParticipateInSurveyDto> getAllReponserParticipateInSurvey(
+		@PathVariable Long surveyId) {
+		AllResponserParticipateInSurveyDto response = surveyResultService.getAllReponserParticipateInSurveyOrThrow(
+			surveyId);
 
-		return ResponseEntity.status(HttpStatus.OK).body(allReponserSurveyResult);
+		return RangerResponse.ok(response);
+	}
+
+	/**
+	 * 리뷰를 받은 사용자 전체 조회 기능
+	 */
+	@GetMapping("/created-surveys/{surveyId}/recipient")
+	public RangerResponse<AllRecipientParticipateInSurveyDto> getAllRecipientParticipateInSurvey(
+		@PathVariable Long surveyId
+	) {
+		AllRecipientParticipateInSurveyDto response = surveyResultService.getAllRecipientParticipateInSurveyOrThrow(
+			surveyId);
+
+		return RangerResponse.ok(response);
 	}
 }

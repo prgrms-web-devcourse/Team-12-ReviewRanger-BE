@@ -1,18 +1,26 @@
 package com.devcourse.ReviewRanger.surveyresult.application;
 
+import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devcourse.ReviewRanger.common.exception.RangerException;
+import com.devcourse.ReviewRanger.eachSurveyResult.domain.EachSurveyResult;
+import com.devcourse.ReviewRanger.eachSurveyResult.repository.EachSurveyResultRepository;
 import com.devcourse.ReviewRanger.survey.domain.Survey;
 import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponseDto;
 import com.devcourse.ReviewRanger.survey.repository.SurveyRepository;
 import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
-import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserResultResponseDto;
+import com.devcourse.ReviewRanger.surveyresult.dto.response.AllRecipientParticipateInSurveyDto;
+import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserParticipateInSurveyDto;
+import com.devcourse.ReviewRanger.surveyresult.dto.response.Recipients;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.Responsers;
 import com.devcourse.ReviewRanger.surveyresult.repository.SurveyResultRepository;
 import com.devcourse.ReviewRanger.user.domain.User;
@@ -25,12 +33,14 @@ public class SurveyResultService {
 	private final SurveyResultRepository surveyResultRepository;
 	private final UserRepository userRepository;
 	private final SurveyRepository surveyRepository;
+	private final EachSurveyResultRepository eachSurveyResultRepository;
 
 	public SurveyResultService(SurveyResultRepository surveyResultRepository, UserRepository userRepository,
-		SurveyRepository surveyRepository) {
+		SurveyRepository surveyRepository, EachSurveyResultRepository eachSurveyResultRepository) {
 		this.surveyResultRepository = surveyResultRepository;
 		this.userRepository = userRepository;
 		this.surveyRepository = surveyRepository;
+		this.eachSurveyResultRepository = eachSurveyResultRepository;
 	}
 
 	@Transactional
@@ -61,9 +71,9 @@ public class SurveyResultService {
 		return true;
 	}
 
-	public AllResponserResultResponseDto getAllReponserSurveyResult(Long surveyId, Long userId) {
+	public AllResponserParticipateInSurveyDto getAllReponserParticipateInSurveyOrThrow(Long surveyId) {
 		Survey survey = surveyRepository.findById(surveyId)
-			.orElseThrow(() -> new NoSuchElementException("설문이 존재하지 않습니다."));
+			.orElseThrow(() -> new RangerException(NOT_FOUND_SURVEY));
 
 		SurveyResponseDto surveyResponseDto = new SurveyResponseDto(surveyId, survey.getTitle(),
 			survey.getType(), survey.getCreateAt(), survey.getUpdatedAt());
@@ -71,19 +81,50 @@ public class SurveyResultService {
 		List<SurveyResult> surveyResults = surveyResultRepository.findBySurveyIdAndQuestionAnsweredStatusTrue(surveyId);
 
 		ArrayList<Responsers> responserList = new ArrayList<>();
-		AllResponserResultResponseDto allResponserResultResponseDto = new AllResponserResultResponseDto(
+		AllResponserParticipateInSurveyDto allResponserParticipateInsurveyDto = new AllResponserParticipateInSurveyDto(
 			surveyResults.size(), surveyResponseDto, responserList);
 
 		for (SurveyResult surveyResult : surveyResults) {
 			User user = userRepository.findById(surveyResult.getResponserId())
-				.orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 
 			Responsers responser = new Responsers(surveyResult.getId(), user.getId(), user.getName(),
 				surveyResult.getUpdatedAt());
 
-			allResponserResultResponseDto.responsers().add(responser);
+			allResponserParticipateInsurveyDto.responsers().add(responser);
 		}
 
-		return allResponserResultResponseDto;
+		return allResponserParticipateInsurveyDto;
+	}
+
+	public AllRecipientParticipateInSurveyDto getAllRecipientParticipateInSurveyOrThrow(Long surveyId) {
+		AllRecipientParticipateInSurveyDto allRecipientParticipateInSurveyDto = new AllRecipientParticipateInSurveyDto(
+			new ArrayList<>());
+		Map<Long, List<Long>> subjectToResponsersMap = new HashMap<>();
+
+		List<SurveyResult> surveyResults = surveyResultRepository.findBySurveyId(surveyId);
+
+		for (SurveyResult surveyResult : surveyResults) {
+			List<EachSurveyResult> eachSurveyResults = eachSurveyResultRepository.findBySurveyResultId(
+				surveyResult.getId());
+
+			for (EachSurveyResult eachSurveyResult : eachSurveyResults) {
+				Long subjectId = eachSurveyResult.getSubjectId();
+				List<Long> responers = subjectToResponsersMap.getOrDefault(subjectId, new ArrayList<>());
+				responers.add(surveyResult.getResponserId());
+				subjectToResponsersMap.put(subjectId, responers);
+			}
+		}
+
+		for (Map.Entry<Long, List<Long>> recipient : subjectToResponsersMap.entrySet()) {
+			User user = userRepository.findById(recipient.getKey())
+				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+
+			Recipients response = new Recipients(recipient.getKey(), user.getName(), recipient.getValue().size(),
+				recipient.getValue());
+			allRecipientParticipateInSurveyDto.recipients().add(response);
+		}
+
+		return allRecipientParticipateInSurveyDto;
 	}
 }
