@@ -2,17 +2,21 @@ package com.devcourse.ReviewRanger.user.api;
 
 import javax.validation.Valid;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
+import com.devcourse.ReviewRanger.user.application.UserService;
+import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.user.dto.JoinRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginResponse;
+import com.devcourse.ReviewRanger.user.dto.UpdateRequest;
 import com.devcourse.ReviewRanger.user.dto.ValidateEmailRequest;
 import com.devcourse.ReviewRanger.user.dto.ValidateNameRequest;
-import com.devcourse.ReviewRanger.user.application.UserService;
 
 @RestController
 public class UserController {
@@ -49,5 +53,14 @@ public class UserController {
 		boolean notExistEmail = userService.isNotExistEmail(request.email());
 
 		return RangerResponse.ok(notExistEmail);
+	}
+
+	@PatchMapping("/members/profile")
+	public RangerResponse<Void> update(
+		@AuthenticationPrincipal UserPrincipal user,
+		@RequestBody UpdateRequest updateRequest
+	) {
+		userService.updateInfo(user.getId(), updateRequest);
+		return RangerResponse.noData();
 	}
 }

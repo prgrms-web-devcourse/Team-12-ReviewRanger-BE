@@ -15,6 +15,7 @@ import com.devcourse.ReviewRanger.user.domain.User;
 import com.devcourse.ReviewRanger.user.dto.JoinRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginResponse;
+import com.devcourse.ReviewRanger.user.dto.UpdateRequest;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
@@ -69,5 +70,20 @@ public class UserService {
 
 	public boolean isNotExistEmail(String email) {
 		return !userRepository.existsByEmail(email);
+	}
+
+	@Transactional
+	public void updateInfo(Long id, UpdateRequest updateRequest) {
+		User user = getUserOrThrow(id);
+		String editName = updateRequest.name();
+		String editEncodedPassword = updateRequest.password();
+		editEncodedPassword = passwordEncoder.encode(editEncodedPassword);
+
+		user.updateInfo(editName, editEncodedPassword);
+	}
+
+	private User getUserOrThrow(Long id) {
+		return userRepository.findById(id)
+			.orElseThrow(() -> new RangerException(FAIL_USER_LOGIN));
 	}
 }
