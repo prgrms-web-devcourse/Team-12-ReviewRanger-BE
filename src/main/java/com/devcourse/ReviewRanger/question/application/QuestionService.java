@@ -1,6 +1,9 @@
 package com.devcourse.ReviewRanger.question.application;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
@@ -40,5 +43,9 @@ public class QuestionService {
 	@Transactional
 	public void createAllQuestionOptions(List<QuestionOption> questionOptions) {
 		questionOptionRepository.saveAll(questionOptions);
+	}
+
+	public Question getQuestion(Long questionId) {
+		return questionRepository.findById(questionId).orElseThrow(EntityNotFoundException::new);
 	}
 }

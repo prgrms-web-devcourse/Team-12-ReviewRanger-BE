@@ -3,15 +3,22 @@ package com.devcourse.ReviewRanger.surveyresult.application;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devcourse.ReviewRanger.eachSurveyResult.application.EachSurveyResultService;
+import com.devcourse.ReviewRanger.eachSurveyResult.domain.EachSurveyResult;
+import com.devcourse.ReviewRanger.eachSurveyResult.dto.request.EachSurveyRequest;
 import com.devcourse.ReviewRanger.survey.domain.Survey;
 import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponseDto;
 import com.devcourse.ReviewRanger.survey.repository.SurveyRepository;
 import com.devcourse.ReviewRanger.common.constant.Status;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
+import com.devcourse.ReviewRanger.surveyresult.dto.request.SubmitSurveyResultRequest;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserResultResponseDto;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.Responsers;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.SurveyResultResponse;
@@ -23,12 +30,16 @@ import com.devcourse.ReviewRanger.user.repository.UserRepository;
 @Transactional(readOnly = true)
 public class SurveyResultService {
 
+	private final EachSurveyResultService eachSurveyResultService;
+
 	private final SurveyResultRepository surveyResultRepository;
 	private final UserRepository userRepository;
 	private final SurveyRepository surveyRepository;
 
-	public SurveyResultService(SurveyResultRepository surveyResultRepository, UserRepository userRepository,
+	public SurveyResultService(EachSurveyResultService eachSurveyResultService,
+		SurveyResultRepository surveyResultRepository, UserRepository userRepository,
 		SurveyRepository surveyRepository) {
+		this.eachSurveyResultService = eachSurveyResultService;
 		this.surveyResultRepository = surveyResultRepository;
 		this.userRepository = userRepository;
 		this.surveyRepository = surveyRepository;
@@ -89,5 +100,17 @@ public class SurveyResultService {
 		}
 
 		return allResponserResultResponseDto;
+	}
+
+	@Transactional
+	public void submitSurveyResult(SubmitSurveyResultRequest submitSurveyResultRequest) {
+		Long surveyResultId = submitSurveyResultRequest.surveyResultId();
+		SurveyResult surveyResult = surveyResultRepository.findById(surveyResultId)
+			.orElseThrow(EntityNotFoundException::new);
+
+		List<EachSurveyRequest> eachSurveyRequests = submitSurveyResultRequest.eachSurveyRequests();
+		eachSurveyResultService.submitSurveyResults(surveyResult,eachSurveyRequests)
+		;
+		surveyResult.changeStatus(Status.DEADLINE);
 	}
 }
