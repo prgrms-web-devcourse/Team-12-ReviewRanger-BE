@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
+import com.devcourse.ReviewRanger.eachSurveyResult.application.EachSurveyResultService;
 import com.devcourse.ReviewRanger.eachSurveyResult.domain.EachSurveyResult;
 import com.devcourse.ReviewRanger.eachSurveyResult.repository.EachSurveyResultRepository;
 import com.devcourse.ReviewRanger.survey.domain.Survey;
@@ -18,6 +19,7 @@ import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponseDto;
 import com.devcourse.ReviewRanger.survey.repository.SurveyRepository;
 import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
+import com.devcourse.ReviewRanger.surveyresult.dto.request.SubmitSurveyResult;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserParticipateInSurveyDto;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.Recipient;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.Responsers;
@@ -33,13 +35,16 @@ public class SurveyResultService {
 	private final UserRepository userRepository;
 	private final SurveyRepository surveyRepository;
 	private final EachSurveyResultRepository eachSurveyResultRepository;
+	private final EachSurveyResultService eachSurveyResultService;
 
 	public SurveyResultService(SurveyResultRepository surveyResultRepository, UserRepository userRepository,
-		SurveyRepository surveyRepository, EachSurveyResultRepository eachSurveyResultRepository) {
+		SurveyRepository surveyRepository, EachSurveyResultRepository eachSurveyResultRepository,
+		EachSurveyResultService eachSurveyResultService) {
 		this.surveyResultRepository = surveyResultRepository;
 		this.userRepository = userRepository;
 		this.surveyRepository = surveyRepository;
 		this.eachSurveyResultRepository = eachSurveyResultRepository;
+		this.eachSurveyResultService = eachSurveyResultService;
 	}
 
 	@Transactional
@@ -50,10 +55,6 @@ public class SurveyResultService {
 
 	public List<SurveyResult> getResponserSurveyResult(Long responserId) {
 		return surveyResultRepository.findByResponserId(responserId);
-	}
-
-	public SurveyResult findSurveyResult(Long surveyId, Long responserId) {
-		return surveyResultRepository.findBySurveyIdAndResponserId(surveyId, responserId);
 	}
 
 	public Long getResponserCount(Long surveyId) {
@@ -124,5 +125,18 @@ public class SurveyResultService {
 		}
 
 		return responses;
+	}
+
+	@Transactional
+	public Boolean submitResponse(SubmitSurveyResult request) {
+		SurveyResult surveyResult = surveyResultRepository.findById(request.surveyResultId())
+			.orElseThrow(() -> new RangerException(NOT_FOUND_SURVEY_RESULT));
+
+		eachSurveyResultService.createEachSurveyResult(surveyResult.getResponserId(), surveyResult.getId(),
+			request.eachSurveyResultDto());
+
+		surveyResult.changeStatus(DeadlineStatus.DEADLINE);
+
+		return true;
 	}
 }

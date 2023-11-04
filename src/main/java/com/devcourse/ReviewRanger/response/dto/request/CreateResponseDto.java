@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.devcourse.ReviewRanger.question.domain.QuestionType;
 
-public record Answers(
+public record CreateResponseDto(
 	Long questionId,
 
 	QuestionType questionType,

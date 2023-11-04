@@ -5,61 +5,35 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.devcourse.ReviewRanger.eachSurveyResult.application.EachSurveyResultService;
-import com.devcourse.ReviewRanger.eachSurveyResult.domain.EachSurveyResult;
 import com.devcourse.ReviewRanger.response.domain.Response;
-import com.devcourse.ReviewRanger.response.dto.request.Answers;
-import com.devcourse.ReviewRanger.response.dto.request.CreateResponse;
-import com.devcourse.ReviewRanger.response.dto.request.Results;
+import com.devcourse.ReviewRanger.response.dto.request.CreateResponseDto;
 import com.devcourse.ReviewRanger.response.repository.ResponseRepository;
-import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
-import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 
 @Service
 @Transactional(readOnly = true)
 public class ResponseService {
 
 	private final ResponseRepository responseRepository;
-	private final EachSurveyResultService eachSurveyResultService;
-	private final SurveyResultService surveyResultService;
 
-	public ResponseService(ResponseRepository responseRepository, EachSurveyResultService eachSurveyResultService,
-		SurveyResultService surveyResultService) {
+	public ResponseService(ResponseRepository responseRepository) {
 		this.responseRepository = responseRepository;
-		this.eachSurveyResultService = eachSurveyResultService;
-		this.surveyResultService = surveyResultService;
 	}
 
 	@Transactional
-	public Boolean createResponse(CreateResponse request) {
-		Long responserId = request.responserId();
-		Long surveyResultId = getSurveyResult(request, responserId).getId();
+	public void createResponse(Long ResponserId, Long eachSurveyResultId, List<CreateResponseDto> responses) {
+		for (CreateResponseDto response : responses) {
+			Long questionId = response.questionId();
+			String questionType = response.questionType().getDisplayName();
+			List<String> list = response.answer();
 
-		for (Results result : request.results()) {
-			Long reviewerId = result.reviewerId();
-
-			Long savedEachSurveyResultId = eachSurveyResultService.createEachSurveyResult(
-				new EachSurveyResult(reviewerId, surveyResultId));
-
-			for (Answers answer : result.answers()) {
-				Long questionId = answer.questionId();
-				String questionType = answer.questionType().getDisplayName();
-				List<String> list = answer.answer();
-
-				switch (questionType) {//오버로딩 적용하기
-					case "주관식" -> saveSubjective(responserId, savedEachSurveyResultId, questionId, list.get(0));
-					case "객관식_중복없음" ->
-						saveUniqueObjective(responserId, savedEachSurveyResultId, questionId, list.get(0));
-					case "객관식_중복있음" -> saveDuplicateObjective(responserId, savedEachSurveyResultId, questionId, list);
-				}
+			switch (questionType) {//오버로딩 적용하기
+				case "주관식" -> saveSubjective(ResponserId, eachSurveyResultId, questionId, list.get(0));
+				case "객관식_중복없음" -> saveUniqueObjective(ResponserId, eachSurveyResultId, questionId,
+					list.get(0));
+				case "객관식_중복있음" -> saveDuplicateObjective(ResponserId, eachSurveyResultId, questionId,
+					list);
 			}
 		}
-
-		return true;
-	}
-
-	private SurveyResult getSurveyResult(CreateResponse request, Long responserId) {
-		return surveyResultService.findSurveyResult(request.surveyId(), responserId);
 	}
 
 	private void saveSubjective(Long responserId, Long savedEachSurveyResultId, Long questionId, String answer) {
