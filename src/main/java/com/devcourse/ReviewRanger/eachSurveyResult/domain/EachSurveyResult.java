@@ -2,9 +2,13 @@ package com.devcourse.ReviewRanger.eachSurveyResult.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.devcourse.ReviewRanger.BaseEntity;
+import com.devcourse.ReviewRanger.survey.domain.Survey;
+import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
 
 import lombok.Getter;
 
@@ -16,14 +20,23 @@ public class EachSurveyResult extends BaseEntity {
 	@Column(name = "subject_id", nullable = false)
 	private Long subjectId;
 
-	@Column(name = "survey_result_id", nullable = false)
-	private Long surveyResultId;
+	@ManyToOne
+	@JoinColumn(name = "survey_result_id")
+	private SurveyResult surveyResult;
 
 	protected EachSurveyResult() {
 	}
 
-	public EachSurveyResult(Long subjectId, Long surveyResultId) {
+	public EachSurveyResult(Long subjectId){
 		this.subjectId = subjectId;
-		this.surveyResultId = surveyResultId;
 	}
+
+	public void assignSubjectId(Long subjectId) {
+		this.subjectId = subjectId;
+	}
+
+	public void setSurveyResult(SurveyResult surveyResult) {
+		this.surveyResult = surveyResult;
+	}
+
 }

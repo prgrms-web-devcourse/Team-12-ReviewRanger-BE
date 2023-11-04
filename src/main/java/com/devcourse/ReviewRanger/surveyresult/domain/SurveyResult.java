@@ -3,6 +3,8 @@ package com.devcourse.ReviewRanger.surveyresult.domain;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,10 +12,13 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.devcourse.ReviewRanger.BaseEntity;
 import com.devcourse.ReviewRanger.common.constant.Status;
+import com.devcourse.ReviewRanger.eachSurveyResult.domain.EachSurveyResult;
+
 import com.devcourse.ReviewRanger.survey.domain.Survey;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -41,6 +46,9 @@ public class SurveyResult extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "survey_id")
 	private Survey survey;
+
+	@OneToMany(mappedBy = "surveyResult")
+	private List<EachSurveyResult> eachSurveyResults = new ArrayList<>();
 
 	protected SurveyResult() {
 	}
