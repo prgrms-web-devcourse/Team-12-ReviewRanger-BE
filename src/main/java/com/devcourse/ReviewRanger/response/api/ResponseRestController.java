@@ -20,8 +20,4 @@ public class ResponseRestController {
 		this.responseService = responseService;
 	}
 
-	@PostMapping(value = "/invited-surveys")
-	public ResponseEntity<Boolean> create(@RequestBody @Valid CreateResponse request) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(responseService.createResponse(request));
-	}
 }
