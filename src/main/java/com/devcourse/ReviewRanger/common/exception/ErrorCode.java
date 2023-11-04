@@ -12,6 +12,7 @@ public enum ErrorCode {
 	// 401 error
 	NOT_CORRECT_JWT(UNAUTHORIZED, "잘못된 JWT 토큰입니다."),
 	EXPIRED_JWT_TOKEN(UNAUTHORIZED, "만료된 토큰입니다."),
+	LOGOUT_JWT_TOKEN(UNAUTHORIZED, "로그아웃된 토큰입니다."),
 	NOT_SUPPORTED_JWT_TOKEN(UNAUTHORIZED, "지원하지 않는 토근입니다."),
 	NOT_CORRECT_JWT_SIGN(UNAUTHORIZED, "잘못된 JWT SIGN값입니다."),
 	NOT_AUTHORIZED_TOKEN(UNAUTHORIZED, "권한 정보가 없는 토큰입니다."),

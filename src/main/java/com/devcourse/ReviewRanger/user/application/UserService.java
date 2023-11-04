@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
+import com.devcourse.ReviewRanger.common.redis.RedisUtil;
 import com.devcourse.ReviewRanger.user.domain.User;
 import com.devcourse.ReviewRanger.user.dto.JoinRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginRequest;
@@ -27,13 +28,16 @@ public class UserService {
 
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final RedisUtil redisUtil;
 
 	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-		AuthenticationManagerBuilder authenticationManagerBuilder, JwtTokenProvider jwtTokenProvider) {
+		AuthenticationManagerBuilder authenticationManagerBuilder, JwtTokenProvider jwtTokenProvider,
+		RedisUtil redisUtil) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.authenticationManagerBuilder = authenticationManagerBuilder;
 		this.jwtTokenProvider = jwtTokenProvider;
+		this.redisUtil = redisUtil;
 	}
 
 	@Transactional
@@ -80,6 +84,16 @@ public class UserService {
 		editEncodedPassword = passwordEncoder.encode(editEncodedPassword);
 
 		user.updateInfo(editName, editEncodedPassword);
+	}
+
+	public void logout(String accessToken) {
+		accessToken = getAccessToken(accessToken);
+		redisUtil.setBlackList(accessToken, "accessToken", 5);
+	}
+
+	private String getAccessToken(String accessToken) {
+		String[] tokenSplit = accessToken.split("\\s");
+		return tokenSplit[1];
 	}
 
 	private User getUserOrThrow(Long id) {
