@@ -27,8 +27,8 @@ public class SurveyResultController {
 	}
 
 	@GetMapping("/invited-surveys/{responserId}")
-	public ResponseEntity<List<SurveyResultResponse>> getResponserSurveyResult(@PathVariable Long responserId) {
-		List<SurveyResultResponse> surveyResultResponses = surveyResultService.getResponserSurveyResult(responserId);
+	public ResponseEntity<List<SurveyResultResponse>> getAllSurveyResultsByResponser(@PathVariable Long responserId) {
+		List<SurveyResultResponse> surveyResultResponses = surveyResultService.getAllSurveyResultsByResponser(responserId);
 
 		return new ResponseEntity<>(surveyResultResponses, HttpStatus.OK);
 	}
@@ -39,7 +39,7 @@ public class SurveyResultController {
 
 		return new ResponseEntity<>(true, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/created-surveys/{surveyId}/responser/{userId}")
 	public ResponseEntity<AllResponserResultResponseDto> getAllReponserServeyResult(@PathVariable Long surveyId,
 		@PathVariable Long userId) {

@@ -50,9 +50,9 @@ public class SurveyResultService {
 		surveyResultRepository.saveAll(surveyResults);
 	}
 
-	public List<SurveyResultResponse> getResponserSurveyResult(Long responserId) {
-
+	public List<SurveyResultResponse> getAllSurveyResultsByResponser(Long responserId) {
 		List<SurveyResult> surveyResults = surveyResultRepository.findByResponserId(responserId);
+
 		return surveyResults.stream()
 			.map(surveyResult -> new SurveyResultResponse(surveyResult))
 			.toList();
