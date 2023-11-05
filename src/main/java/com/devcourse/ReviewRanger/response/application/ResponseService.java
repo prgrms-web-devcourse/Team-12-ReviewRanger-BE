@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devcourse.ReviewRanger.eachSurveyResult.domain.EachSurveyResult;
 import com.devcourse.ReviewRanger.response.domain.Response;
 import com.devcourse.ReviewRanger.response.dto.request.CreateResponseRequest;
 import com.devcourse.ReviewRanger.response.repository.ResponseRepository;
@@ -20,37 +21,16 @@ public class ResponseService {
 	}
 
 	@Transactional
-	public void createResponse(Long ResponserId, Long eachSurveyResultId, List<CreateResponseRequest> responses) {
-		for (CreateResponseRequest response : responses) {
-			Long questionId = response.questionId();
-			String questionType = response.questionType().getDisplayName();
-			List<String> list = response.answerText();
+	public void createResponse(Long responserId, EachSurveyResult eachSurveyResult,
+		List<CreateResponseRequest> responses) {
+		for (CreateResponseRequest request : responses) {
+			Long questionId = request.questionId();
+			List<String> answerList = request.answerText();
 
-			switch (questionType) {//오버로딩 적용하기
-				case "주관식" -> saveSubjective(ResponserId, eachSurveyResultId, questionId, list.get(0));
-				case "객관식_중복없음" -> saveUniqueObjective(ResponserId, eachSurveyResultId, questionId,
-					list.get(0));
-				case "객관식_중복있음" -> saveDuplicateObjective(ResponserId, eachSurveyResultId, questionId,
-					list);
+			for (String answerText : answerList) {
+				Response response = new Response(responserId, eachSurveyResult, questionId, answerText);
+				responseRepository.save(response);
 			}
-		}
-	}
-
-	private void saveSubjective(Long responserId, Long savedEachSurveyResultId, Long questionId, String answer) {
-		Response response = new Response(responserId, savedEachSurveyResultId, questionId, answer);
-		responseRepository.save(response);
-	}
-
-	private void saveUniqueObjective(Long responserId, Long savedEachSurveyResultId, Long questionId, String answer) {
-		Response response = new Response(responserId, savedEachSurveyResultId, questionId, Long.parseLong(answer));
-		responseRepository.save(response);
-	}
-
-	private void saveDuplicateObjective(Long responserId, Long savedEachSurveyResultId, Long questionId,
-		List<String> answers) {
-		for (String answer : answers) {
-			Response response = new Response(responserId, savedEachSurveyResultId, questionId, Long.parseLong(answer));
-			responseRepository.save(response);
 		}
 	}
 }

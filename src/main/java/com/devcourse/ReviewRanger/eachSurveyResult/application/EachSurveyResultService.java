@@ -32,7 +32,7 @@ public class EachSurveyResultService {
 			EachSurveyResult savedEachSurveyResultId = eachSurveyResultRepository.save(
 				new EachSurveyResult(reviewerId, surveyResultId));
 
-			responseService.createResponse(responserId, savedEachSurveyResultId.getId(), eachSurveyResult.responses());
+			responseService.createResponse(responserId, savedEachSurveyResultId, eachSurveyResult.responses());
 		}
 	}
 }
