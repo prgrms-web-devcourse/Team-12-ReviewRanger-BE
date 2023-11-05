@@ -2,8 +2,6 @@ package com.devcourse.ReviewRanger.surveyresult.api;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.surveyresult.application.SurveyResultService;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
-import com.devcourse.ReviewRanger.surveyresult.dto.request.SubmitSurveyResult;
+import com.devcourse.ReviewRanger.surveyresult.dto.request.SubmitSurveyResultRequest;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserParticipateInSurveyDto;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.Recipient;
 
@@ -64,7 +62,7 @@ public class SurveyResultController {
 	 * 리뷰 답변 기능
 	 */
 	@PostMapping(value = "/invited-surveys")
-	public RangerResponse<Void> submitResponse(@RequestBody @Valid SubmitSurveyResult request) {
+	public RangerResponse<Void> submitSurveyResult(@RequestBody SubmitSurveyResultRequest request) {
 		Boolean response = surveyResultService.submitResponse(request);
 
 		return RangerResponse.ok(response);

@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.devcourse.ReviewRanger.question.domain.QuestionType;
 
-public record CreateResponseDto(
+public record CreateResponseRequest(
 	Long questionId,
 
 	QuestionType questionType,
 
-	List<String> answer
+	List<String> answerText
 ) {
 }

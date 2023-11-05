@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.eachSurveyResult.domain.EachSurveyResult;
-import com.devcourse.ReviewRanger.eachSurveyResult.dto.request.CreateEachSurveyResultDto;
+import com.devcourse.ReviewRanger.eachSurveyResult.dto.request.CreateEachSurveyResultRequest;
 import com.devcourse.ReviewRanger.eachSurveyResult.repository.EachSurveyResultRepository;
 import com.devcourse.ReviewRanger.response.application.ResponseService;
 
@@ -25,8 +25,8 @@ public class EachSurveyResultService {
 
 	@Transactional
 	public void createEachSurveyResult(Long responserId, Long surveyResultId,
-		List<CreateEachSurveyResultDto> eachSurveyResultDto) {
-		for (CreateEachSurveyResultDto eachSurveyResult : eachSurveyResultDto) {
+		List<CreateEachSurveyResultRequest> eachSurveyResultDto) {
+		for (CreateEachSurveyResultRequest eachSurveyResult : eachSurveyResultDto) {
 			Long reviewerId = eachSurveyResult.reviewerId();
 
 			EachSurveyResult savedEachSurveyResultId = eachSurveyResultRepository.save(

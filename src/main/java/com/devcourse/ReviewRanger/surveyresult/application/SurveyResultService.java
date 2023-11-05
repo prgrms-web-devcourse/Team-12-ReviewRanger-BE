@@ -19,7 +19,7 @@ import com.devcourse.ReviewRanger.survey.dto.response.SurveyResponseDto;
 import com.devcourse.ReviewRanger.survey.repository.SurveyRepository;
 import com.devcourse.ReviewRanger.surveyresult.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.surveyresult.domain.SurveyResult;
-import com.devcourse.ReviewRanger.surveyresult.dto.request.SubmitSurveyResult;
+import com.devcourse.ReviewRanger.surveyresult.dto.request.SubmitSurveyResultRequest;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.AllResponserParticipateInSurveyDto;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.Recipient;
 import com.devcourse.ReviewRanger.surveyresult.dto.response.Responsers;
@@ -128,7 +128,7 @@ public class SurveyResultService {
 	}
 
 	@Transactional
-	public Boolean submitResponse(SubmitSurveyResult request) {
+	public Boolean submitResponse(SubmitSurveyResultRequest request) {
 		SurveyResult surveyResult = surveyResultRepository.findById(request.surveyResultId())
 			.orElseThrow(() -> new RangerException(NOT_FOUND_SURVEY_RESULT));
 

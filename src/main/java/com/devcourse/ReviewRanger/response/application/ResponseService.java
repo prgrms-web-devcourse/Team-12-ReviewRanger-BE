@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.response.domain.Response;
-import com.devcourse.ReviewRanger.response.dto.request.CreateResponseDto;
+import com.devcourse.ReviewRanger.response.dto.request.CreateResponseRequest;
 import com.devcourse.ReviewRanger.response.repository.ResponseRepository;
 
 @Service
@@ -20,11 +20,11 @@ public class ResponseService {
 	}
 
 	@Transactional
-	public void createResponse(Long ResponserId, Long eachSurveyResultId, List<CreateResponseDto> responses) {
-		for (CreateResponseDto response : responses) {
+	public void createResponse(Long ResponserId, Long eachSurveyResultId, List<CreateResponseRequest> responses) {
+		for (CreateResponseRequest response : responses) {
 			Long questionId = response.questionId();
 			String questionType = response.questionType().getDisplayName();
-			List<String> list = response.answer();
+			List<String> list = response.answerText();
 
 			switch (questionType) {//오버로딩 적용하기
 				case "주관식" -> saveSubjective(ResponserId, eachSurveyResultId, questionId, list.get(0));
