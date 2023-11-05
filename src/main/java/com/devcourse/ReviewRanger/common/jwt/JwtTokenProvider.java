@@ -21,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
+import com.devcourse.ReviewRanger.common.redis.RedisUtil;
 import com.devcourse.ReviewRanger.user.application.CustomUserDetailsService;
 
 import io.jsonwebtoken.Claims;
@@ -39,9 +40,12 @@ public class JwtTokenProvider {
 
 	private final Key key;
 	private final CustomUserDetailsService userDetailService;
+	private final RedisUtil redisUtil;
 
-	public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailsService userDetailService) {
+	public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailsService userDetailService,
+		RedisUtil redisUtil) {
 		this.userDetailService = userDetailService;
+		this.redisUtil = redisUtil;
 		byte[] secretByteKey = DatatypeConverter.parseBase64Binary(secretKey);
 		this.key = Keys.hmacShaKeyFor(secretByteKey);
 	}
@@ -80,6 +84,11 @@ public class JwtTokenProvider {
 	public boolean isValidToken(String token) {
 		try {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+
+			if (redisUtil.hasKeyBlackList(token)) {
+				throw new RangerException(LOGOUT_JWT_TOKEN);
+			}
+
 			return true;
 		} catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
 			log.warn("JWT Exception Occurs : {}", NOT_CORRECT_JWT_SIGN);

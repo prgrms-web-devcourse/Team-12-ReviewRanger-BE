@@ -6,6 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
@@ -35,10 +36,18 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public RangerResponse<LoginResponse> login(@RequestBody LoginRequest request) {
+	public RangerResponse<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
 		LoginResponse loginResponse = userService.login(request);
 
 		return RangerResponse.ok(loginResponse);
+	}
+
+	@PostMapping("/members/logout")
+	public RangerResponse<Void> logout(
+		@RequestHeader("Authorization") String accessToken
+	) {
+		userService.logout(accessToken);
+		return RangerResponse.noData();
 	}
 
 	@PostMapping("/members/check-name")
@@ -58,7 +67,7 @@ public class UserController {
 	@PatchMapping("/members/profile")
 	public RangerResponse<Void> update(
 		@AuthenticationPrincipal UserPrincipal user,
-		@RequestBody UpdateRequest updateRequest
+		@RequestBody @Valid UpdateRequest updateRequest
 	) {
 		userService.updateInfo(user.getId(), updateRequest);
 		return RangerResponse.noData();
