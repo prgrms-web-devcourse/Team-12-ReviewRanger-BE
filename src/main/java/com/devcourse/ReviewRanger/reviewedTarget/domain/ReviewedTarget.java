@@ -16,7 +16,7 @@ public class ReviewedTarget extends BaseEntity {
 	@Column(name = "subject_id", nullable = false)
 	private Long subjectId;
 
-	@Column(name = "survey_result_id", nullable = false)
+	@Column(name = "participation_id", nullable = false)
 	private Long participationId;
 
 	protected ReviewedTarget() {
