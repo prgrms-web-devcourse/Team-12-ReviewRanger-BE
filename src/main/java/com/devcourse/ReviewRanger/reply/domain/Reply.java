@@ -24,7 +24,7 @@ public class Reply extends BaseEntity {
 	private Long questionId;
 
 	@Column(name = "option_id", nullable = true)
-	private Long optionId;
+	private Integer optionId;
 
 	@Lob
 	@Column(name = "answer_text", nullable = true)
@@ -37,19 +37,14 @@ public class Reply extends BaseEntity {
 	protected Reply() {
 	}
 
-	public Reply(Long responserId, ReviewedTarget reviewedTarget, Long questionId) {
+	public Reply(Long responserId, Long questionId, Integer optionId, String answerText) {
 		this.responserId = responserId;
-		this.reviewedTarget = reviewedTarget;
 		this.questionId = questionId;
-	}
-
-	public Reply(Long responserId, ReviewedTarget reviewedTarget, Long questionId, String answerText) {
-		this(responserId, reviewedTarget, questionId);
+		this.optionId = optionId;
 		this.answerText = answerText;
 	}
 
-	public Reply(Long responserId, ReviewedTarget reviewedTarget, Long questionId, Long optionId) {
-		this(responserId, reviewedTarget, questionId);
-		this.optionId = optionId;
+	public void setReviewedTarget(ReviewedTarget reviewedTarget) {
+		this.reviewedTarget = reviewedTarget;
 	}
 }

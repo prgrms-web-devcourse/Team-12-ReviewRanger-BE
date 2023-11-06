@@ -101,7 +101,7 @@ public class ParticipationService {
 		List<Participation> participations = participationRepository.findByReviewId(surveyId);
 
 		for (Participation participation : participations) {
-			List<ReviewedTarget> reviewedTargets = reviewedTargetService.findByParticipationId(
+			List<ReviewedTarget> reviewedTargets = reviewedTargetService.findAllByParticipationId(
 				participation.getId());
 
 			for (ReviewedTarget reviewedTarget : reviewedTargets) {
@@ -130,8 +130,7 @@ public class ParticipationService {
 		Participation participation = participationRepository.findById(request.participationId())
 			.orElseThrow(() -> new RangerException(NOT_FOUND_PARTICIPATION));
 
-		reviewedTargetService.createReviewTarget(participation.getResponserId(), participation.getId(),
-			request.createReviewedTargetRequests());
+		reviewedTargetService.createReviewTarget(participation.getId(), request.createReviewedTargetRequests());
 
 		participation.changeStatus(DeadlineStatus.DEADLINE);
 

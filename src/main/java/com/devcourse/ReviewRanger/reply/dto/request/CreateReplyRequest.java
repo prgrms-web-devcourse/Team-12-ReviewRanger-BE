@@ -1,14 +1,17 @@
 package com.devcourse.ReviewRanger.reply.dto.request;
 
-import java.util.List;
-
-import com.devcourse.ReviewRanger.question.domain.QuestionType;
+import com.devcourse.ReviewRanger.reply.domain.Reply;
 
 public record CreateReplyRequest(
+	Long responserId,
+
 	Long questionId,
 
-	QuestionType questionType,
+	Integer optionId,
 
-	List<String> answerText
+	String answerText
 ) {
+	public Reply toEntity() {
+		return new Reply(responserId, questionId, optionId, answerText);
+	}
 }

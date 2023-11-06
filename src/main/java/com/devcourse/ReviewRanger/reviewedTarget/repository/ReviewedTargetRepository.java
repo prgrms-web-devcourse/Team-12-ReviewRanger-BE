@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
 
 public interface ReviewedTargetRepository extends JpaRepository<ReviewedTarget, Long> {
-	List<ReviewedTarget> findByParticipationId(Long ParticipationId);
+	List<ReviewedTarget> findAllByParticipationId(Long ParticipationId);
 }

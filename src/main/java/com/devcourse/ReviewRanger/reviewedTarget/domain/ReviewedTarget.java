@@ -22,6 +22,14 @@ public class ReviewedTarget extends BaseEntity {
 	protected ReviewedTarget() {
 	}
 
+	public ReviewedTarget(Long subjectId) {
+		this.subjectId = subjectId;
+	}
+
+	public void setParticipationId(Long participationId) {
+		this.participationId = participationId;
+	}
+
 	public ReviewedTarget(Long subjectId, Long participationId) {
 		this.subjectId = subjectId;
 		this.participationId = participationId;

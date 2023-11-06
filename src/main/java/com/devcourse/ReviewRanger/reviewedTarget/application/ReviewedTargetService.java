@@ -27,15 +27,15 @@ public class ReviewedTargetService {
 	}
 
 	@Transactional
-	public void createReviewTarget(Long responserId, Long participationId,
+	public void createReviewTarget(Long participationId,
 		List<CreateReviewedTargetRequest> createReviewedTargetRequests) {
 		for (CreateReviewedTargetRequest createReviewedTargetRequest : createReviewedTargetRequests) {
-			Long subjectId = createReviewedTargetRequest.subjectId();
+			ReviewedTarget reviewedTarget = createReviewedTargetRequest.toEntity();
+			reviewedTarget.setParticipationId(participationId);
 
-			ReviewedTarget savedReviewedTargetId = reviewedTargetRepository.save(
-				new ReviewedTarget(subjectId, participationId));
+			ReviewedTarget savedReviewedTargetId = reviewedTargetRepository.save(reviewedTarget);
 
-			replyService.createReply(responserId, savedReviewedTargetId, createReviewedTargetRequest.responses());
+			replyService.createReply(savedReviewedTargetId, createReviewedTargetRequest.responses());
 		}
 	}
 
@@ -44,7 +44,7 @@ public class ReviewedTargetService {
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW_TARGET));
 	}
 
-	public List<ReviewedTarget> findByParticipationId(Long participationId) {
-		return reviewedTargetRepository.findByParticipationId(participationId);
+	public List<ReviewedTarget> findAllByParticipationId(Long participationId) {
+		return reviewedTargetRepository.findAllByParticipationId(participationId);
 	}
 }
