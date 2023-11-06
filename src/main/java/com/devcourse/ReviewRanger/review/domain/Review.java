@@ -3,6 +3,7 @@ package com.devcourse.ReviewRanger.review.domain;
 import static com.devcourse.ReviewRanger.participation.domain.DeadlineStatus.*;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -51,11 +52,11 @@ public class Review extends BaseEntity {
 	protected Review() {
 	}
 
-	public Review(String title, String description, ReviewType type, LocalDateTime closedAt) {
+	public Review(String title, String description, ReviewType type) {
 		this.title = title;
 		this.description = description;
 		this.type = type;
-		this.closedAt = closedAt;
+		this.closedAt = LocalDateTime.now().plus(Duration.ofDays(100));
 		this.status = PROCEEDING;
 	}
 

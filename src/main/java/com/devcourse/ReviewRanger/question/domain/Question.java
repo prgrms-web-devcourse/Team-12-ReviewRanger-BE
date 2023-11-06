@@ -58,6 +58,14 @@ public class Question extends BaseEntity {
 		this.questionOptions = questionOptions;
 	}
 
+	public Question(String title, QuestionType type, Integer sequence, Boolean isRequired, Boolean isDuplicated) {
+		this.title = title;
+		this.type = type;
+		this.sequence = sequence;
+		this.isRequired = isRequired;
+		this.isDuplicated = isDuplicated;
+	}
+
 	public void assignReviewId(Long reviewId) {
 		this.reviewId = reviewId;
 	}

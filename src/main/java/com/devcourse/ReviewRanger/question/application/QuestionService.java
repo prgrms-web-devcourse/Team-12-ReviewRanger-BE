@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.question.domain.QuestionOption;
+import com.devcourse.ReviewRanger.question.dto.request.CreateQuestionOptionRequest;
+import com.devcourse.ReviewRanger.question.dto.request.CreateQuestionRequest;
 import com.devcourse.ReviewRanger.question.repository.QuestionOptionRepository;
 import com.devcourse.ReviewRanger.question.repository.QuestionRepository;
 
@@ -23,22 +25,30 @@ public class QuestionService {
 	}
 
 	@Transactional
-	public void createQuestionInReview(Long reviewId, List<Question> questions) {
-		questions.forEach(question -> question.assignReviewId(reviewId));
-		List<Question> createdQuestion = questionRepository.saveAll(questions);
+	public Boolean createQuestions(Long reviewId, List<CreateQuestionRequest> createQuestionRequests) {
+		for (CreateQuestionRequest createQuestionRequest : createQuestionRequests) {
+			Question question = createQuestionRequest.toEntity();
+			question.assignReviewId(reviewId);
+			Question savedQuestion = questionRepository.save(question);
 
-		for (Question question : createdQuestion) {
-			if (question.getIsDuplicated()) {
-				List<QuestionOption> questionOptions = question.getQuestionOptions();
-				createQuestionOptionsInQuestion(question, questionOptions);
-			}
+			createQuestionOptions(savedQuestion, createQuestionRequest.createQuestionOptionRequests());
 		}
+
+		return true;
 	}
 
 	@Transactional
-	public void createQuestionOptionsInQuestion(Question question,
-		List<QuestionOption> questionOptions) {
-		questionOptions.forEach(questionOption -> questionOption.setQuestion(question));
-		List<QuestionOption> createdQuestionOptions = questionOptionRepository.saveAll(questionOptions);
+	public Boolean createQuestionOptions(
+		Question question,
+		List<CreateQuestionOptionRequest> createQuestionOptionRequests
+	) {
+		for (CreateQuestionOptionRequest createQuestionOptionRequest : createQuestionOptionRequests) {
+			QuestionOption questionOption = createQuestionOptionRequest.toEntity();
+			questionOption.setQuestion(question);
+
+			questionOptionRepository.save(questionOption);
+		}
+
+		return true;
 	}
 }
