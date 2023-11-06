@@ -51,6 +51,10 @@ public class ReplyService {
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REPLY));
 	}
 
+	public List<Reply> findByReviewedTargetId(Long reviewedTargetId) {
+		return replyRepository.findByReviewedTargetId(reviewedTargetId);
+	}
+
 	private void saveSubjective(Long responserId, ReviewedTarget reviewedTargetId, Long questionId, String answer) {
 		Reply response = new Reply(responserId, reviewedTargetId, questionId, answer);
 		replyRepository.save(response);
