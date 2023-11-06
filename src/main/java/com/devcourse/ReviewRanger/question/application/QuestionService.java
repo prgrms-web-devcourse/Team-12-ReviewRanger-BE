@@ -23,8 +23,8 @@ public class QuestionService {
 	}
 
 	@Transactional
-	public void createQuestionInSurvey(Long surveyId, List<Question> questions) {
-		questions.forEach(question -> question.assignSurveyId(surveyId));
+	public void createQuestionInReview(Long reviewId, List<Question> questions) {
+		questions.forEach(question -> question.assignReviewId(reviewId));
 		List<Question> createdQuestion = questionRepository.saveAll(questions);
 
 		for (Question question : createdQuestion) {
