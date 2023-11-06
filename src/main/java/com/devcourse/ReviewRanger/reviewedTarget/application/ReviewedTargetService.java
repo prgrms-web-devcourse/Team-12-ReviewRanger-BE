@@ -1,10 +1,13 @@
 package com.devcourse.ReviewRanger.reviewedTarget.application;
 
+import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.reply.application.ReplyService;
 import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
 import com.devcourse.ReviewRanger.reviewedTarget.dto.request.CreateReviewedTargetRequest;
@@ -34,6 +37,11 @@ public class ReviewedTargetService {
 
 			replyService.createReply(responserId, savedReviewedTargetId, createReviewedTargetRequest.responses());
 		}
+	}
+
+	public ReviewedTarget findById(Long id) {
+		return reviewedTargetRepository.findById(id)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW_TARGET));
 	}
 
 	public List<ReviewedTarget> findByParticipationId(Long participationId) {

@@ -69,7 +69,7 @@ public class ParticipationService {
 
 	public AllResponserParticipateInReviewResponse getAllReponserParticipateInSurveyOrThrow(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
-			.orElseThrow(() -> new RangerException(NOT_FOUND_SURVEY));
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 
 		ReviewResponseDto reviewResponseDto = new ReviewResponseDto(reviewId, review.getTitle(),
 			review.getType(), review.getCreateAt(), review.getUpdatedAt());
@@ -77,9 +77,9 @@ public class ParticipationService {
 		List<Participation> participations = participationRepository.findByReviewIdAndQuestionAnsweredStatusTrue(
 			reviewId);
 
-		ArrayList<ResponserResponse> responserList = new ArrayList<>();
+		ArrayList<ResponserResponse> responsers = new ArrayList<>();
 		AllResponserParticipateInReviewResponse allResponserParticipateInsurveyDto = new AllResponserParticipateInReviewResponse(
-			participations.size(), reviewResponseDto, responserList);
+			participations.size(), reviewResponseDto, responsers);
 
 		for (Participation participation : participations) {
 			User user = userRepository.findById(participation.getResponserId())
@@ -128,7 +128,7 @@ public class ParticipationService {
 	@Transactional
 	public Boolean submitResponse(SubmitParticipationRequest request) {
 		Participation participation = participationRepository.findById(request.participationId())
-			.orElseThrow(() -> new RangerException(NOT_FOUND_SURVEY_RESULT));
+			.orElseThrow(() -> new RangerException(NOT_FOUND_PARTICIPATION));
 
 		reviewedTargetService.createReviewTarget(participation.getResponserId(), participation.getId(),
 			request.createReviewedTargetRequests());
