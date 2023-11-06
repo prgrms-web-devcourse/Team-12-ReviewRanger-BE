@@ -26,7 +26,8 @@ public enum ErrorCode {
 
 	//404 error
 	NOT_FOUND_USER(NOT_FOUND, "존재하지 않는 사용자입니다."),
-	NOT_FOUND_SURVEY(NOT_FOUND, "존재하지 않는 설문입니다.");
+	NOT_FOUND_SURVEY(NOT_FOUND, "존재하지 않는 설문입니다."),
+	NOT_FOUND_SURVEY_RESULT(NOT_FOUND, "존재하지 않는 설문 결과입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;

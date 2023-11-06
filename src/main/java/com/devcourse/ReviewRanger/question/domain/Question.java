@@ -22,7 +22,7 @@ import lombok.Getter;
 public class Question extends BaseEntity {
 
 	@Column(name = "survey_id", nullable = false)
-	private Long surveyId;
+	private Long reviewId;
 
 	@Column(nullable = false, length = 150)
 	@NotBlank(message = "질문제목은 빈값 일 수 없습니다.")
@@ -58,8 +58,7 @@ public class Question extends BaseEntity {
 		this.questionOptions = questionOptions;
 	}
 
-	public void assignSurveyId(Long surveyId) {
-		this.surveyId = surveyId;
+	public void assignReviewId(Long reviewId) {
+		this.reviewId = reviewId;
 	}
-
 }
