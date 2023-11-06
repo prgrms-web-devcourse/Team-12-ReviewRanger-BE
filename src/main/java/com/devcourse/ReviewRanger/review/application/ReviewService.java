@@ -40,8 +40,10 @@ public class ReviewService {
 		review.assignRequesterId(requesterId);
 		Review savedReview = reviewRepository.save(review);
 
-		return questionService.createQuestions(savedReview.getId(),
-			createReviewRequest.creatQuestionRequests());
+		questionService.createQuestions(savedReview.getId(), createReviewRequest.creatQuestionRequests());
+		participationService.createParticipations(savedReview.getId(), createReviewRequest.responserIds());
+		
+		return true;
 	}
 
 	public List<ReviewResponse> getRequesterReviews(Long requesterId) {

@@ -15,7 +15,7 @@ import lombok.Getter;
 @Table(name = "participations")
 public class Participation extends BaseEntity {
 
-	@Column(name = "survey_id", nullable = false)
+	@Column(name = "review_id", nullable = false)
 	private Long reviewId;
 
 	@Column(name = "responser_id", nullable = false)
