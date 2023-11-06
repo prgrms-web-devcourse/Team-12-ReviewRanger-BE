@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.devcourse.ReviewRanger.question.domain.Question;
-import com.devcourse.ReviewRanger.question.domain.QuestionOption;
 import com.devcourse.ReviewRanger.question.domain.QuestionType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -17,10 +16,6 @@ public record CreateQuestionRequest(
 	@JsonProperty("questionOptions") List<CreateQuestionOptionRequest> createQuestionOptionRequests
 ) {
 	public Question toEntity() {
-		List<QuestionOption> questionOptions =
-			isDuplicated ? createQuestionOptionRequests.stream().map(CreateQuestionOptionRequest::toEntity).toList() :
-				new ArrayList<>();
-
-		return new Question(title, type, sequence, isRequired, isDuplicated, questionOptions);
+		return new Question(title, type, sequence, isRequired, isDuplicated);
 	}
 }
