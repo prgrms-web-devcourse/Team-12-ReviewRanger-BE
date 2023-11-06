@@ -7,11 +7,11 @@ public record CreateReplyRequest(
 
 	Long questionId,
 
-	Integer optionId,
+	Long objectOptionId,
 
 	String answerText
 ) {
 	public Reply toEntity() {
-		return new Reply(responserId, questionId, optionId, answerText);
+		return new Reply(responserId, questionId, objectOptionId, answerText);
 	}
 }
