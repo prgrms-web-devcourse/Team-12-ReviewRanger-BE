@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.review.dto;
+package com.devcourse.ReviewRanger.question.dto.request;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,19 +8,18 @@ import com.devcourse.ReviewRanger.question.domain.QuestionOption;
 import com.devcourse.ReviewRanger.question.domain.QuestionType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record QuestionRequest(
+public record CreateQuestionRequest(
 	String title,
 	QuestionType type,
-	@JsonProperty("questionOptions") List<QuestionOptionRequest> questionOptionRequests,
 	Integer sequence,
+	Boolean isRequired,
 	Boolean isDuplicated,
-	Boolean isRequired
+	@JsonProperty("questionOptions") List<CreateQuestionOptionRequest> createQuestionOptionRequests
 ) {
-
 	public Question toEntity() {
-		List<QuestionOption> questionOptions = isDuplicated
-			? questionOptionRequests.stream().map(QuestionOptionRequest::toEntity).toList()
-			: new ArrayList<>();
+		List<QuestionOption> questionOptions =
+			isDuplicated ? createQuestionOptionRequests.stream().map(CreateQuestionOptionRequest::toEntity).toList() :
+				new ArrayList<>();
 
 		return new Question(title, type, sequence, isRequired, isDuplicated, questionOptions);
 	}

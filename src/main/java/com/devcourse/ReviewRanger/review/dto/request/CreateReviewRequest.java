@@ -4,24 +4,25 @@ import java.util.List;
 
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.question.domain.Question;
+import com.devcourse.ReviewRanger.question.dto.request.CreateQuestionRequest;
 import com.devcourse.ReviewRanger.review.domain.Review;
-import com.devcourse.ReviewRanger.review.dto.QuestionRequest;
-import com.devcourse.ReviewRanger.review.dto.ReviewRequest;
+import com.devcourse.ReviewRanger.review.domain.ReviewType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record CreateReviewRequest(
-	@JsonProperty("reivew") ReviewRequest reviewRequest,
-	@JsonProperty("questions") List<QuestionRequest> questionRequests,
+	String title,
+	String description,
+	ReviewType type,
+	@JsonProperty("questions") List<CreateQuestionRequest> creaetQuestionRequests,
 	@JsonProperty("responserIdList") List<Long> responserIds
-
 ) {
 
 	public Review toReview() {
-		return reviewRequest.toEntity();
+		return null;
 	}
 
 	public List<Question> toQuestions() {
-		return questionRequests.stream().map(questionRequest -> questionRequest.toEntity()).toList();
+		return creaetQuestionRequests.stream().map(createQuestionRequest -> createQuestionRequest.toEntity()).toList();
 	}
 
 	public List<Participation> toParticipation() {
