@@ -23,7 +23,6 @@ import com.devcourse.ReviewRanger.review.dto.response.ReviewResponseDto;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
 import com.devcourse.ReviewRanger.reviewedTarget.application.ReviewedTargetService;
 import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
-import com.devcourse.ReviewRanger.reviewedTarget.repository.ReviewedTargetRepository;
 import com.devcourse.ReviewRanger.user.domain.User;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
@@ -34,16 +33,13 @@ public class ParticipationService {
 	private final ParticipationRepository participationRepository;
 	private final UserRepository userRepository;
 	private final ReviewRepository reviewRepository;
-	private final ReviewedTargetRepository reviewedTargetRepository;
 	private final ReviewedTargetService reviewedTargetService;
 
 	public ParticipationService(ParticipationRepository participationRepository, UserRepository userRepository,
-		ReviewRepository reviewRepository, ReviewedTargetRepository reviewedTargetRepository,
-		ReviewedTargetService reviewedTargetService) {
+		ReviewRepository reviewRepository, ReviewedTargetService reviewedTargetService) {
 		this.participationRepository = participationRepository;
 		this.userRepository = userRepository;
 		this.reviewRepository = reviewRepository;
-		this.reviewedTargetRepository = reviewedTargetRepository;
 		this.reviewedTargetService = reviewedTargetService;
 	}
 
@@ -105,7 +101,7 @@ public class ParticipationService {
 		List<Participation> participations = participationRepository.findByReviewId(surveyId);
 
 		for (Participation participation : participations) {
-			List<ReviewedTarget> reviewedTargets = reviewedTargetRepository.findByParticipationId(
+			List<ReviewedTarget> reviewedTargets = reviewedTargetService.findByParticipationId(
 				participation.getId());
 
 			for (ReviewedTarget reviewedTarget : reviewedTargets) {

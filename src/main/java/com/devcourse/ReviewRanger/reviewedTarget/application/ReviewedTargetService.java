@@ -35,4 +35,8 @@ public class ReviewedTargetService {
 			replyService.createReply(responserId, savedReviewedTargetId, createReviewedTargetRequest.responses());
 		}
 	}
+
+	public List<ReviewedTarget> findByParticipationId(Long participationId) {
+		return reviewedTargetRepository.findByParticipationId(participationId);
+	}
 }
