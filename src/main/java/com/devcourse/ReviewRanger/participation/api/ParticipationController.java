@@ -39,7 +39,7 @@ public class ParticipationController {
 	@GetMapping("/created-surveys/{surveyId}/responser")
 	public RangerResponse<AllResponserParticipateInReviewResponse> getAllReponserParticipateInSurvey(
 		@PathVariable Long surveyId) {
-		AllResponserParticipateInReviewResponse response = participationService.getAllReponserParticipateInSurveyOrThrow(
+		AllResponserParticipateInReviewResponse response = participationService.getAllReponserParticipateInReviewOrThrow(
 			surveyId);
 
 		return RangerResponse.ok(response);
@@ -52,7 +52,7 @@ public class ParticipationController {
 	public RangerResponse<List<SubjectResponse>> getAllRecipientParticipateInSurvey(
 		@PathVariable Long surveyId
 	) {
-		List<SubjectResponse> response = participationService.getAllRecipientParticipateInSurveyOrThrow(
+		List<SubjectResponse> response = participationService.getAllRecipientParticipateInReviewOrThrow(
 			surveyId);
 
 		return RangerResponse.ok(response);

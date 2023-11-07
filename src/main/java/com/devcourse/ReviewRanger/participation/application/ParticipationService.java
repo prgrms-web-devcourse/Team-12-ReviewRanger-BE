@@ -23,7 +23,6 @@ import com.devcourse.ReviewRanger.review.dto.response.ReviewResponseDto;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
 import com.devcourse.ReviewRanger.reviewedTarget.application.ReviewedTargetService;
 import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
-import com.devcourse.ReviewRanger.reviewedTarget.repository.ReviewedTargetRepository;
 import com.devcourse.ReviewRanger.user.domain.User;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
@@ -34,16 +33,13 @@ public class ParticipationService {
 	private final ParticipationRepository participationRepository;
 	private final UserRepository userRepository;
 	private final ReviewRepository reviewRepository;
-	private final ReviewedTargetRepository reviewedTargetRepository;
 	private final ReviewedTargetService reviewedTargetService;
 
 	public ParticipationService(ParticipationRepository participationRepository, UserRepository userRepository,
-		ReviewRepository reviewRepository, ReviewedTargetRepository reviewedTargetRepository,
-		ReviewedTargetService reviewedTargetService) {
+		ReviewRepository reviewRepository, ReviewedTargetService reviewedTargetService) {
 		this.participationRepository = participationRepository;
 		this.userRepository = userRepository;
 		this.reviewRepository = reviewRepository;
-		this.reviewedTargetRepository = reviewedTargetRepository;
 		this.reviewedTargetService = reviewedTargetService;
 	}
 
@@ -66,31 +62,31 @@ public class ParticipationService {
 	}
 
 	public Long getResponserCount(Long reviewId) {
-		List<Participation> participations = participationRepository.findByReviewId(reviewId);
+		List<Participation> participations = getAllByReviewId(reviewId);
 
 		return participations.stream().filter(surveyResult -> surveyResult.getQuestionAnsweredStatus()).count();
 	}
 
 	@Transactional
 	public Boolean closeParticipationOrThrow(Long reviewId) {
-		List<Participation> participations = participationRepository.findByReviewId(reviewId);
+		List<Participation> participations = getAllByReviewId(reviewId);
 		participations.stream().forEach(surveyResult -> surveyResult.changeStatus(DeadlineStatus.END));
 
 		return true;
 	}
 
-	public AllResponserParticipateInReviewResponse getAllReponserParticipateInSurveyOrThrow(Long reviewId) {
-		Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new RangerException(NOT_FOUND_SURVEY));
+	public AllResponserParticipateInReviewResponse getAllReponserParticipateInReviewOrThrow(Long reviewId) {
+		Review review = reviewRepository.findById(reviewId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 
-		ReviewResponseDto reviewResponseDto = new ReviewResponseDto(reviewId, review.getTitle(), review.getType(),
-			review.getCreateAt(), review.getUpdatedAt());
+		ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
 
 		List<Participation> participations = participationRepository.findByReviewIdAndQuestionAnsweredStatusTrue(
 			reviewId);
 
-		ArrayList<ResponserResponse> responserList = new ArrayList<>();
-		AllResponserParticipateInReviewResponse allResponserParticipateInsurveyDto = new AllResponserParticipateInReviewResponse(
-			participations.size(), reviewResponseDto, responserList);
+		ArrayList<ResponserResponse> responsers = new ArrayList<>();
+		AllResponserParticipateInReviewResponse allResponserParticipateInReviewDto = new AllResponserParticipateInReviewResponse(
+			participations.size(), reviewResponseDto, responsers);
 
 		for (Participation participation : participations) {
 			User user = userRepository.findById(participation.getResponserId())
@@ -99,20 +95,20 @@ public class ParticipationService {
 			ResponserResponse responser = new ResponserResponse(participation.getId(), user.getId(), user.getName(),
 				participation.getUpdatedAt());
 
-			allResponserParticipateInsurveyDto.responsers().add(responser);
+			allResponserParticipateInReviewDto.responsers().add(responser);
 		}
 
-		return allResponserParticipateInsurveyDto;
+		return allResponserParticipateInReviewDto;
 	}
 
-	public List<SubjectResponse> getAllRecipientParticipateInSurveyOrThrow(Long surveyId) {
+	public List<SubjectResponse> getAllRecipientParticipateInReviewOrThrow(Long reviewId) {
 		List<SubjectResponse> responses = new ArrayList<>();
 		Map<Long, List<Long>> subjectToResponsersMap = new HashMap<>();
 
-		List<Participation> participations = participationRepository.findByReviewId(surveyId);
+		List<Participation> participations = getAllByReviewId(reviewId);
 
 		for (Participation participation : participations) {
-			List<ReviewedTarget> reviewedTargets = reviewedTargetRepository.findByParticipationId(
+			List<ReviewedTarget> reviewedTargets = reviewedTargetService.getAllByParticipationId(
 				participation.getId());
 
 			for (ReviewedTarget reviewedTarget : reviewedTargets) {
@@ -137,15 +133,21 @@ public class ParticipationService {
 
 	@Transactional
 	public Boolean submitResponse(SubmitParticipationRequest request) {
-		Participation participation = participationRepository.findById(request.participationId())
-			.orElseThrow(() -> new RangerException(NOT_FOUND_SURVEY_RESULT));
+		Participation participation = getByIdOrThrow(request.participationId());
 
-		reviewedTargetService.createReviewTarget(participation.getResponserId(), participation.getId(),
-			request.createReviewedTargetRequests());
+		reviewedTargetService.createReviewTarget(participation.getId(), request.createReviewedTargetRequests());
 
 		participation.changeStatus(DeadlineStatus.DEADLINE);
 
 		return true;
 	}
 
+	public Participation getByIdOrThrow(Long id) {
+		return participationRepository.findById(id)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_PARTICIPATION));
+	}
+
+	public List<Participation> getAllByReviewId(Long reviewId) {
+		return participationRepository.findByReviewId(reviewId);
+	}
 }

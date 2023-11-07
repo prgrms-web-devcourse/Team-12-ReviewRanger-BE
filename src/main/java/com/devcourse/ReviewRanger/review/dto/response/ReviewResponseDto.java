@@ -2,6 +2,7 @@ package com.devcourse.ReviewRanger.review.dto.response;
 
 import java.time.LocalDateTime;
 
+import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.domain.ReviewType;
 
 public record ReviewResponseDto(
@@ -14,19 +15,15 @@ public record ReviewResponseDto(
 	LocalDateTime updatedAt
 ) {
 	public ReviewResponseDto(
-		Long reviewId,
-		String title,
-		ReviewType reviewType,
-		LocalDateTime createdAt,
-		LocalDateTime updatedAt) {
+		Review review) {
 		this(
-			reviewId,
-			title,
+			review.getId(),
+			review.getTitle(),
 			null,
-			reviewType,
+			review.getType(),
 			null,
-			createdAt,
-			updatedAt
+			review.getCreateAt(),
+			review.getUpdatedAt()
 		);
 	}
 }
