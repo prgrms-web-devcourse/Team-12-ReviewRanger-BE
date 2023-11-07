@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +15,7 @@ import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
+import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.response.AllResponserParticipateInReviewResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.SubjectResponse;
 
@@ -62,8 +64,18 @@ public class ParticipationController {
 	 * 리뷰 답변 기능
 	 */
 	@PostMapping(value = "/invited-surveys")
-	public RangerResponse<Void> submitSurveyResult(@RequestBody SubmitParticipationRequest request) {
+	public RangerResponse<Void> submitParticipation(@RequestBody SubmitParticipationRequest request) {
 		Boolean response = participationService.submitResponse(request);
+
+		return RangerResponse.ok(response);
+	}
+
+	/**
+	 * 리뷰 답변 수정 기능
+	 */
+	@PutMapping(value = "/invited-surveys")
+	public RangerResponse<Void> updateParticipation(@RequestBody UpdateParticipationRequest request) {
+		Boolean response = participationService.updateResponse(request);
 
 		return RangerResponse.ok(response);
 	}
