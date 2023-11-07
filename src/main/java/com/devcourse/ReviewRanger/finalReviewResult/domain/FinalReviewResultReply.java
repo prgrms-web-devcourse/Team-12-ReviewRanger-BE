@@ -14,18 +14,18 @@ import com.devcourse.ReviewRanger.question.domain.QuestionType;
 
 @Entity
 @Table(name = "final_review_replies")
-public class FinalReviewReply extends BaseEntity {
+public class FinalReviewResultReply extends BaseEntity {
 
-	@Column(name = "after_result_id", nullable = false)
-	@NotBlank(message = "조합된 결과 id는 빈값 일 수 없습니다.")
-	private Long afterResultId;
+	@Column(name = "final_review_result_id", nullable = false)
+	@NotBlank(message = "최종 리뷰 결과 id는 빈값 일 수 없습니다.")
+	private Long finalReviewResultId;
 
 	@Column(name = "question_type", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private QuestionType questionType;
 
 	@Column(name = "question_title", nullable = false)
-	@NotBlank(message = "질문제목은 빈값 일 수 없습니다.")
+	@NotBlank(message = "질문 제목은 빈값 일 수 없습니다.")
 	@Size(max = 150, message = "150자 이하로 입력하세요.")
 	private String questionTitle;
 

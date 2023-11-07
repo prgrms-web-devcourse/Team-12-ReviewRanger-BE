@@ -2,6 +2,8 @@ package com.devcourse.ReviewRanger.user.application;
 
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 
+import java.util.List;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -13,6 +15,7 @@ import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 import com.devcourse.ReviewRanger.common.redis.RedisUtil;
 import com.devcourse.ReviewRanger.user.domain.User;
+import com.devcourse.ReviewRanger.user.dto.GetUserResponse;
 import com.devcourse.ReviewRanger.user.dto.JoinRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginResponse;
@@ -99,5 +102,11 @@ public class UserService {
 	private User getUserOrThrow(Long id) {
 		return userRepository.findById(id)
 			.orElseThrow(() -> new RangerException(FAIL_USER_LOGIN));
+	}
+
+	public List<GetUserResponse> getAllUsers() {
+		return userRepository.findAll().stream()
+			.map(user -> new GetUserResponse(user.getId(), user.getName()))
+			.toList();
 	}
 }
