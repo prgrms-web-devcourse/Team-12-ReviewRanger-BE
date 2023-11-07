@@ -4,14 +4,11 @@ import java.time.LocalDateTime;
 
 import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.review.domain.Review;
-import com.devcourse.ReviewRanger.review.domain.ReviewType;
 
 public record ReviewResponse(
 	Long reviewId,
 	String title,
-	String description,
-	DeadlineStatus deadlineStatus,
-	ReviewType reviewType,
+	DeadlineStatus status,
 	LocalDateTime createdAt,
 	Long responserCount
 ) {
@@ -19,9 +16,7 @@ public record ReviewResponse(
 		this(
 			review.getId(),
 			review.getTitle(),
-			review.getDescription(),
 			review.getStatus(),
-			review.getType(),
 			review.getCreateAt(),
 			responserCount
 		);

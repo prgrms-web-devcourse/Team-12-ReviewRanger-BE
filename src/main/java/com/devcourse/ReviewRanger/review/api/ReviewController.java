@@ -4,18 +4,21 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
+import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
 @RestController
 public class ReviewController {
@@ -37,11 +40,12 @@ public class ReviewController {
 		return new ResponseEntity<Boolean>(result, HttpStatus.CREATED);
 	}
 
-	@GetMapping("/created-surveys/{requesterId}")
-	public ResponseEntity<List<ReviewResponse>> getRequesterReviews(@PathVariable Long requesterId) {
-		List<ReviewResponse> requesterSurveys = reviewService.getRequesterReviews(requesterId);
+	@GetMapping("/reviews")
+	public RangerResponse<List<ReviewResponse>> getAllReviewsByRequester(@AuthenticationPrincipal UserPrincipal user) {
+		Long requesterId = user.getId();
+		List<ReviewResponse> reviewResponses = reviewService.getAllReviewsByRequester(requesterId);
 
-		return new ResponseEntity<>(requesterSurveys, HttpStatus.OK);
+		return RangerResponse.ok(reviewResponses);
 	}
 
 	@PostMapping("/surveys/{reviewId}/closed")
