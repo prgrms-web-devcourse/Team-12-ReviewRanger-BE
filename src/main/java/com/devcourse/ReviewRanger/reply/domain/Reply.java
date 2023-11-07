@@ -47,4 +47,9 @@ public class Reply extends BaseEntity {
 	public void assignReviewedTarget(ReviewedTarget reviewedTarget) {
 		this.reviewedTarget = reviewedTarget;
 	}
+
+	public void update(Long objectOptionId, String answerText) {
+		this.objectOptionId = objectOptionId;
+		this.answerText = answerText;
+	}
 }

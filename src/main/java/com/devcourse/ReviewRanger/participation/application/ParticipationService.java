@@ -14,6 +14,7 @@ import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
+import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.response.AllResponserParticipateInReviewResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ResponserResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.SubjectResponse;
@@ -138,6 +139,13 @@ public class ParticipationService {
 		reviewedTargetService.createReviewTarget(participation.getId(), request.createReviewedTargetRequests());
 
 		participation.changeStatus(DeadlineStatus.DEADLINE);
+
+		return true;
+	}
+
+	@Transactional
+	public Boolean updateResponse(UpdateParticipationRequest request) {
+		reviewedTargetService.updateReviewTarget(request.updateReviewedTargetRequests());
 
 		return true;
 	}

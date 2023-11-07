@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.reply.domain.Reply;
 import com.devcourse.ReviewRanger.reply.dto.request.CreateReplyRequest;
+import com.devcourse.ReviewRanger.reply.dto.request.UpdateReplyRequest;
 import com.devcourse.ReviewRanger.reply.repository.ReplyRepository;
 import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
 
@@ -29,6 +30,14 @@ public class ReplyService {
 			Reply reply = createReplyRequest.toEntity();
 			reply.assignReviewedTarget(reviewedTarget);
 			replyRepository.save(reply);
+		}
+	}
+
+	@Transactional
+	public void updateReply(List<UpdateReplyRequest> updateReplyRequests) {
+		for (UpdateReplyRequest updateReplyRequest : updateReplyRequests) {
+			Reply reply = getByIdOrThrow(updateReplyRequest.id());
+			reply.update(updateReplyRequest.objectOptionId(), updateReplyRequest.answerText());
 		}
 	}
 

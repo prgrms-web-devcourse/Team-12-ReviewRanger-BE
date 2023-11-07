@@ -11,6 +11,7 @@ import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.reply.application.ReplyService;
 import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
 import com.devcourse.ReviewRanger.reviewedTarget.dto.request.CreateReviewedTargetRequest;
+import com.devcourse.ReviewRanger.reviewedTarget.dto.request.UpdateReviewedTargetRequest;
 import com.devcourse.ReviewRanger.reviewedTarget.repository.ReviewedTargetRepository;
 
 @Service
@@ -36,6 +37,13 @@ public class ReviewedTargetService {
 			ReviewedTarget savedReviewedTargetId = reviewedTargetRepository.save(reviewedTarget);
 
 			replyService.createReply(savedReviewedTargetId, createReviewedTargetRequest.responses());
+		}
+	}
+
+	@Transactional
+	public void updateReviewTarget(List<UpdateReviewedTargetRequest> updateReviewedTargetRequests) {
+		for (UpdateReviewedTargetRequest updateReviewedTargetRequest : updateReviewedTargetRequests) {
+			replyService.updateReply(updateReviewedTargetRequest.responses());
 		}
 	}
 
