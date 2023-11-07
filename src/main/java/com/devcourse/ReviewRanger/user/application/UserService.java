@@ -104,7 +104,7 @@ public class UserService {
 		return tokenSplit[1];
 	}
 
-	private User getUserOrThrow(Long id) {
+	public User getUserOrThrow(Long id) {
 		return userRepository.findById(id)
 			.orElseThrow(() -> new RangerException(FAIL_USER_LOGIN));
 	}
