@@ -57,7 +57,7 @@ public class QuestionService {
 	public List<GetQuestionResponse> getAllQuestionsByReview(Long reviewId) {
 		List<Question> questions = questionRepository.findByReviewId(reviewId);
 
-		ArrayList<GetQuestionResponse> getQuestionResponses = new ArrayList<>();
+		List<GetQuestionResponse> getQuestionResponses = new ArrayList<>();
 
 		for (Question question : questions) {
 			List<GetQuestionOptionResponse> questionOptionResponses = question.getQuestionOptions()
