@@ -48,9 +48,17 @@ public class ParticipationService {
 	}
 
 	@Transactional
-	public void createParticipation(Long reviewId, List<Participation> participations) {
-		participations.forEach(surveyResult -> surveyResult.assignReviewId(reviewId));
+	public boolean createParticipations(Long reviewId, List<Long> responserIds) {
+		List<Participation> participations = responserIds.stream()
+			.map(responserId -> {
+				Participation participation = new Participation(responserId);
+				participation.assignReviewId(reviewId);
+				return participation;
+			}).toList();
+
 		participationRepository.saveAll(participations);
+
+		return true;
 	}
 
 	public List<Participation> getResponserSurveyResult(Long responserId) {
@@ -72,11 +80,10 @@ public class ParticipationService {
 	}
 
 	public AllResponserParticipateInReviewResponse getAllReponserParticipateInSurveyOrThrow(Long reviewId) {
-		Review review = reviewRepository.findById(reviewId)
-			.orElseThrow(() -> new RangerException(NOT_FOUND_SURVEY));
+		Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new RangerException(NOT_FOUND_SURVEY));
 
-		ReviewResponseDto reviewResponseDto = new ReviewResponseDto(reviewId, review.getTitle(),
-			review.getType(), review.getCreateAt(), review.getUpdatedAt());
+		ReviewResponseDto reviewResponseDto = new ReviewResponseDto(reviewId, review.getTitle(), review.getType(),
+			review.getCreateAt(), review.getUpdatedAt());
 
 		List<Participation> participations = participationRepository.findByReviewIdAndQuestionAnsweredStatusTrue(
 			reviewId);
@@ -121,8 +128,7 @@ public class ParticipationService {
 				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 
 			SubjectResponse response = new SubjectResponse(recipient.getKey(), user.getName(),
-				recipient.getValue().size(),
-				recipient.getValue());
+				recipient.getValue().size(), recipient.getValue());
 			responses.add(response);
 		}
 
@@ -141,4 +147,5 @@ public class ParticipationService {
 
 		return true;
 	}
+
 }
