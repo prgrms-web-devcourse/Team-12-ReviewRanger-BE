@@ -16,7 +16,7 @@ public record CreateReviewRequest(
 ) {
 
 	public Review toEntity() {
-		return new Review(title, description, type);
+		return new Review(this.title, this.description, this.type);
 	}
 
 }

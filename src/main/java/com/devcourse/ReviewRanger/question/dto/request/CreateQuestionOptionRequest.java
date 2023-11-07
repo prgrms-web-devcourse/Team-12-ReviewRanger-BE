@@ -7,6 +7,6 @@ public record CreateQuestionOptionRequest(
 ) {
 
 	public QuestionOption toEntity() {
-		return new QuestionOption(optionContext);
+		return new QuestionOption(this.optionContext);
 	}
 }

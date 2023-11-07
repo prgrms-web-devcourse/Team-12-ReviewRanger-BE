@@ -44,7 +44,7 @@ public class QuestionService {
 	) {
 		for (CreateQuestionOptionRequest createQuestionOptionRequest : createQuestionOptionRequests) {
 			QuestionOption questionOption = createQuestionOptionRequest.toEntity();
-			questionOption.setQuestion(question);
+			questionOption.assignQuestion(question);
 
 			questionOptionRepository.save(questionOption);
 		}

@@ -16,6 +16,6 @@ public record CreateQuestionRequest(
 	@JsonProperty("questionOptions") List<CreateQuestionOptionRequest> createQuestionOptionRequests
 ) {
 	public Question toEntity() {
-		return new Question(title, type, sequence, isRequired, isDuplicated);
+		return new Question(this.title, this.type, this.sequence, this.isRequired, this.isDuplicated);
 	}
 }
