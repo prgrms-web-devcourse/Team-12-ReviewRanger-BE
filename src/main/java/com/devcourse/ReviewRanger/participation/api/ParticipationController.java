@@ -16,14 +16,22 @@ import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.response.AllResponserParticipateInReviewResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.SubjectResponse;
+import com.devcourse.ReviewRanger.reply.application.ReplyService;
+import com.devcourse.ReviewRanger.reviewedTarget.application.ReviewedTargetService;
+import com.devcourse.ReviewRanger.reviewedTarget.dto.response.RepliesByResponserResponse;
 
 @RestController
 public class ParticipationController {
 
 	private final ParticipationService participationService;
+	private final ReviewedTargetService reviewedTargetService;
+	private final ReplyService replyService;
 
-	public ParticipationController(ParticipationService participationService) {
+	public ParticipationController(ParticipationService participationService,
+		ReviewedTargetService reviewedTargetService, ReplyService replyService) {
 		this.participationService = participationService;
+		this.reviewedTargetService = reviewedTargetService;
+		this.replyService = replyService;
 	}
 
 	@GetMapping("/invited-surveys/{responserId}")
@@ -66,5 +74,16 @@ public class ParticipationController {
 		Boolean response = participationService.submitResponse(request);
 
 		return RangerResponse.ok(response);
+	}
+
+	/**
+	 * 응답자의 모든 답변 내용 조회
+	 */
+	@GetMapping("/participations/{participationId}/responser")
+	public RangerResponse<List<RepliesByResponserResponse>> getRepliesByResponser(@PathVariable Long participationId) {
+		List<RepliesByResponserResponse> responses = reviewedTargetService.getAllRepliesByResponser(
+			participationId);
+
+		return RangerResponse.ok(responses);
 	}
 }
