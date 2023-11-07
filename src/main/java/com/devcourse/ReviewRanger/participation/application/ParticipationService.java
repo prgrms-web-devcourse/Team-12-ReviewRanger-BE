@@ -19,6 +19,7 @@ import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationRes
 import com.devcourse.ReviewRanger.participation.dto.response.ResponserResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.SubjectResponse;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
+import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponseDto;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
@@ -58,6 +59,23 @@ public class ParticipationService {
 		return true;
 	}
 
+	public List<GetParticipationResponse> getAllReviewsByResponser(Long responserId) {
+		List<Participation> participations = participationRepository.findByResponserId(responserId);
+
+		List<GetParticipationResponse> getParticipationResponses = new ArrayList<>();
+
+		for (Participation participation : participations) {
+			Long reviewId = participation.getReviewId();
+			Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new RangerException(NOT_FOUND_REPLY));
+			String title = review.getTitle();
+
+			GetParticipationResponse getParticipationResponse = new GetParticipationResponse(participation, title);
+			getParticipationResponses.add(getParticipationResponse);
+		}
+
+		return getParticipationResponses;
+	}
+
 	public Long getResponserCount(Long reviewId) {
 		List<Participation> participations = getAllByReviewId(reviewId);
 
@@ -74,31 +92,31 @@ public class ParticipationService {
 		return true;
 	}
 
-	public AllResponserParticipateInReviewResponse getAllReponserParticipateInReviewOrThrow(Long reviewId) {
-		Review review = reviewRepository.findById(reviewId)
-			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
-
-		ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
-
-		List<Participation> participations = participationRepository.findByReviewIdAndQuestionAnsweredStatusTrue(
-			reviewId);
-
-		ArrayList<ResponserResponse> responsers = new ArrayList<>();
-		AllResponserParticipateInReviewResponse allResponserParticipateInReviewDto = new AllResponserParticipateInReviewResponse(
-			participations.size(), reviewResponseDto, responsers);
-
-		for (Participation participation : participations) {
-			User user = userRepository.findById(participation.getResponserId())
-				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
-
-			ResponserResponse responser = new ResponserResponse(participation.getId(), user.getId(), user.getName(),
-				participation.getUpdatedAt());
-
-			allResponserParticipateInReviewDto.responsers().add(responser);
-		}
-
-		return allResponserParticipateInReviewDto;
-	}
+	// public AllResponserParticipateInReviewResponse getAllReponserParticipateInReviewOrThrow(Long reviewId) {
+	// 	Review review = reviewRepository.findById(reviewId)
+	// 		.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+	//
+	// 	ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
+	//
+	// 	List<Participation> participations = participationRepository.findByReviewIdAndQuestionAnsweredStatusTrue(
+	// 		reviewId);
+	//
+	// 	ArrayList<ResponserResponse> responsers = new ArrayList<>();
+	// 	AllResponserParticipateInReviewResponse allResponserParticipateInReviewDto = new AllResponserParticipateInReviewResponse(
+	// 		participations.size(), reviewResponseDto, responsers);
+	//
+	// 	for (Participation participation : participations) {
+	// 		User user = userRepository.findById(participation.getResponserId())
+	// 			.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+	//
+	// 		ResponserResponse responser = new ResponserResponse(participation.getId(), user.getId(), user.getName(),
+	// 			participation.getUpdatedAt());
+	//
+	// 		allResponserParticipateInReviewDto.responsers().add(responser);
+	// 	}
+	//
+	// 	return allResponserParticipateInReviewDto;
+	// }
 
 	public List<SubjectResponse> getAllRecipientParticipateInReviewOrThrow(Long reviewId) {
 		List<SubjectResponse> responses = new ArrayList<>();
