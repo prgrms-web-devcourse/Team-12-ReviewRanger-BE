@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
-import com.devcourse.ReviewRanger.participation.domain.Participation;
-import com.devcourse.ReviewRanger.question.domain.Question;
 
 import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
-import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
+import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
 @RestController
@@ -40,9 +38,9 @@ public class ReviewController {
 	}
 
 	@GetMapping("/reviews")
-	public RangerResponse<List<ReviewResponse>> getAllReviewsByRequester(@AuthenticationPrincipal UserPrincipal user) {
+	public RangerResponse<List<GetReviewResponse>> getAllReviewsByRequester(@AuthenticationPrincipal UserPrincipal user) {
 		Long requesterId = user.getId();
-		List<ReviewResponse> reviewResponses = reviewService.getAllReviewsByRequester(requesterId);
+		List<GetReviewResponse> reviewResponses = reviewService.getAllReviewsByRequester(requesterId);
 
 		return RangerResponse.ok(reviewResponses);
 	}
