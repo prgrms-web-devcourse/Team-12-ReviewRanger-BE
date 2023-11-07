@@ -49,11 +49,12 @@ public class ParticipationService {
 
 	@Transactional
 	public boolean createParticipations(Long reviewId, List<Long> responserIds) {
-		List<Participation> participations = responserIds.stream().map(responserId -> {
-			Participation participation = new Participation(responserId);
-			participation.assignReviewId(reviewId);
-			return participation;
-		}).toList();
+		List<Participation> participations = responserIds.stream()
+			.map(responserId -> {
+				Participation participation = new Participation(responserId);
+				participation.assignReviewId(reviewId);
+				return participation;
+			}).toList();
 
 		participationRepository.saveAll(participations);
 
