@@ -40,14 +40,14 @@ public class ParticipationController {
 	/**
 	 * 설문에 참여한 모든 응답자 조회
 	 */
-	// @GetMapping("/created-surveys/{surveyId}/responser")
-	// public RangerResponse<AllResponserParticipateInReviewResponse> getAllReponserParticipateInSurvey(
-	// 	@PathVariable Long surveyId) {
-	// 	AllResponserParticipateInReviewResponse response = participationService.getAllReponserParticipateInReviewOrThrow(
-	// 		surveyId);
-	//
-	// 	return RangerResponse.ok(response);
-	// }
+	@GetMapping("/created-surveys/{surveyId}/responser")
+	public RangerResponse<AllResponserParticipateInReviewResponse> getAllReponserParticipateInSurvey(
+		@PathVariable Long surveyId) {
+		AllResponserParticipateInReviewResponse response = participationService.getAllReponserParticipateInReviewOrThrow(
+			surveyId);
+
+		return RangerResponse.ok(response);
+	}
 
 	/**
 	 * 리뷰를 받은 사용자 전체 조회 기능

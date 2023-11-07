@@ -80,43 +80,44 @@ public class ParticipationService {
 		List<Participation> participations = getAllByReviewId(reviewId);
 
 		return participations.stream()
-			.filter(surveyResult -> surveyResult.getDeadlineStatus() == DeadlineStatus.DEADLINE)
+			.filter(participation -> participation.getDeadlineStatus() == DeadlineStatus.DEADLINE)
 			.count();
 	}
 
 	@Transactional
 	public Boolean closeParticipationOrThrow(Long reviewId) {
 		List<Participation> participations = getAllByReviewId(reviewId);
-		participations.stream().forEach(surveyResult -> surveyResult.changeStatus(DeadlineStatus.END));
+		participations.stream().forEach(participation -> participation.changeStatus(DeadlineStatus.END));
 
 		return true;
 	}
 
-	// public AllResponserParticipateInReviewResponse getAllReponserParticipateInReviewOrThrow(Long reviewId) {
-	// 	Review review = reviewRepository.findById(reviewId)
-	// 		.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
-	//
-	// 	ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
-	//
-	// 	List<Participation> participations = participationRepository.findByReviewIdAndQuestionAnsweredStatusTrue(
-	// 		reviewId);
-	//
-	// 	ArrayList<ResponserResponse> responsers = new ArrayList<>();
-	// 	AllResponserParticipateInReviewResponse allResponserParticipateInReviewDto = new AllResponserParticipateInReviewResponse(
-	// 		participations.size(), reviewResponseDto, responsers);
-	//
-	// 	for (Participation participation : participations) {
-	// 		User user = userRepository.findById(participation.getResponserId())
-	// 			.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
-	//
-	// 		ResponserResponse responser = new ResponserResponse(participation.getId(), user.getId(), user.getName(),
-	// 			participation.getUpdatedAt());
-	//
-	// 		allResponserParticipateInReviewDto.responsers().add(responser);
-	// 	}
-	//
-	// 	return allResponserParticipateInReviewDto;
-	// }
+	public AllResponserParticipateInReviewResponse getAllReponserParticipateInReviewOrThrow(Long reviewId) {
+		Review review = reviewRepository.findById(reviewId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+
+		ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
+
+		List<Participation> participations = participationRepository.findByReviewId(reviewId)
+			.stream()
+			.filter(participation -> participation.getDeadlineStatus() == DeadlineStatus.DEADLINE).toList();
+
+		ArrayList<ResponserResponse> responsers = new ArrayList<>();
+		AllResponserParticipateInReviewResponse allResponserParticipateInReviewDto = new AllResponserParticipateInReviewResponse(
+			participations.size(), reviewResponseDto, responsers);
+
+		for (Participation participation : participations) {
+			User user = userRepository.findById(participation.getResponserId())
+				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+
+			ResponserResponse responser = new ResponserResponse(participation.getId(), user.getId(), user.getName(),
+				participation.getUpdatedAt());
+
+			allResponserParticipateInReviewDto.responsers().add(responser);
+		}
+
+		return allResponserParticipateInReviewDto;
+	}
 
 	public List<SubjectResponse> getAllRecipientParticipateInReviewOrThrow(Long reviewId) {
 		List<SubjectResponse> responses = new ArrayList<>();
