@@ -21,6 +21,6 @@ public class FinalReviewResultService {
 	public List<FinalReviewResultListResponse> getAllFinalReviewResults(Long userId) {
 		return finalReviewResultRepository.findAllByUserId(userId)
 			.stream()
-			.map(FinalReviewResultListResponse::from).toList();
+			.map(FinalReviewResultListResponse::new).toList();
 	}
 }

@@ -9,8 +9,8 @@ public record FinalReviewResultListResponse(
 	String title,
 	LocalDateTime created_at
 ) {
-	public static FinalReviewResultListResponse from(FinalReviewResult finalReviewResult) {
-		return new FinalReviewResultListResponse(
+	public FinalReviewResultListResponse(FinalReviewResult finalReviewResult) {
+		this(
 			finalReviewResult.getId(),
 			finalReviewResult.getTitle(),
 			finalReviewResult.getCreateAt()
