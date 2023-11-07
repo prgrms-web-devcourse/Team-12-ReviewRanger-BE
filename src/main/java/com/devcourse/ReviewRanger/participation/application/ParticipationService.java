@@ -54,14 +54,14 @@ public class ParticipationService {
 	}
 
 	public Long getResponserCount(Long reviewId) {
-		List<Participation> participations = participationRepository.findByReviewId(reviewId);
+		List<Participation> participations = getAllByReviewId(reviewId);
 
 		return participations.stream().filter(surveyResult -> surveyResult.getQuestionAnsweredStatus()).count();
 	}
 
 	@Transactional
 	public Boolean closeParticipationOrThrow(Long reviewId) {
-		List<Participation> participations = participationRepository.findByReviewId(reviewId);
+		List<Participation> participations = getAllByReviewId(reviewId);
 		participations.stream().forEach(surveyResult -> surveyResult.changeStatus(DeadlineStatus.END));
 
 		return true;
@@ -97,7 +97,7 @@ public class ParticipationService {
 		List<SubjectResponse> responses = new ArrayList<>();
 		Map<Long, List<Long>> subjectToResponsersMap = new HashMap<>();
 
-		List<Participation> participations = participationRepository.findByReviewId(reviewId);
+		List<Participation> participations = getAllByReviewId(reviewId);
 
 		for (Participation participation : participations) {
 			List<ReviewedTarget> reviewedTargets = reviewedTargetService.getAllByParticipationId(
@@ -126,13 +126,21 @@ public class ParticipationService {
 
 	@Transactional
 	public Boolean submitResponse(SubmitParticipationRequest request) {
-		Participation participation = participationRepository.findById(request.participationId())
-			.orElseThrow(() -> new RangerException(NOT_FOUND_PARTICIPATION));
+		Participation participation = getByIdOrThrow(request.participationId());
 
 		reviewedTargetService.createReviewTarget(participation.getId(), request.createReviewedTargetRequests());
 
 		participation.changeStatus(DeadlineStatus.DEADLINE);
 
 		return true;
+	}
+
+	public Participation getByIdOrThrow(Long id) {
+		return participationRepository.findById(id)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_PARTICIPATION));
+	}
+
+	public List<Participation> getAllByReviewId(Long reviewId) {
+		return participationRepository.findByReviewId(reviewId);
 	}
 }
