@@ -45,6 +45,10 @@ public class Reply extends BaseEntity {
 	}
 
 	public void assignReviewedTarget(ReviewedTarget reviewedTarget) {
+		if (this.reviewedTarget != null) {
+			this.reviewedTarget.getReplies().remove(this);
+		}
 		this.reviewedTarget = reviewedTarget;
+		reviewedTarget.getReplies().add(this);
 	}
 }
