@@ -83,6 +83,11 @@ public class UserService {
 	public void updateInfo(Long id, UpdateRequest updateRequest) {
 		User user = getUserOrThrow(id);
 		String editName = updateRequest.name();
+
+		if (!isNotExistName(editName)) {
+			throw new RangerException(EXIST_SAME_NAME);
+		}
+
 		String editEncodedPassword = updateRequest.password();
 		editEncodedPassword = passwordEncoder.encode(editEncodedPassword);
 
