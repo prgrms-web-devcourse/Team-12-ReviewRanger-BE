@@ -21,6 +21,9 @@ public class QuestionOption extends BaseEntity {
 	@JoinColumn(name = "question_id")
 	private Question question;
 
+	@Column(nullable = false)
+	private Integer sequence;
+
 	@Column(name = "option_context", nullable = false, length = 100)
 	@NotBlank(message = "옵션 내용은 빈값 일 수 없습니다.")
 	@Size(max = 100, message = "150자 이하로 입력하세요.")
@@ -29,7 +32,8 @@ public class QuestionOption extends BaseEntity {
 	protected QuestionOption() {
 	}
 
-	public QuestionOption(String optionContext) {
+	public QuestionOption(Integer sequence, String optionContext) {
+		this.sequence = sequence;
 		this.optionContext = optionContext;
 	}
 
