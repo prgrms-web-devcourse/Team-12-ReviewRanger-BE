@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.devcourse.ReviewRanger.common.response.RangerResponse;
+import com.devcourse.ReviewRanger.participation.domain.Participation;
+import com.devcourse.ReviewRanger.question.domain.Question;
+
 import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
@@ -35,11 +39,12 @@ public class ReviewController {
 		return new ResponseEntity<Boolean>(result, HttpStatus.CREATED);
 	}
 
-	@GetMapping("/created-surveys/{requesterId}")
-	public ResponseEntity<List<ReviewResponse>> getRequesterReviews(@PathVariable Long requesterId) {
-		List<ReviewResponse> requesterSurveys = reviewService.getRequesterReviews(requesterId);
+	@GetMapping("/reviews")
+	public RangerResponse<List<ReviewResponse>> getAllReviewsByRequester(@AuthenticationPrincipal UserPrincipal user) {
+		Long requesterId = user.getId();
+		List<ReviewResponse> reviewResponses = reviewService.getAllReviewsByRequester(requesterId);
 
-		return new ResponseEntity<>(requesterSurveys, HttpStatus.OK);
+		return RangerResponse.ok(reviewResponses);
 	}
 
 	@PostMapping("/surveys/{reviewId}/closed")

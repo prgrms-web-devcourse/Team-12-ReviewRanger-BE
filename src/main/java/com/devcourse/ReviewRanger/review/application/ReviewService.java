@@ -46,18 +46,18 @@ public class ReviewService {
 		return true;
 	}
 
-	public List<ReviewResponse> getRequesterReviews(Long requesterId) {
+	public List<ReviewResponse> getAllReviewsByRequester(Long requesterId) {
 		List<Review> requesterReviews = reviewRepository.findByRequesterId(requesterId);
 
-		List<ReviewResponse> reviewRespons = new ArrayList<>();
+		List<ReviewResponse> reviewResponses = new ArrayList<>();
 		for (Review requesterReview : requesterReviews) {
 			Long reviewId = requesterReview.getId();
 			Long responserCount = participationService.getResponserCount(reviewId);
 			ReviewResponse reviewResponse = new ReviewResponse(requesterReview, responserCount);
-			reviewRespons.add(reviewResponse);
+			reviewResponses.add(reviewResponse);
 		}
 
-		return reviewRespons;
+		return reviewResponses;
 	}
 
 	@Transactional
