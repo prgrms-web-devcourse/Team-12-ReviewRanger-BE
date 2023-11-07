@@ -14,6 +14,7 @@ import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.question.application.QuestionService;
 import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.review.domain.Review;
+import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
 
@@ -34,11 +35,14 @@ public class ReviewService {
 	}
 
 	@Transactional
-	public boolean createReview(Review review, List<Question> questions, List<Participation> participations) {
-		Review createdReview = reviewRepository.save(review);
-		questionService.createQuestionInReview(createdReview.getId(), questions);
-		participationService.createParticipation(createdReview.getId(), participations);
+	public boolean createReview(Long requesterId, CreateReviewRequest createReviewRequest) {
+		Review review = createReviewRequest.toEntity();
+		review.assignRequesterId(requesterId);
+		Review savedReview = reviewRepository.save(review);
 
+		questionService.createQuestions(savedReview.getId(), createReviewRequest.creatQuestionRequests());
+		participationService.createParticipations(savedReview.getId(), createReviewRequest.responserIds());
+		
 		return true;
 	}
 

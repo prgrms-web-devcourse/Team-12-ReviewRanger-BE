@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.question.domain.Question;
+
 import com.devcourse.ReviewRanger.review.application.ReviewService;
-import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
@@ -29,13 +29,12 @@ public class ReviewController {
 		this.reviewService = reviewService;
 	}
 
-	@PostMapping("/surveys")
-	public ResponseEntity<Boolean> createReview(@RequestBody CreateReviewRequest createReviewRequest) {
-		Review review = createReviewRequest.toReview();
-		review.assignRequesterId(1L);
-		List<Question> questions = createReviewRequest.toQuestions();
-		List<Participation> participations = createReviewRequest.toParticipation();
-		Boolean result = reviewService.createReview(review, questions, participations);
+	@PostMapping("/reviews")
+	public ResponseEntity<Boolean> createReview(
+		@RequestBody CreateReviewRequest createReviewRequest,
+		@AuthenticationPrincipal UserPrincipal user
+	) {
+		boolean result = reviewService.createReview(user.getId(), createReviewRequest);
 
 		return new ResponseEntity<Boolean>(result, HttpStatus.CREATED);
 	}
