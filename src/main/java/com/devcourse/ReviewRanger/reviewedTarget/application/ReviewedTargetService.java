@@ -39,12 +39,12 @@ public class ReviewedTargetService {
 		}
 	}
 
-	public ReviewedTarget findById(Long id) {
+	public ReviewedTarget getByIdOrThrow(Long id) {
 		return reviewedTargetRepository.findById(id)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW_TARGET));
 	}
 
-	public List<ReviewedTarget> findAllByParticipationId(Long participationId) {
+	public List<ReviewedTarget> getAllByParticipationId(Long participationId) {
 		return reviewedTargetRepository.findAllByParticipationId(participationId);
 	}
 }

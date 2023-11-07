@@ -67,18 +67,17 @@ public class ParticipationService {
 		return true;
 	}
 
-	public AllResponserParticipateInReviewResponse getAllReponserParticipateInSurveyOrThrow(Long reviewId) {
+	public AllResponserParticipateInReviewResponse getAllReponserParticipateInReviewOrThrow(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 
-		ReviewResponseDto reviewResponseDto = new ReviewResponseDto(reviewId, review.getTitle(),
-			review.getType(), review.getCreateAt(), review.getUpdatedAt());
+		ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
 
 		List<Participation> participations = participationRepository.findByReviewIdAndQuestionAnsweredStatusTrue(
 			reviewId);
 
 		ArrayList<ResponserResponse> responsers = new ArrayList<>();
-		AllResponserParticipateInReviewResponse allResponserParticipateInsurveyDto = new AllResponserParticipateInReviewResponse(
+		AllResponserParticipateInReviewResponse allResponserParticipateInReviewDto = new AllResponserParticipateInReviewResponse(
 			participations.size(), reviewResponseDto, responsers);
 
 		for (Participation participation : participations) {
@@ -88,20 +87,20 @@ public class ParticipationService {
 			ResponserResponse responser = new ResponserResponse(participation.getId(), user.getId(), user.getName(),
 				participation.getUpdatedAt());
 
-			allResponserParticipateInsurveyDto.responsers().add(responser);
+			allResponserParticipateInReviewDto.responsers().add(responser);
 		}
 
-		return allResponserParticipateInsurveyDto;
+		return allResponserParticipateInReviewDto;
 	}
 
-	public List<SubjectResponse> getAllRecipientParticipateInSurveyOrThrow(Long surveyId) {
+	public List<SubjectResponse> getAllRecipientParticipateInReviewOrThrow(Long reviewId) {
 		List<SubjectResponse> responses = new ArrayList<>();
 		Map<Long, List<Long>> subjectToResponsersMap = new HashMap<>();
 
-		List<Participation> participations = participationRepository.findByReviewId(surveyId);
+		List<Participation> participations = participationRepository.findByReviewId(reviewId);
 
 		for (Participation participation : participations) {
-			List<ReviewedTarget> reviewedTargets = reviewedTargetService.findAllByParticipationId(
+			List<ReviewedTarget> reviewedTargets = reviewedTargetService.getAllByParticipationId(
 				participation.getId());
 
 			for (ReviewedTarget reviewedTarget : reviewedTargets) {

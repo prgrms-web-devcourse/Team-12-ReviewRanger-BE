@@ -27,17 +27,17 @@ public class ReplyService {
 	public void createReply(ReviewedTarget reviewedTarget, List<CreateReplyRequest> createReplyRequests) {
 		for (CreateReplyRequest createReplyRequest : createReplyRequests) {
 			Reply reply = createReplyRequest.toEntity();
-			reply.setReviewedTarget(reviewedTarget);
+			reply.assignReviewedTarget(reviewedTarget);
 			replyRepository.save(reply);
 		}
 	}
 
-	public Reply findById(Long id) {
+	public Reply getByIdOrThrow(Long id) {
 		return replyRepository.findById(id)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REPLY));
 	}
 
-	public List<Reply> findAllByReviewedTargetId(Long reviewedTargetId) {
+	public List<Reply> getAllByReviewedTargetId(Long reviewedTargetId) {
 		return replyRepository.findAllByReviewedTargetId(reviewedTargetId);
 	}
 }
