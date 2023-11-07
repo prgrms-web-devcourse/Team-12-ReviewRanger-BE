@@ -15,6 +15,7 @@ import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.response.AllResponserParticipateInReviewResponse;
+import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ResponserResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.SubjectResponse;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
@@ -57,14 +58,12 @@ public class ParticipationService {
 		return true;
 	}
 
-	public List<Participation> getResponserSurveyResult(Long responserId) {
-		return participationRepository.findByResponserId(responserId);
-	}
-
 	public Long getResponserCount(Long reviewId) {
 		List<Participation> participations = getAllByReviewId(reviewId);
 
-		return participations.stream().filter(surveyResult -> surveyResult.getQuestionAnsweredStatus()).count();
+		return participations.stream()
+			.filter(surveyResult -> surveyResult.getDeadlineStatus() == DeadlineStatus.DEADLINE)
+			.count();
 	}
 
 	@Transactional
@@ -108,8 +107,7 @@ public class ParticipationService {
 		List<Participation> participations = getAllByReviewId(reviewId);
 
 		for (Participation participation : participations) {
-			List<ReviewedTarget> reviewedTargets = reviewedTargetService.getAllByParticipationId(
-				participation.getId());
+			List<ReviewedTarget> reviewedTargets = reviewedTargetService.getAllByParticipationId(participation.getId());
 
 			for (ReviewedTarget reviewedTarget : reviewedTargets) {
 				Long subjectId = reviewedTarget.getSubjectId();
