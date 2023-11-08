@@ -121,7 +121,7 @@ public class ParticipationService {
 
 	public List<ReceiverResponse> getAllReceiverParticipateInReviewOrThrow(Long reviewId) {
 		List<ReceiverResponse> responses = new ArrayList<>();
-		Map<Long, List<Long>> subjectToResponsersMap = new HashMap<>();
+		Map<Long, List<Long>> receiverToResponsersMap = new HashMap<>();
 
 		List<Participation> participations = getAllByReviewId(reviewId);
 
@@ -130,18 +130,18 @@ public class ParticipationService {
 
 			for (ReviewedTarget reviewedTarget : reviewedTargets) {
 				Long subjectId = reviewedTarget.getSubjectId();
-				List<Long> responers = subjectToResponsersMap.getOrDefault(subjectId, new ArrayList<>());
-				responers.add(participation.getResponserId());
-				subjectToResponsersMap.put(subjectId, responers);
+				List<Long> responsers = receiverToResponsersMap.getOrDefault(subjectId, new ArrayList<>());
+				responsers.add(reviewedTarget.getId());
+				receiverToResponsersMap.put(subjectId, responsers);
 			}
 		}
 
-		for (Map.Entry<Long, List<Long>> recipient : subjectToResponsersMap.entrySet()) {
-			User user = userRepository.findById(recipient.getKey())
+		for (Map.Entry<Long, List<Long>> receiver : receiverToResponsersMap.entrySet()) {
+			User user = userRepository.findById(receiver.getKey())
 				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 
-			ReceiverResponse response = new ReceiverResponse(recipient.getKey(), user.getName(),
-				recipient.getValue().size(), recipient.getValue());
+			ReceiverResponse response = new ReceiverResponse(receiver.getKey(), user.getName(),
+				receiver.getValue().size(), receiver.getValue());
 			responses.add(response);
 		}
 
