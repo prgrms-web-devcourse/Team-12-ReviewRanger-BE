@@ -1,5 +1,9 @@
 package com.devcourse.ReviewRanger.participation.domain;
 
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape.*;
+
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -7,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 import com.devcourse.ReviewRanger.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
 
@@ -25,8 +30,9 @@ public class Participation extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private DeadlineStatus deadlineStatus;
 
-	@Column(name = "question_answered_status", nullable = false)
-	private Boolean questionAnsweredStatus = false;
+	@Column(name = "submit_At")
+	@JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+	private LocalDateTime submitAt;
 
 	protected Participation() {
 	}
@@ -34,7 +40,6 @@ public class Participation extends BaseEntity {
 	public Participation(Long responserId) {
 		this.responserId = responserId;
 		this.deadlineStatus = DeadlineStatus.PROCEEDING;
-		this.questionAnsweredStatus = false;
 	}
 
 	public void assignReviewId(Long reviewId) {
