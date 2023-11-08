@@ -54,4 +54,9 @@ public class Reply extends BaseEntity {
 		this.reviewedTarget = reviewedTarget;
 		reviewedTarget.getReplies().add(this);
 	}
+
+	public void update(Long objectOptionId, String answerText) {
+		this.objectOptionId = objectOptionId;
+		this.answerText = answerText;
+	}
 }

@@ -2,9 +2,10 @@ package com.devcourse.ReviewRanger.reply.dto.request;
 
 import javax.validation.constraints.NotBlank;
 
-import com.devcourse.ReviewRanger.reply.domain.Reply;
+public record UpdateReplyRequest(
+	@NotBlank(message = "응답 Id는 빈값 일 수 없습니다.")
+	Long id,
 
-public record CreateReplyRequest(
 	@NotBlank(message = "응답자 Id는 빈값 일 수 없습니다.")
 	Long responserId,
 
@@ -15,7 +16,4 @@ public record CreateReplyRequest(
 
 	String answerText
 ) {
-	public Reply toEntity() {
-		return new Reply(responserId, questionId, objectOptionId, answerText);
-	}
 }

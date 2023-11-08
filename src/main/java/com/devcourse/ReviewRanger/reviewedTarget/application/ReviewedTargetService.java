@@ -13,6 +13,7 @@ import com.devcourse.ReviewRanger.reply.application.ReplyService;
 import com.devcourse.ReviewRanger.reply.dto.response.ReplyResponse;
 import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
 import com.devcourse.ReviewRanger.reviewedTarget.dto.request.CreateReviewedTargetRequest;
+import com.devcourse.ReviewRanger.reviewedTarget.dto.request.UpdateReviewedTargetRequest;
 import com.devcourse.ReviewRanger.reviewedTarget.dto.response.RepliesByResponserResponse;
 import com.devcourse.ReviewRanger.reviewedTarget.repository.ReviewedTargetRepository;
 import com.devcourse.ReviewRanger.user.application.UserService;
@@ -45,6 +46,12 @@ public class ReviewedTargetService {
 			replyService.createReply(savedReviewedTargetId, createReviewedTargetRequest.responses());
 		}
 	}
+
+	@Transactional
+	public void updateReviewTarget(List<UpdateReviewedTargetRequest> updateReviewedTargetRequests) {
+		for (UpdateReviewedTargetRequest updateReviewedTargetRequest : updateReviewedTargetRequests) {
+			replyService.updateReply(updateReviewedTargetRequest.responses());
+		}
 
 	public List<RepliesByResponserResponse> getAllRepliesByResponser(Long participationId) {
 		List<RepliesByResponserResponse> repliesByResponserResponses = new ArrayList<>();
