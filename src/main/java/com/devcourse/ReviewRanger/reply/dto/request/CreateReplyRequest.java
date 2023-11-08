@@ -1,10 +1,14 @@
 package com.devcourse.ReviewRanger.reply.dto.request;
 
+import javax.validation.constraints.NotBlank;
+
 import com.devcourse.ReviewRanger.reply.domain.Reply;
 
 public record CreateReplyRequest(
+	@NotBlank(message = "응답자 Id는 빈값 일 수 없습니다.")
 	Long responserId,
 
+	@NotBlank(message = "질문 Id는 빈값 일 수 없습니다.")
 	Long questionId,
 
 	Long objectOptionId,

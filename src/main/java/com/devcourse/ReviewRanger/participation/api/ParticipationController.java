@@ -2,6 +2,8 @@ package com.devcourse.ReviewRanger.participation.api;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,7 +66,7 @@ public class ParticipationController {
 	 * 리뷰 답변 기능
 	 */
 	@PostMapping(value = "/invited-surveys")
-	public RangerResponse<Void> submitParticipation(@RequestBody SubmitParticipationRequest request) {
+	public RangerResponse<Void> submitParticipation(@RequestBody @Valid SubmitParticipationRequest request) {
 		participationService.submitResponse(request);
 
 		return RangerResponse.noData();
@@ -74,7 +76,7 @@ public class ParticipationController {
 	 * 리뷰 답변 수정 기능
 	 */
 	@PutMapping(value = "/invited-surveys")
-	public RangerResponse<Void> updateParticipation(@RequestBody UpdateParticipationRequest request) {
+	public RangerResponse<Void> updateParticipation(@RequestBody @Valid UpdateParticipationRequest request) {
 		participationService.updateResponse(request);
 
 		return RangerResponse.noData();
