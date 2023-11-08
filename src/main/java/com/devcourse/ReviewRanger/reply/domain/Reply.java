@@ -9,12 +9,15 @@ import javax.persistence.Table;
 
 import com.devcourse.ReviewRanger.BaseEntity;
 import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.Getter;
 
 @Getter
 @Entity
 @Table(name = "replies")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 public class Reply extends BaseEntity {
 
 	@Column(name = "responser_id", nullable = false)
