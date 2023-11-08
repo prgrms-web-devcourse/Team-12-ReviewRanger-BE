@@ -86,11 +86,9 @@ public class ParticipationService {
 	}
 
 	@Transactional
-	public Boolean closeParticipationOrThrow(Long reviewId) {
+	public void closeParticipationOrThrow(Long reviewId) {
 		List<Participation> participations = getAllByReviewId(reviewId);
 		participations.stream().forEach(participation -> participation.changeStatus(DeadlineStatus.END));
-
-		return true;
 	}
 
 	public AllResponserParticipateInReviewResponse getAllReponserParticipateInReviewOrThrow(Long reviewId) {

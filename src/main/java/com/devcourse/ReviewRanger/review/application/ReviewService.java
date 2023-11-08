@@ -1,5 +1,7 @@
 package com.devcourse.ReviewRanger.review.application;
 
+import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
 import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.question.application.QuestionService;
@@ -40,7 +43,7 @@ public class ReviewService {
 
 		questionService.createQuestions(savedReview.getId(), createReviewRequest.creatQuestionRequests());
 		participationService.createParticipations(savedReview.getId(), createReviewRequest.responserIds());
-		
+
 		return true;
 	}
 
@@ -59,10 +62,11 @@ public class ReviewService {
 	}
 
 	@Transactional
-	public Boolean closeReviewOrThrow(Long reviewId) {
-		Review review = reviewRepository.findById(reviewId).orElseThrow(EntityNotFoundException::new);
+	public void closeReviewOrThrow(Long reviewId) {
+		Review review = reviewRepository.findById(reviewId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 		review.changeStatus(DeadlineStatus.END);
 
-		return participationService.closeParticipationOrThrow(reviewId);
+		participationService.closeParticipationOrThrow(reviewId);
 	}
 }
