@@ -50,7 +50,7 @@ public class ReviewedTargetService {
 	@Transactional
 	public void updateReviewTarget(List<UpdateReviewedTargetRequest> updateReviewedTargetRequests) {
 		for (UpdateReviewedTargetRequest updateReviewedTargetRequest : updateReviewedTargetRequests) {
-			replyService.updateReply(updateReviewedTargetRequest.responses());
+			replyService.updateReply(updateReviewedTargetRequest.updateReplyRequests());
 		}
 	}
 
