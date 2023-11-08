@@ -33,14 +33,8 @@ public class Question extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private QuestionType type;
 
-	@Column(nullable = false)
-	private Integer sequence;
-
 	@Column(name = "is_required", nullable = false)
 	private Boolean isRequired;
-
-	@Column(name = "is_duplicated", nullable = false)
-	private Boolean isDuplicated;
 
 	@OneToMany(mappedBy = "question")
 	private List<QuestionOption> questionOptions = new ArrayList<>();
@@ -48,22 +42,17 @@ public class Question extends BaseEntity {
 	protected Question() {
 	}
 
-	public Question(String title, QuestionType type, Integer sequence, Boolean isRequired, boolean isDuplicated,
-		List<QuestionOption> questionOptions) {
+	public Question(String title, QuestionType type, Boolean isRequired, List<QuestionOption> questionOptions) {
 		this.title = title;
 		this.type = type;
-		this.sequence = sequence;
 		this.isRequired = isRequired;
-		this.isDuplicated = isDuplicated;
 		this.questionOptions = questionOptions;
 	}
 
-	public Question(String title, QuestionType type, Integer sequence, Boolean isRequired, Boolean isDuplicated) {
+	public Question(String title, QuestionType type, Boolean isRequired) {
 		this.title = title;
 		this.type = type;
-		this.sequence = sequence;
 		this.isRequired = isRequired;
-		this.isDuplicated = isDuplicated;
 	}
 
 	public void assignReviewId(Long reviewId) {

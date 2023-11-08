@@ -23,15 +23,15 @@ class UserServiceTest {
 	}
 
 	// TODO: 회원가입 테스트
-	@Test
-	void 회원가입_테스트_성공() {
-		// // given
-		// JoinRequest joinRequest = SUYEON_FIXTURE.toJoinRequest();
-		//
-		// // when
-		// Boolean joinResult = userService.join(joinRequest);
-		//
-		// // then
-		// assertTrue(joinResult);
-	}
+	// @Test
+	// void 회원가입_테스트_성공() {
+	// 	// given
+	// 	JoinRequest joinRequest = SUYEON_FIXTURE.toJoinRequest();
+	//
+	// 	// when
+	// 	Boolean joinResult = userService.join(joinRequest);
+	//
+	// 	// then
+	// 	assertTrue(joinResult);
+	// }
 }

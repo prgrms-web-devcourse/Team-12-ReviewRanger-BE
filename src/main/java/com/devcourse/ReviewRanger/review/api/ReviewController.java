@@ -12,15 +12,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
-import com.devcourse.ReviewRanger.participation.domain.Participation;
-import com.devcourse.ReviewRanger.question.domain.Question;
 
 import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
-import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
+import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@Tag(name = "review", description = "리뷰 API")
 public class ReviewController {
 
 	private final ReviewService reviewService;
@@ -29,20 +32,26 @@ public class ReviewController {
 		this.reviewService = reviewService;
 	}
 
+	@Tag(name = "review")
+	@Operation(summary = "리뷰 생성 및 요청", description = "생성자가 리뷰를 생성하고 요청하는 API", responses = {
+		@ApiResponse(responseCode = "200", description = "리뷰를 생성 및 요청 성공"),
+		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우")
+	})
 	@PostMapping("/reviews")
-	public ResponseEntity<Boolean> createReview(
+	public RangerResponse<Void> createReview(
 		@RequestBody CreateReviewRequest createReviewRequest,
 		@AuthenticationPrincipal UserPrincipal user
 	) {
-		boolean result = reviewService.createReview(user.getId(), createReviewRequest);
+		reviewService.createReview(user.getId(), createReviewRequest);
 
-		return new ResponseEntity<Boolean>(result, HttpStatus.CREATED);
+		return RangerResponse.noData();
 	}
 
 	@GetMapping("/reviews")
-	public RangerResponse<List<ReviewResponse>> getAllReviewsByRequester(@AuthenticationPrincipal UserPrincipal user) {
-		Long requesterId = user.getId();
-		List<ReviewResponse> reviewResponses = reviewService.getAllReviewsByRequester(requesterId);
+	public RangerResponse<List<GetReviewResponse>> getAllReviewsByRequester(
+		@AuthenticationPrincipal UserPrincipal user
+	) {
+		List<GetReviewResponse> reviewResponses = reviewService.getAllReviewsByRequester(user.getId());
 
 		return RangerResponse.ok(reviewResponses);
 	}

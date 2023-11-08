@@ -15,11 +15,12 @@ import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 import com.devcourse.ReviewRanger.common.redis.RedisUtil;
 import com.devcourse.ReviewRanger.user.domain.User;
+import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.user.dto.GetUserResponse;
 import com.devcourse.ReviewRanger.user.dto.JoinRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginResponse;
-import com.devcourse.ReviewRanger.user.dto.UpdateRequest;
+import com.devcourse.ReviewRanger.user.dto.UserInfoResponse;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
@@ -80,18 +81,20 @@ public class UserService {
 	}
 
 	@Transactional
-	public void updateInfo(Long id, UpdateRequest updateRequest) {
-		User user = getUserOrThrow(id);
-		String editName = updateRequest.name();
-
+	public void updateName(Long id, String editName) {
 		if (!isNotExistName(editName)) {
 			throw new RangerException(EXIST_SAME_NAME);
 		}
 
-		String editEncodedPassword = updateRequest.password();
-		editEncodedPassword = passwordEncoder.encode(editEncodedPassword);
+		User user = getUserOrThrow(id);
+		user.updateName(editName);
+	}
 
-		user.updateInfo(editName, editEncodedPassword);
+	@Transactional
+	public void updatePassword(Long id, String editEncodedPassword) {
+		User user = getUserOrThrow(id);
+		editEncodedPassword = passwordEncoder.encode(editEncodedPassword);
+		user.updatePassword(editEncodedPassword);
 	}
 
 	public void logout(String accessToken) {
@@ -104,7 +107,7 @@ public class UserService {
 		return tokenSplit[1];
 	}
 
-	private User getUserOrThrow(Long id) {
+	public User getUserOrThrow(Long id) {
 		return userRepository.findById(id)
 			.orElseThrow(() -> new RangerException(FAIL_USER_LOGIN));
 	}
@@ -113,5 +116,13 @@ public class UserService {
 		return userRepository.findAll().stream()
 			.map(user -> new GetUserResponse(user.getId(), user.getName()))
 			.toList();
+	}
+
+	public UserInfoResponse getUserInfo(UserPrincipal user) {
+		Long id = user.getId();
+		String name = user.getName();
+		String email = user.getUsername();
+
+		return new UserInfoResponse(id, name, email);
 	}
 }
