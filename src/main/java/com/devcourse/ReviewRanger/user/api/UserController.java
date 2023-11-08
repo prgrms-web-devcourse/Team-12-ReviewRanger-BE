@@ -24,7 +24,12 @@ import com.devcourse.ReviewRanger.user.dto.UpdateRequest;
 import com.devcourse.ReviewRanger.user.dto.ValidateEmailRequest;
 import com.devcourse.ReviewRanger.user.dto.ValidateNameRequest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@Tag(name = "user", description = "사용자 API")
 public class UserController {
 
 	private final UserService userService;
@@ -33,6 +38,11 @@ public class UserController {
 		this.userService = userService;
 	}
 
+	@Tag(name = "user")
+	@Operation(summary = "회원가입", description = "사용자가 회원가입을 요청하는 API", responses = {
+		@ApiResponse(responseCode = "200", description = "회원가입 성공"),
+		@ApiResponse(responseCode = "422", description = "잘못된 로그인 정보를 입력한 경우"),
+	})
 	@PostMapping("/sign-up")
 	public RangerResponse<Void> join(@RequestBody @Valid JoinRequest request) {
 		Boolean joinSuccess = userService.join(request);
@@ -40,6 +50,7 @@ public class UserController {
 		return RangerResponse.ok(joinSuccess);
 	}
 
+	@Tag(name = "user")
 	@PostMapping("/login")
 	public RangerResponse<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
 		LoginResponse loginResponse = userService.login(request);
@@ -47,6 +58,7 @@ public class UserController {
 		return RangerResponse.ok(loginResponse);
 	}
 
+	@Tag(name = "user")
 	@PostMapping("/members/logout")
 	public RangerResponse<Void> logout(
 		@RequestHeader("Authorization") String accessToken
@@ -55,6 +67,7 @@ public class UserController {
 		return RangerResponse.noData();
 	}
 
+	@Tag(name = "user")
 	@PostMapping("/members/check-name")
 	public RangerResponse<Void> checkname(@RequestBody @Valid ValidateNameRequest request) {
 		boolean notExistName = userService.isNotExistName(request.name());
@@ -62,6 +75,7 @@ public class UserController {
 		return RangerResponse.ok(notExistName);
 	}
 
+	@Tag(name = "user")
 	@PostMapping("/members/check-email")
 	public RangerResponse<Void> checkEmail(@RequestBody @Valid ValidateEmailRequest request) {
 		boolean notExistEmail = userService.isNotExistEmail(request.email());
@@ -69,6 +83,7 @@ public class UserController {
 		return RangerResponse.ok(notExistEmail);
 	}
 
+	@Tag(name = "user")
 	@PatchMapping("/members/profile")
 	public RangerResponse<Void> update(
 		@AuthenticationPrincipal UserPrincipal user,
@@ -78,6 +93,7 @@ public class UserController {
 		return RangerResponse.noData();
 	}
 
+	@Tag(name = "user")
 	@GetMapping("/members")
 	public RangerResponse<List<GetUserResponse>> getAllUsers() {
 		List<GetUserResponse> allUsers = userService.getAllUsers();
