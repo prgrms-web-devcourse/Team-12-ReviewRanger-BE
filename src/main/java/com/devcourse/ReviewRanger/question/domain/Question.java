@@ -33,9 +33,6 @@ public class Question extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private QuestionType type;
 
-	@Column(nullable = false)
-	private Integer sequence;
-
 	@Column(name = "is_required", nullable = false)
 	private Boolean isRequired;
 
@@ -52,7 +49,6 @@ public class Question extends BaseEntity {
 		List<QuestionOption> questionOptions) {
 		this.title = title;
 		this.type = type;
-		this.sequence = sequence;
 		this.isRequired = isRequired;
 		this.isDuplicated = isDuplicated;
 		this.questionOptions = questionOptions;
@@ -61,7 +57,6 @@ public class Question extends BaseEntity {
 	public Question(String title, QuestionType type, Integer sequence, Boolean isRequired, Boolean isDuplicated) {
 		this.title = title;
 		this.type = type;
-		this.sequence = sequence;
 		this.isRequired = isRequired;
 		this.isDuplicated = isDuplicated;
 	}

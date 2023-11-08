@@ -8,7 +8,6 @@ import com.devcourse.ReviewRanger.question.domain.QuestionType;
 public record GetQuestionResponse(
 	String title,
 	QuestionType type,
-	Integer sequence,
 	Boolean isRequired,
 	Boolean isDuplicated,
 	List<GetQuestionOptionResponse> options
@@ -17,7 +16,6 @@ public record GetQuestionResponse(
 		this(
 			question.getTitle(),
 			question.getType(),
-			question.getSequence(),
 			question.getIsRequired(),
 			question.getIsDuplicated(),
 			options
