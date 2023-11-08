@@ -29,12 +29,12 @@ public class ParticipationController {
 	}
 
 	@GetMapping("/participations")
-	public ResponseEntity<List<GetParticipationResponse>> getAllReviewsByResponser(
+	public RangerResponse<List<GetParticipationResponse>> getAllReviewsByResponser(
 		@AuthenticationPrincipal UserPrincipal user) {
 		Long responserId = user.getId();
 		List<GetParticipationResponse> responses = participationService.getAllReviewsByResponser(responserId);
 
-		return new ResponseEntity<>(responses, HttpStatus.OK);
+		return RangerResponse.ok(responses);
 	}
 
 	/**
