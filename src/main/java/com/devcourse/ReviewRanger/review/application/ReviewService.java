@@ -59,10 +59,10 @@ public class ReviewService {
 	}
 
 	@Transactional
-	public Boolean closeReviewOrThrow(Long reviewId) {
+	public void closeReviewOrThrow(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId).orElseThrow(EntityNotFoundException::new);
 		review.changeStatus(DeadlineStatus.END);
 
-		return participationService.closeParticipationOrThrow(reviewId);
+		participationService.closeParticipationOrThrow(reviewId);
 	}
 }

@@ -56,10 +56,10 @@ public class ReviewController {
 		return RangerResponse.ok(reviewResponses);
 	}
 
-	@PostMapping("/surveys/{reviewId}/closed")
-	public ResponseEntity<Boolean> closeReview(@PathVariable Long reviewId) {
-		Boolean result = reviewService.closeReviewOrThrow(reviewId);
+	@PostMapping("/reviews/{id}/close")
+	public RangerResponse<Void> closeReview(@PathVariable("id") Long reviewId) {
+		reviewService.closeReviewOrThrow(reviewId);
 
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		return RangerResponse.noData();
 	}
 }
