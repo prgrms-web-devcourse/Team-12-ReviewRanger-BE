@@ -41,9 +41,9 @@ public class ReviewedTargetService {
 			ReviewedTarget reviewedTarget = createReviewedTargetRequest.toEntity();
 			reviewedTarget.setParticipationId(participationId);
 
-			ReviewedTarget savedReviewedTargetId = reviewedTargetRepository.save(reviewedTarget);
+			ReviewedTarget savedReviewedTarget = reviewedTargetRepository.save(reviewedTarget);
 
-			replyService.createReply(savedReviewedTargetId, createReviewedTargetRequest.responses());
+			replyService.createReply(savedReviewedTarget, createReviewedTargetRequest.createReplyRequests());
 		}
 	}
 
