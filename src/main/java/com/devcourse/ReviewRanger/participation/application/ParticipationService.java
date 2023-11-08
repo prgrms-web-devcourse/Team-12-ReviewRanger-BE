@@ -17,10 +17,9 @@ import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationR
 import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.response.AllResponserParticipateInReviewResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
+import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ResponserResponse;
-import com.devcourse.ReviewRanger.participation.dto.response.SubjectResponse;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
-import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponseDto;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
@@ -120,8 +119,8 @@ public class ParticipationService {
 		return allResponserParticipateInReviewDto;
 	}
 
-	public List<SubjectResponse> getAllRecipientParticipateInReviewOrThrow(Long reviewId) {
-		List<SubjectResponse> responses = new ArrayList<>();
+	public List<ReceiverResponse> getAllReceiverParticipateInReviewOrThrow(Long reviewId) {
+		List<ReceiverResponse> responses = new ArrayList<>();
 		Map<Long, List<Long>> subjectToResponsersMap = new HashMap<>();
 
 		List<Participation> participations = getAllByReviewId(reviewId);
@@ -141,7 +140,7 @@ public class ParticipationService {
 			User user = userRepository.findById(recipient.getKey())
 				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 
-			SubjectResponse response = new SubjectResponse(recipient.getKey(), user.getName(),
+			ReceiverResponse response = new ReceiverResponse(recipient.getKey(), user.getName(),
 				recipient.getValue().size(), recipient.getValue());
 			responses.add(response);
 		}

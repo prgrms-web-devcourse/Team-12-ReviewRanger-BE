@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
-
+import com.devcourse.ReviewRanger.participation.application.ParticipationService;
+import com.devcourse.ReviewRanger.participation.dto.response.AllResponserParticipateInReviewResponse;
+import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
 import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
@@ -27,9 +29,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ReviewController {
 
 	private final ReviewService reviewService;
+	private final ParticipationService participationService;
 
-	public ReviewController(ReviewService reviewService) {
+	public ReviewController(ReviewService reviewService, ParticipationService participationService) {
 		this.reviewService = reviewService;
+		this.participationService = participationService;
 	}
 
 	@Tag(name = "review")
@@ -61,5 +65,30 @@ public class ReviewController {
 		Boolean result = reviewService.closeReviewOrThrow(reviewId);
 
 		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+	/**
+	 * 설문에 참여한 모든 응답자 조회
+	 */
+	@GetMapping("/reviews/{id}/responser")
+	public RangerResponse<AllResponserParticipateInReviewResponse> getAllReponserParticipateInReview(
+		@PathVariable Long id, @AuthenticationPrincipal UserPrincipal user) {
+		AllResponserParticipateInReviewResponse response = participationService.getAllReponserParticipateInReviewOrThrow(
+			id);
+
+		return RangerResponse.ok(response);
+	}
+
+	/**
+	 * 리뷰를 받은 모든 수신자 조회
+	 */
+	@GetMapping("/reviews/{id}/receiver")
+	public RangerResponse<List<ReceiverResponse>> getAllReceiverParticipateInReview(
+		@PathVariable Long id, @AuthenticationPrincipal UserPrincipal user
+	) {
+		List<ReceiverResponse> response = participationService.getAllReceiverParticipateInReviewOrThrow(
+			id);
+
+		return RangerResponse.ok(response);
 	}
 }
