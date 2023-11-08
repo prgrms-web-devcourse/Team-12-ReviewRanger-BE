@@ -43,7 +43,7 @@ public class ReviewService {
 
 		questionService.createQuestions(savedReview.getId(), createReviewRequest.creatQuestionRequests());
 		participationService.createParticipations(savedReview.getId(), createReviewRequest.responserIds());
-		
+
 		return true;
 	}
 
@@ -63,7 +63,8 @@ public class ReviewService {
 
 	@Transactional
 	public void closeReviewOrThrow(Long reviewId) {
-		Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+		Review review = reviewRepository.findById(reviewId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 		review.changeStatus(DeadlineStatus.END);
 
 		participationService.closeParticipationOrThrow(reviewId);
