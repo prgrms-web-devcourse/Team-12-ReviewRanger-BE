@@ -32,12 +32,12 @@ public class ReviewController {
 		this.reviewService = reviewService;
 	}
 
-	@PostMapping("/reviews")
 	@Tag(name = "review")
 	@Operation(summary = "리뷰 생성 및 요청", description = "생성자가 리뷰를 생성하고 요청하는 API", responses = {
 		@ApiResponse(responseCode = "200", description = "리뷰를 생성 및 요청 성공"),
 		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우")
 	})
+	@PostMapping("/reviews")
 	public RangerResponse<Void> createReview(
 		@RequestBody CreateReviewRequest createReviewRequest,
 		@AuthenticationPrincipal UserPrincipal user
@@ -51,8 +51,7 @@ public class ReviewController {
 	public RangerResponse<List<GetReviewResponse>> getAllReviewsByRequester(
 		@AuthenticationPrincipal UserPrincipal user
 	) {
-		Long requesterId = user.getId();
-		List<GetReviewResponse> reviewResponses = reviewService.getAllReviewsByRequester(requesterId);
+		List<GetReviewResponse> reviewResponses = reviewService.getAllReviewsByRequester(user.getId());
 
 		return RangerResponse.ok(reviewResponses);
 	}
