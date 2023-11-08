@@ -56,6 +56,11 @@ public class ReviewController {
 		return RangerResponse.ok(reviewResponses);
 	}
 
+	@Tag(name = "review")
+	@Operation(summary = "리뷰 마감 요청", description = "생성자 리뷰 마감 API", responses = {
+		@ApiResponse(responseCode = "200", description = "리뷰 마감 요청 성공"),
+		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우")
+	})
 	@PostMapping("/reviews/{id}/close")
 	public RangerResponse<Void> closeReview(@PathVariable("id") Long reviewId) {
 		reviewService.closeReviewOrThrow(reviewId);
