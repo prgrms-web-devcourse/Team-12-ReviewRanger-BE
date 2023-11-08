@@ -133,21 +133,17 @@ public class ParticipationService {
 	}
 
 	@Transactional
-	public Boolean submitResponse(SubmitParticipationRequest request) {
+	public void submitResponse(SubmitParticipationRequest request) {
 		Participation participation = getByIdOrThrow(request.participationId());
 
 		reviewedTargetService.createReviewTarget(participation.getId(), request.createReviewedTargetRequests());
 
 		participation.changeStatus(DeadlineStatus.DEADLINE);
-
-		return true;
 	}
 
 	@Transactional
-	public Boolean updateResponse(UpdateParticipationRequest request) {
+	public void updateResponse(UpdateParticipationRequest request) {
 		reviewedTargetService.updateReviewTarget(request.updateReviewedTargetRequests());
-
-		return true;
 	}
 
 	public Participation getByIdOrThrow(Long id) {

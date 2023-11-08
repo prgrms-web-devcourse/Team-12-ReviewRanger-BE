@@ -65,9 +65,9 @@ public class ParticipationController {
 	 */
 	@PostMapping(value = "/invited-surveys")
 	public RangerResponse<Void> submitParticipation(@RequestBody SubmitParticipationRequest request) {
-		Boolean response = participationService.submitResponse(request);
+		participationService.submitResponse(request);
 
-		return RangerResponse.ok(response);
+		return RangerResponse.noData();
 	}
 
 	/**
@@ -75,8 +75,8 @@ public class ParticipationController {
 	 */
 	@PutMapping(value = "/invited-surveys")
 	public RangerResponse<Void> updateParticipation(@RequestBody UpdateParticipationRequest request) {
-		Boolean response = participationService.updateResponse(request);
+		participationService.updateResponse(request);
 
-		return RangerResponse.ok(response);
+		return RangerResponse.noData();
 	}
 }
