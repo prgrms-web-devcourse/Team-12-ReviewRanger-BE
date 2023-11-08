@@ -17,15 +17,21 @@ import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationR
 import com.devcourse.ReviewRanger.participation.dto.response.AllResponserParticipateInReviewResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.SubjectResponse;
+import com.devcourse.ReviewRanger.reviewedTarget.application.ReviewedTargetService;
+import com.devcourse.ReviewRanger.reviewedTarget.dto.response.RepliesByResponserResponse;
+
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
 @RestController
 public class ParticipationController {
 
 	private final ParticipationService participationService;
+	private final ReviewedTargetService reviewedTargetService;
 
-	public ParticipationController(ParticipationService participationService) {
+	public ParticipationController(ParticipationService participationService,
+		ReviewedTargetService reviewedTargetService) {
 		this.participationService = participationService;
+		this.reviewedTargetService = reviewedTargetService;
 	}
 
 	@GetMapping("/participations")
@@ -42,7 +48,7 @@ public class ParticipationController {
 	 */
 	@GetMapping("/created-surveys/{surveyId}/responser")
 	public RangerResponse<AllResponserParticipateInReviewResponse> getAllReponserParticipateInSurvey(
-		@PathVariable Long surveyId) {
+		@PathVariable Long surveyId, @AuthenticationPrincipal UserPrincipal user) {
 		AllResponserParticipateInReviewResponse response = participationService.getAllReponserParticipateInReviewOrThrow(
 			surveyId);
 
@@ -53,8 +59,11 @@ public class ParticipationController {
 	 * 리뷰를 받은 사용자 전체 조회 기능
 	 */
 	@GetMapping("/created-surveys/{surveyId}/recipient")
-	public RangerResponse<List<SubjectResponse>> getAllRecipientParticipateInSurvey(@PathVariable Long surveyId) {
-		List<SubjectResponse> response = participationService.getAllRecipientParticipateInReviewOrThrow(surveyId);
+	public RangerResponse<List<SubjectResponse>> getAllRecipientParticipateInSurvey(
+		@PathVariable Long surveyId, @AuthenticationPrincipal UserPrincipal user
+	) {
+		List<SubjectResponse> response = participationService.getAllRecipientParticipateInReviewOrThrow(
+			surveyId);
 
 		return RangerResponse.ok(response);
 	}
@@ -63,9 +72,22 @@ public class ParticipationController {
 	 * 리뷰 답변 기능
 	 */
 	@PostMapping(value = "/invited-surveys")
-	public RangerResponse<Void> submitSurveyResult(@RequestBody SubmitParticipationRequest request) {
+	public RangerResponse<Void> submitSurveyResult(@RequestBody SubmitParticipationRequest request,
+		@AuthenticationPrincipal UserPrincipal user) {
 		Boolean response = participationService.submitResponse(request);
 
 		return RangerResponse.ok(response);
+	}
+
+	/**
+	 * 응답자의 모든 답변 내용 조회
+	 */
+	@GetMapping("/participations/{participationId}/responser")
+	public RangerResponse<List<RepliesByResponserResponse>> getRepliesByResponser(@PathVariable Long participationId,
+		@AuthenticationPrincipal UserPrincipal user) {
+		List<RepliesByResponserResponse> responses = reviewedTargetService.getAllRepliesByResponser(
+			participationId);
+
+		return RangerResponse.ok(responses);
 	}
 }
