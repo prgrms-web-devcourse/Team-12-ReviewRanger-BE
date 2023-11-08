@@ -52,6 +52,7 @@ public class ReviewedTargetService {
 		for (UpdateReviewedTargetRequest updateReviewedTargetRequest : updateReviewedTargetRequests) {
 			replyService.updateReply(updateReviewedTargetRequest.responses());
 		}
+	}
 
 	public List<RepliesByResponserResponse> getAllRepliesByResponser(Long participationId) {
 		List<RepliesByResponserResponse> repliesByResponserResponses = new ArrayList<>();
