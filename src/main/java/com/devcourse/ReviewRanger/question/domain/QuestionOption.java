@@ -24,13 +24,13 @@ public class QuestionOption extends BaseEntity {
 	@Column(name = "option_context", nullable = false, length = 100)
 	@NotBlank(message = "옵션 내용은 빈값 일 수 없습니다.")
 	@Size(max = 100, message = "150자 이하로 입력하세요.")
-	private String optionContext;
+	private String optionName;
 
 	protected QuestionOption() {
 	}
 
-	public QuestionOption(String optionContext) {
-		this.optionContext = optionContext;
+	public QuestionOption(String optionName) {
+		this.optionName = optionName;
 	}
 
 	public void assignQuestion(Question question) {

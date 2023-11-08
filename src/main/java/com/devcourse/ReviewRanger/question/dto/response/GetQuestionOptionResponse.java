@@ -7,7 +7,7 @@ public record GetQuestionOptionResponse(
 ) {
 	public GetQuestionOptionResponse(QuestionOption questionOption) {
 		this(
-			questionOption.getOptionContext()
+			questionOption.getOptionName()
 		);
 	}
 }

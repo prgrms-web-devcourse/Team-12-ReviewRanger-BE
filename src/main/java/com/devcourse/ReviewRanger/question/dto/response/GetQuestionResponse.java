@@ -9,7 +9,6 @@ public record GetQuestionResponse(
 	String title,
 	QuestionType type,
 	Boolean isRequired,
-	Boolean isDuplicated,
 	List<GetQuestionOptionResponse> options
 ) {
 	public GetQuestionResponse(Question question, List<GetQuestionOptionResponse> options) {
@@ -17,7 +16,6 @@ public record GetQuestionResponse(
 			question.getTitle(),
 			question.getType(),
 			question.getIsRequired(),
-			question.getIsDuplicated(),
 			options
 		);
 	}
