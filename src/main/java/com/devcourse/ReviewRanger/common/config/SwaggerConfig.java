@@ -1,46 +1,72 @@
-// package com.devcourse.ReviewRanger.common.config;
-//
-// import org.springdoc.core.models.GroupedOpenApi;
-// import org.springframework.context.annotation.Bean;
-// import org.springframework.context.annotation.Configuration;
-//
-// import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-// import io.swagger.v3.oas.annotations.info.Info;
-//
-// @OpenAPIDefinition(
-// 	info = @Info(title = "리뷰레인저 서비스",
-// 		description = "리뷰레인저 api 명세서",
-// 		version = "v1"))
-// @Configuration
-// public class SwaggerConfig {
-//
-// 	@Bean
-// 	public GroupedOpenApi userOpenApi() {
-// 		String[] paths = {"/members/**", "/sign-up", "/login"};
-//
-// 		return GroupedOpenApi.builder()
-// 			.group("유저 API v1")
-// 			.pathsToMatch(paths)
-// 			.build();
-// 	}
-//
-// 	@Bean
-// 	public GroupedOpenApi surveyOpenApi() {
-// 		String[] paths = {"/surveys/**"};
-//
-// 		return GroupedOpenApi.builder()
-// 			.group("설문 API v1")
-// 			.pathsToMatch(paths)
-// 			.build();
-// 	}
-//
-// 	@Bean
-// 	public GroupedOpenApi responseOpenApi() {
-// 		String[] paths = {"/responses/**", "/invited-surveys"};
-//
-// 		return GroupedOpenApi.builder()
-// 			.group("응답 API v1")
-// 			.pathsToMatch(paths)
-// 			.build();
-// 	}
-// }
+package com.devcourse.ReviewRanger.common.config;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiKey;
+import springfox.documentation.service.AuthorizationScope;
+import springfox.documentation.service.SecurityReference;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
+import springfox.documentation.spring.web.plugins.Docket;
+
+@OpenAPIDefinition(
+	info = @Info(title = "ReviewRanger",
+		description = "ReviewRanger API 명세서",
+		version = "v1"))
+@Configuration
+public class SwaggerConfig {
+
+	@Bean
+	public Docket api() {
+		return new Docket(DocumentationType.OAS_30)
+			.securityContexts(List.of(this.securityContext())) // SecurityContext 설정
+			.securitySchemes(List.of(this.apiKey())) // ApiKey 설정
+			.select()
+			.apis(RequestHandlerSelectors.basePackage("com.devcourse.ReviewRanger"))
+			.paths(PathSelectors.any())
+			.build();
+	}
+
+	private SecurityContext securityContext() {
+		return SecurityContext.builder()
+			.securityReferences(defaultAuth())
+			.build();
+	}
+
+	private List<SecurityReference> defaultAuth() {
+		AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+		AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+		authorizationScopes[0] = authorizationScope;
+		return List.of(new SecurityReference("Authorization", authorizationScopes));
+	}
+
+	// ApiKey 정의
+	private ApiKey apiKey() {
+		return new ApiKey("Authorization", "Authorization", "header");
+	}
+
+	@Bean
+	public OpenAPI openAPI() {
+		SecurityScheme securityScheme = new SecurityScheme()
+			.type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
+			.in(SecurityScheme.In.HEADER).name("Authorization");
+		SecurityRequirement securityRequirement = new SecurityRequirement().addList("bearerAuth");
+
+		return new OpenAPI()
+			.components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
+			.security(Arrays.asList(securityRequirement));
+	}
+}

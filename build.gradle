@@ -49,7 +49,8 @@ dependencies {
     runtimeOnly "io.jsonwebtoken:jjwt-jackson:0.11.5"
 
     //swagger
-    //implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
 
     // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
