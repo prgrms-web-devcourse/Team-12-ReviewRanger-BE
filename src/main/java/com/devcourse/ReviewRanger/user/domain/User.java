@@ -52,8 +52,11 @@ public class User extends BaseEntity {
 		this.role = Role.ROLE_USER;
 	}
 
-	public void updateInfo(String editName, String editEncodedPassword) {
+	public void updateName(String editName) {
 		this.name = editName;
+	}
+
+	public void updatePassword(String editEncodedPassword) {
 		this.password = editEncodedPassword;
 	}
 }

@@ -15,11 +15,11 @@ import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 import com.devcourse.ReviewRanger.common.redis.RedisUtil;
 import com.devcourse.ReviewRanger.user.domain.User;
+import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.user.dto.GetUserResponse;
 import com.devcourse.ReviewRanger.user.dto.JoinRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginResponse;
-import com.devcourse.ReviewRanger.user.dto.UpdateRequest;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
@@ -80,18 +80,20 @@ public class UserService {
 	}
 
 	@Transactional
-	public void updateInfo(Long id, UpdateRequest updateRequest) {
-		User user = getUserOrThrow(id);
-		String editName = updateRequest.name();
-
+	public void updateName(Long id, String editName) {
 		if (!isNotExistName(editName)) {
 			throw new RangerException(EXIST_SAME_NAME);
 		}
 
-		String editEncodedPassword = updateRequest.password();
-		editEncodedPassword = passwordEncoder.encode(editEncodedPassword);
+		User user = getUserOrThrow(id);
+		user.updateName(editName);
+	}
 
-		user.updateInfo(editName, editEncodedPassword);
+	@Transactional
+	public void updatePassword(Long id, String editEncodedPassword) {
+		User user = getUserOrThrow(id);
+		editEncodedPassword = passwordEncoder.encode(editEncodedPassword);
+		user.updatePassword(editEncodedPassword);
 	}
 
 	public void logout(String accessToken) {
