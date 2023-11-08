@@ -64,7 +64,7 @@ public class UserController {
 	}
 
 	@Tag(name = "user")
-	@Operation(summary = "로그아웃", description = "사용자가 로그아웃을 요청하는 API", responses = {
+	@Operation(summary = "[토큰] 로그아웃", description = "[토큰] 사용자가 로그아웃을 요청하는 API", responses = {
 		@ApiResponse(responseCode = "200", description = "로그아웃 성공"),
 		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우"),
 	})
@@ -101,7 +101,7 @@ public class UserController {
 	}
 
 	@Tag(name = "user")
-	@Operation(summary = "사용자 이름 변경", description = "사용자가 이름을 변경하는 API", responses = {
+	@Operation(summary = "[토큰] 사용자 이름 변경", description = "[토큰] 사용자가 이름을 변경하는 API", responses = {
 		@ApiResponse(responseCode = "200", description = "이름 변경 성공"),
 		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우"),
 		@ApiResponse(responseCode = "409", description = "이미 가입된 아이디를 입력한 경우")
@@ -116,7 +116,7 @@ public class UserController {
 	}
 
 	@Tag(name = "user")
-	@Operation(summary = "사용자 비밀번호 변경", description = "사용자가 비밀번호를 변경하는 API", responses = {
+	@Operation(summary = "[토큰] 사용자 비밀번호 변경", description = "[토큰] 사용자가 비밀번호를 변경하는 API", responses = {
 		@ApiResponse(responseCode = "200", description = "비밀번호 변경 성공"),
 		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우"),
 	})
@@ -141,7 +141,7 @@ public class UserController {
 	}
 
 	@Tag(name = "user")
-	@Operation(summary = "현재 사용자 정보 조회", description = "현재 사용자 정보를 조회하는 API", responses = {
+	@Operation(summary = "[토큰] 현재 사용자 정보 조회", description = "[토큰] 현재 사용자 정보를 조회하는 API", responses = {
 		@ApiResponse(responseCode = "200", description = "사용자 정보 조회 성공"),
 		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우"),
 	})
