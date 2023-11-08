@@ -10,12 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
 import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
-import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.question.application.QuestionService;
-import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
-import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
+import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
 
 @Service
@@ -46,14 +44,14 @@ public class ReviewService {
 		return true;
 	}
 
-	public List<ReviewResponse> getAllReviewsByRequester(Long requesterId) {
+	public List<GetReviewResponse> getAllReviewsByRequester(Long requesterId) {
 		List<Review> requesterReviews = reviewRepository.findByRequesterId(requesterId);
 
-		List<ReviewResponse> reviewResponses = new ArrayList<>();
+		List<GetReviewResponse> reviewResponses = new ArrayList<>();
 		for (Review requesterReview : requesterReviews) {
 			Long reviewId = requesterReview.getId();
 			Long responserCount = participationService.getResponserCount(reviewId);
-			ReviewResponse reviewResponse = new ReviewResponse(requesterReview, responserCount);
+			GetReviewResponse reviewResponse = new GetReviewResponse(requesterReview, responserCount);
 			reviewResponses.add(reviewResponse);
 		}
 

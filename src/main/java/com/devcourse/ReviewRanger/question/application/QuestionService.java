@@ -1,5 +1,6 @@
 package com.devcourse.ReviewRanger.question.application;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.question.domain.QuestionOption;
 import com.devcourse.ReviewRanger.question.dto.request.CreateQuestionOptionRequest;
 import com.devcourse.ReviewRanger.question.dto.request.CreateQuestionRequest;
+import com.devcourse.ReviewRanger.question.dto.response.GetQuestionOptionResponse;
+import com.devcourse.ReviewRanger.question.dto.response.GetQuestionResponse;
 import com.devcourse.ReviewRanger.question.repository.QuestionOptionRepository;
 import com.devcourse.ReviewRanger.question.repository.QuestionRepository;
 
@@ -38,8 +41,7 @@ public class QuestionService {
 	}
 
 	@Transactional
-	public Boolean createQuestionOptions(
-		Question question,
+	public Boolean createQuestionOptions(Question question,
 		List<CreateQuestionOptionRequest> createQuestionOptionRequests
 	) {
 		for (CreateQuestionOptionRequest createQuestionOptionRequest : createQuestionOptionRequests) {
@@ -50,5 +52,23 @@ public class QuestionService {
 		}
 
 		return true;
+	}
+
+	public List<GetQuestionResponse> getAllQuestionsByReview(Long reviewId) {
+		List<Question> questions = questionRepository.findByReviewId(reviewId);
+
+		List<GetQuestionResponse> getQuestionResponses = new ArrayList<>();
+
+		for (Question question : questions) {
+			List<GetQuestionOptionResponse> questionOptionResponses = question.getQuestionOptions()
+				.stream()
+				.map(questionOption -> new GetQuestionOptionResponse(questionOption))
+				.toList();
+
+			GetQuestionResponse getQuestionResponse = new GetQuestionResponse(question, questionOptionResponses);
+			getQuestionResponses.add(getQuestionResponse);
+		}
+
+		return getQuestionResponses;
 	}
 }

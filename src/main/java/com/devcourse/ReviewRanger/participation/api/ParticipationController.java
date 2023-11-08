@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
-import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.response.AllResponserParticipateInReviewResponse;
+import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.SubjectResponse;
 import com.devcourse.ReviewRanger.reviewedTarget.application.ReviewedTargetService;
 import com.devcourse.ReviewRanger.reviewedTarget.dto.response.RepliesByResponserResponse;
+
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
 @RestController
@@ -33,11 +34,13 @@ public class ParticipationController {
 		this.reviewedTargetService = reviewedTargetService;
 	}
 
-	@GetMapping("/invited-surveys/{responserId}")
-	public ResponseEntity<List<Participation>> getResponserSurveyResult(@PathVariable Long responserId) {
-		List<Participation> sersurveyResults = participationService.getResponserSurveyResult(responserId);
+	@GetMapping("/participations")
+	public RangerResponse<List<GetParticipationResponse>> getAllReviewsByResponser(
+		@AuthenticationPrincipal UserPrincipal user) {
+		Long responserId = user.getId();
+		List<GetParticipationResponse> responses = participationService.getAllReviewsByResponser(responserId);
 
-		return new ResponseEntity<List<Participation>>(sersurveyResults, HttpStatus.OK);
+		return RangerResponse.ok(responses);
 	}
 
 	/**
