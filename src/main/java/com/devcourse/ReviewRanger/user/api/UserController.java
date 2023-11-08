@@ -21,6 +21,7 @@ import com.devcourse.ReviewRanger.user.dto.LoginRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginResponse;
 import com.devcourse.ReviewRanger.user.dto.UpdateNameRequest;
 import com.devcourse.ReviewRanger.user.dto.UpdatePasswordRequest;
+import com.devcourse.ReviewRanger.user.dto.UserInfoResponse;
 import com.devcourse.ReviewRanger.user.dto.ValidateEmailRequest;
 import com.devcourse.ReviewRanger.user.dto.ValidateNameRequest;
 
@@ -146,8 +147,9 @@ public class UserController {
 		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우"),
 	})
 	@GetMapping("/user")
-	public RangerResponse<GetUserResponse> getUserInfo(@AuthenticationPrincipal UserPrincipal user) {
-		GetUserResponse userResponse = userService.getUserInfo(user);
-		return RangerResponse.ok(userResponse);
+	public RangerResponse<UserInfoResponse> getUserInfo(@AuthenticationPrincipal UserPrincipal user) {
+		UserInfoResponse userInfo = userService.getUserInfo(user);
+
+		return RangerResponse.ok(userInfo);
 	}
 }

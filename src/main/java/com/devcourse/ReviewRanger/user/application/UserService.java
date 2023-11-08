@@ -20,6 +20,7 @@ import com.devcourse.ReviewRanger.user.dto.GetUserResponse;
 import com.devcourse.ReviewRanger.user.dto.JoinRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginRequest;
 import com.devcourse.ReviewRanger.user.dto.LoginResponse;
+import com.devcourse.ReviewRanger.user.dto.UserInfoResponse;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
@@ -117,10 +118,11 @@ public class UserService {
 			.toList();
 	}
 
-	public GetUserResponse getUserInfo(UserPrincipal user) {
+	public UserInfoResponse getUserInfo(UserPrincipal user) {
 		Long id = user.getId();
 		String name = user.getName();
+		String email = user.getUsername();
 
-		return new GetUserResponse(id, name);
+		return new UserInfoResponse(id, name, email);
 	}
 }
