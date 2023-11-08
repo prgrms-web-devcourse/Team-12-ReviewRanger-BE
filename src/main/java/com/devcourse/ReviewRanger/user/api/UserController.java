@@ -139,4 +139,15 @@ public class UserController {
 
 		return RangerResponse.ok(allUsers);
 	}
+
+	@Tag(name = "user")
+	@Operation(summary = "현재 사용자 정보 조회", description = "현재 사용자 정보를 조회하는 API", responses = {
+		@ApiResponse(responseCode = "200", description = "사용자 정보 조회 성공"),
+		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우"),
+	})
+	@GetMapping("/user")
+	public RangerResponse<GetUserResponse> getUserInfo(@AuthenticationPrincipal UserPrincipal user) {
+		GetUserResponse userResponse = userService.getUserInfo(user);
+		return RangerResponse.ok(userResponse);
+	}
 }

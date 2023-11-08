@@ -116,4 +116,11 @@ public class UserService {
 			.map(user -> new GetUserResponse(user.getId(), user.getName()))
 			.toList();
 	}
+
+	public GetUserResponse getUserInfo(UserPrincipal user) {
+		Long id = user.getId();
+		String name = user.getName();
+
+		return new GetUserResponse(id, name);
+	}
 }
