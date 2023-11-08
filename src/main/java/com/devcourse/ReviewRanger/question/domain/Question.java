@@ -36,29 +36,23 @@ public class Question extends BaseEntity {
 	@Column(name = "is_required", nullable = false)
 	private Boolean isRequired;
 
-	@Column(name = "is_duplicated", nullable = false)
-	private Boolean isDuplicated;
-
 	@OneToMany(mappedBy = "question")
 	private List<QuestionOption> questionOptions = new ArrayList<>();
 
 	protected Question() {
 	}
 
-	public Question(String title, QuestionType type, Integer sequence, Boolean isRequired, boolean isDuplicated,
-		List<QuestionOption> questionOptions) {
+	public Question(String title, QuestionType type, Boolean isRequired, List<QuestionOption> questionOptions) {
 		this.title = title;
 		this.type = type;
 		this.isRequired = isRequired;
-		this.isDuplicated = isDuplicated;
 		this.questionOptions = questionOptions;
 	}
 
-	public Question(String title, QuestionType type, Integer sequence, Boolean isRequired, Boolean isDuplicated) {
+	public Question(String title, QuestionType type, Boolean isRequired) {
 		this.title = title;
 		this.type = type;
 		this.isRequired = isRequired;
-		this.isDuplicated = isDuplicated;
 	}
 
 	public void assignReviewId(Long reviewId) {
