@@ -39,12 +39,13 @@ public class ParticipationController {
 	}
 
 	@Tag(name = "participation")
-	@Operation(summary = "응답자의 초대받은 리뷰 전체조회", description = "응답자의 초대받은 리뷰 전체조회 API", responses = {
+	@Operation(summary = "[토큰] 응답자의 초대받은 리뷰 전체조회", description = "[토큰] 응답자의 초대받은 리뷰 전체조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
 	@GetMapping("/participations")
 	public RangerResponse<List<GetParticipationResponse>> getAllParticipationsByResponser(
-		@AuthenticationPrincipal UserPrincipal user) {
+		@AuthenticationPrincipal UserPrincipal user
+	) {
 		Long responserId = user.getId();
 		List<GetParticipationResponse> responses = participationService.getAllParticipationsByResponser(responserId);
 

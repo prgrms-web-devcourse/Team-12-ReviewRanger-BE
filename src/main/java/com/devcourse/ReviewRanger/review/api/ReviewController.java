@@ -2,8 +2,6 @@ package com.devcourse.ReviewRanger.review.api;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +15,7 @@ import com.devcourse.ReviewRanger.participation.dto.response.AllResponserPartici
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
 import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
+import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
@@ -37,7 +36,7 @@ public class ReviewController {
 	}
 
 	@Tag(name = "review")
-	@Operation(summary = "리뷰 생성 및 요청", description = "생성자가 리뷰를 생성하고 요청하는 API", responses = {
+	@Operation(summary = "[토큰] 리뷰 생성 및 요청", description = "[토큰] 생성자가 리뷰를 생성하고 요청하는 API", responses = {
 		@ApiResponse(responseCode = "200", description = "리뷰를 생성 및 요청 성공"),
 		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우")
 	})
@@ -51,13 +50,31 @@ public class ReviewController {
 		return RangerResponse.noData();
 	}
 
+	@Tag(name = "review")
+	@Operation(summary = "[토큰] 요청자가 만든 리뷰 전체 조회", description = "[토큰] 요청자가 만든 리뷰 전체 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "요청자가 만든 리뷰 전체 조회 성공"),
+	})
 	@GetMapping("/reviews")
 	public RangerResponse<List<GetReviewResponse>> getAllReviewsByRequester(
 		@AuthenticationPrincipal UserPrincipal user
 	) {
-		List<GetReviewResponse> reviewResponses = reviewService.getAllReviewsByRequester(user.getId());
+		List<GetReviewResponse> responses = reviewService.getAllReviewsByRequester(user.getId());
 
-		return RangerResponse.ok(reviewResponses);
+		return RangerResponse.ok(responses);
+	}
+
+	@Tag(name = "review")
+	@Operation(summary = "리뷰 상세 조회", description = "리뷰 상세 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "리뷰를 상세 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우")
+	})
+	@GetMapping("/reviews/{id}")
+	public RangerResponse<GetReviewDetailResponse> getReviewDetail(
+		@PathVariable("id") Long reviewId
+	) {
+		GetReviewDetailResponse response = reviewService.getReviewDetailOrThrow(reviewId);
+
+		return RangerResponse.ok(response);
 	}
 
 	@Tag(name = "review")
