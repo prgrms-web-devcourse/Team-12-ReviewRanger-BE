@@ -6,12 +6,12 @@ import com.devcourse.ReviewRanger.reply.dto.response.ReplyResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record RepliesByResponserResponse(
-	Long subjectId,
+	Long receiverId,
 
-	String subjectName,
+	String receiverName,
 
 	@JsonProperty("replies")
-	List<ReplyResponse> replies
+	List<ReplyResponse> replyResponses
 ) {
 
 }
