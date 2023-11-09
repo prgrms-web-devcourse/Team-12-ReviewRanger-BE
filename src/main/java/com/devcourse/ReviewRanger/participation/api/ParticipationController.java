@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +24,12 @@ import com.devcourse.ReviewRanger.reviewedTarget.dto.response.RepliesByResponser
 
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@Tag(name = "participation", description = "참여 API")
 public class ParticipationController {
 
 	private final ParticipationService participationService;
@@ -38,6 +41,10 @@ public class ParticipationController {
 		this.reviewedTargetService = reviewedTargetService;
 	}
 
+	@Tag(name = "participation")
+	@Operation(summary = "응답자의 초대받은 리뷰 전체조회", description = "응답자의 초대받은 리뷰 전체조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "조회 성공")
+	})
 	@GetMapping("/participations")
 	public RangerResponse<List<GetParticipationResponse>> getAllParticipationsByResponser(
 		@AuthenticationPrincipal UserPrincipal user) {
