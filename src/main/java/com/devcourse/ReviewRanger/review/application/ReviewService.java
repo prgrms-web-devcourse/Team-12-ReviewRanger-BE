@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
 import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
+import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.question.application.QuestionService;
 import com.devcourse.ReviewRanger.question.dto.response.GetQuestionResponse;
 import com.devcourse.ReviewRanger.review.domain.Review;
@@ -21,21 +22,25 @@ import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
+import com.devcourse.ReviewRanger.user.application.UserService;
+import com.devcourse.ReviewRanger.user.dto.GetUserResponse;
 
 @Service
 @Transactional(readOnly = true)
 public class ReviewService {
 
+	private final ReviewRepository reviewRepository;
+
+	private final UserService userService;
 	private final QuestionService questionService;
 	private final ParticipationService participationService;
 
-	private final ReviewRepository reviewRepository;
-
-	public ReviewService(QuestionService questionService, ParticipationService participationService,
-		ReviewRepository reviewRepository) {
+	public ReviewService(ReviewRepository reviewRepository, UserService userService, QuestionService questionService,
+		ParticipationService participationService) {
+		this.reviewRepository = reviewRepository;
+		this.userService = userService;
 		this.questionService = questionService;
 		this.participationService = participationService;
-		this.reviewRepository = reviewRepository;
 	}
 
 	@Transactional
@@ -70,6 +75,14 @@ public class ReviewService {
 		List<GetQuestionResponse> questionResponse = questionService.getAllQuestionsByReview(reviewId);
 
 		return new GetReviewDetailResponse(review, questionResponse);
+	}
+
+	public List<GetUserResponse> getAllReceivers(Long reviewId, Long id) {
+		return participationService.getAllByReviewId(reviewId).stream()
+			.filter(participation -> participation.getResponserId() != id)
+			.map(participation -> userService.getUserOrThrow(participation.getResponserId()))
+			.map(user -> new GetUserResponse(user.getId(), user.getName()))
+			.toList();
 	}
 
 	@Transactional
