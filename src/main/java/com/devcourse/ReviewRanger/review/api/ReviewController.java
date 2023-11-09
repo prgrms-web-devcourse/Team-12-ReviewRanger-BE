@@ -59,6 +59,11 @@ public class ReviewController {
 		return RangerResponse.ok(responses);
 	}
 
+	@Tag(name = "review")
+	@Operation(summary = "리뷰 상세 조회", description = "리뷰 상세 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "리뷰를 상세 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우")
+	})
 	@GetMapping("/reviews/{id}")
 	public RangerResponse<GetReviewDetailResponse> getReviewDetail(
 		@PathVariable("id") Long reviewId
