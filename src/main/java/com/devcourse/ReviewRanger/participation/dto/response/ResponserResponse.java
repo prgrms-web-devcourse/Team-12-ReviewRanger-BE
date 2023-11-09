@@ -13,6 +13,6 @@ public record ResponserResponse(
 	@JsonProperty("name")
 	String responserName,
 
-	LocalDateTime updatedAt
+	LocalDateTime submitAt
 ) {
 }

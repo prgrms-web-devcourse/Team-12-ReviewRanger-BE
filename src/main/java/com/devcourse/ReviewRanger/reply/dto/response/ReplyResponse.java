@@ -6,7 +6,7 @@ import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
 public record ReplyResponse(
 	Long id,
 
-	Long responerId,
+	Long responserId,
 
 	Long questionId,
 
@@ -23,7 +23,7 @@ public record ReplyResponse(
 			reply.getQuestionId(),
 			reply.getObjectOptionId(),
 			reply.getAnswerText(),
-			reply.getReviewedTarget()
+			null
 		);
 	}
 }

@@ -2,10 +2,10 @@ package com.devcourse.ReviewRanger.participation.dto.response;
 
 import java.util.List;
 
-public record SubjectResponse(
-	Long subjectId,
+public record ReceiverResponse(
+	Long receiverId,
 
-	String subjectName,
+	String receiverName,
 
 	Integer responserCount,
 

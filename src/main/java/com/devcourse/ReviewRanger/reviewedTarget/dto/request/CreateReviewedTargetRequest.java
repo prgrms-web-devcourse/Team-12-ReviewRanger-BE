@@ -6,14 +6,16 @@ import javax.validation.constraints.NotBlank;
 
 import com.devcourse.ReviewRanger.reply.dto.request.CreateReplyRequest;
 import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record CreateReviewedTargetRequest(
 	@NotBlank(message = "리뷰 대상 Id는 빈값 일 수 없습니다.")
-	Long subjectId,
+	Long receiverId,
 
-	List<CreateReplyRequest> responses
+	@JsonProperty("replies")
+	List<CreateReplyRequest> createReplyRequests
 ) {
 	public ReviewedTarget toEntity() {
-		return new ReviewedTarget(subjectId);
+		return new ReviewedTarget(receiverId);
 	}
 }

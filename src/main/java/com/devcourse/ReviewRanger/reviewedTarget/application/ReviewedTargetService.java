@@ -41,16 +41,16 @@ public class ReviewedTargetService {
 			ReviewedTarget reviewedTarget = createReviewedTargetRequest.toEntity();
 			reviewedTarget.setParticipationId(participationId);
 
-			ReviewedTarget savedReviewedTargetId = reviewedTargetRepository.save(reviewedTarget);
+			ReviewedTarget savedReviewedTarget = reviewedTargetRepository.save(reviewedTarget);
 
-			replyService.createReply(savedReviewedTargetId, createReviewedTargetRequest.responses());
+			replyService.createReply(savedReviewedTarget, createReviewedTargetRequest.createReplyRequests());
 		}
 	}
 
 	@Transactional
 	public void updateReviewTarget(List<UpdateReviewedTargetRequest> updateReviewedTargetRequests) {
 		for (UpdateReviewedTargetRequest updateReviewedTargetRequest : updateReviewedTargetRequests) {
-			replyService.updateReply(updateReviewedTargetRequest.responses());
+			replyService.updateReply(updateReviewedTargetRequest.updateReplyRequests());
 		}
 	}
 
