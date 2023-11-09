@@ -59,7 +59,7 @@ public class ParticipationService {
 		return true;
 	}
 
-	public List<GetParticipationResponse> getAllReviewsByResponser(Long responserId) {
+	public List<GetParticipationResponse> getAllParticipationsByResponser(Long responserId) {
 		List<Participation> participations = participationRepository.findByResponserId(responserId);
 
 		List<GetParticipationResponse> getParticipationResponses = new ArrayList<>();

@@ -21,7 +21,12 @@ import com.devcourse.ReviewRanger.reviewedTarget.application.ReviewedTargetServi
 import com.devcourse.ReviewRanger.reviewedTarget.dto.response.RepliesByResponserResponse;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@Tag(name = "participation", description = "참여 API")
 public class ParticipationController {
 
 	private final ParticipationService participationService;
@@ -33,11 +38,15 @@ public class ParticipationController {
 		this.reviewedTargetService = reviewedTargetService;
 	}
 
+	@Tag(name = "participation")
+	@Operation(summary = "응답자의 초대받은 리뷰 전체조회", description = "응답자의 초대받은 리뷰 전체조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "조회 성공")
+	})
 	@GetMapping("/participations")
-	public RangerResponse<List<GetParticipationResponse>> getAllReviewsByResponser(
+	public RangerResponse<List<GetParticipationResponse>> getAllParticipationsByResponser(
 		@AuthenticationPrincipal UserPrincipal user) {
 		Long responserId = user.getId();
-		List<GetParticipationResponse> responses = participationService.getAllReviewsByResponser(responserId);
+		List<GetParticipationResponse> responses = participationService.getAllParticipationsByResponser(responserId);
 
 		return RangerResponse.ok(responses);
 	}
