@@ -36,7 +36,7 @@ public class ReviewController {
 	}
 
 	@Tag(name = "review")
-	@Operation(summary = "리뷰 생성 및 요청", description = "생성자가 리뷰를 생성하고 요청하는 API", responses = {
+	@Operation(summary = "[토큰] 리뷰 생성 및 요청", description = "[토큰] 생성자가 리뷰를 생성하고 요청하는 API", responses = {
 		@ApiResponse(responseCode = "200", description = "리뷰를 생성 및 요청 성공"),
 		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우")
 	})
@@ -51,7 +51,7 @@ public class ReviewController {
 	}
 
 	@Tag(name = "review")
-	@Operation(summary = "요청자가 만든 리뷰 전체 조회", description = "요청자가 만든 리뷰 전체 조회 API", responses = {
+	@Operation(summary = "[토큰] 요청자가 만든 리뷰 전체 조회", description = "[토큰] 요청자가 만든 리뷰 전체 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "요청자가 만든 리뷰 전체 조회 성공"),
 	})
 	@GetMapping("/reviews")
@@ -72,7 +72,7 @@ public class ReviewController {
 	public RangerResponse<GetReviewDetailResponse> getReviewDetail(
 		@PathVariable("id") Long reviewId
 	) {
-		GetReviewDetailResponse response = reviewService.getReviewDetail(reviewId);
+		GetReviewDetailResponse response = reviewService.getReviewDetailOrThrow(reviewId);
 
 		return RangerResponse.ok(response);
 	}

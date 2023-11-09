@@ -64,8 +64,9 @@ public class ReviewService {
 		return reviewResponses;
 	}
 
-	public GetReviewDetailResponse getReviewDetail(Long reviewId) {
-		Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+	public GetReviewDetailResponse getReviewDetailOrThrow(Long reviewId) {
+		Review review = reviewRepository.findById(reviewId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 		List<GetQuestionResponse> questionResponse = questionService.getAllQuestionsByReview(reviewId);
 
 		return new GetReviewDetailResponse(review, questionResponse);
