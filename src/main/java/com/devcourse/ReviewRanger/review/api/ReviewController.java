@@ -2,8 +2,6 @@ package com.devcourse.ReviewRanger.review.api;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +15,7 @@ import com.devcourse.ReviewRanger.participation.dto.response.AllResponserPartici
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
 import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
+import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
@@ -55,9 +54,18 @@ public class ReviewController {
 	public RangerResponse<List<GetReviewResponse>> getAllReviewsByRequester(
 		@AuthenticationPrincipal UserPrincipal user
 	) {
-		List<GetReviewResponse> reviewResponses = reviewService.getAllReviewsByRequester(user.getId());
+		List<GetReviewResponse> responses = reviewService.getAllReviewsByRequester(user.getId());
 
-		return RangerResponse.ok(reviewResponses);
+		return RangerResponse.ok(responses);
+	}
+
+	@GetMapping("/reviews/{id}")
+	public RangerResponse<GetReviewDetailResponse> getReviewDetail(
+		@PathVariable("id") Long reviewId
+	) {
+		GetReviewDetailResponse response = reviewService.getReviewDetail(reviewId);
+
+		return RangerResponse.ok(response);
 	}
 
 	@Tag(name = "review")
