@@ -24,7 +24,7 @@ public class SecurityConfig {
 
 	private final JwtTokenProvider jwtTokenProvider;
 	private final String[] permitUrls = {"/login", "/sign-up", "/members/check-id", "/members/check-email",
-		"/swagger-ui", "/swagger-ui/**"};
+		"/swagger-ui", "/swagger-ui/**", "/final-results"};
 
 	public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
 		this.jwtTokenProvider = jwtTokenProvider;
