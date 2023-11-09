@@ -50,6 +50,10 @@ public class ReviewController {
 		return RangerResponse.noData();
 	}
 
+	@Tag(name = "review")
+	@Operation(summary = "요청자가 만든 리뷰 전체 조회", description = "요청자가 만든 리뷰 전체 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "요청자가 만든 리뷰 전체 조회 성공"),
+	})
 	@GetMapping("/reviews")
 	public RangerResponse<List<GetReviewResponse>> getAllReviewsByRequester(
 		@AuthenticationPrincipal UserPrincipal user
