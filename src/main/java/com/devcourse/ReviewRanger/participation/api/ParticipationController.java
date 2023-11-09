@@ -39,10 +39,10 @@ public class ParticipationController {
 	}
 
 	@GetMapping("/participations")
-	public RangerResponse<List<GetParticipationResponse>> getAllReviewsByResponser(
+	public RangerResponse<List<GetParticipationResponse>> getAllParticipationsByResponser(
 		@AuthenticationPrincipal UserPrincipal user) {
 		Long responserId = user.getId();
-		List<GetParticipationResponse> responses = participationService.getAllReviewsByResponser(responserId);
+		List<GetParticipationResponse> responses = participationService.getAllParticipationsByResponser(responserId);
 
 		return RangerResponse.ok(responses);
 	}
@@ -78,7 +78,7 @@ public class ParticipationController {
 	@PostMapping(value = "/invited-surveys")
 	public RangerResponse<Void> submitParticipation(@RequestBody @Valid SubmitParticipationRequest request) {
 		participationService.submitResponse(request);
-  
+
 		return RangerResponse.noData();
 	}
 
