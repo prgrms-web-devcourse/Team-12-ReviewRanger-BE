@@ -18,6 +18,7 @@ import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
+import com.devcourse.ReviewRanger.user.dto.GetUserResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -75,6 +76,20 @@ public class ReviewController {
 		GetReviewDetailResponse response = reviewService.getReviewDetailOrThrow(reviewId);
 
 		return RangerResponse.ok(response);
+	}
+
+	@Tag(name = "review")
+	@Operation(summary = "응답자를 제외한 리뷰의 수신자 전체 조회", description = "응답자를 제외한 리뷰의 수신자 전체 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "응답자를 제외한 리뷰의 수신자 전체 조회")
+	})
+	@GetMapping("/reviews/{reviewId}/receiver/{userId}")
+	public RangerResponse<List<GetUserResponse>> getAllReceivers(
+		@PathVariable Long reviewId,
+		@PathVariable Long userId
+	) {
+		List<GetUserResponse> responses = reviewService.getAllReceivers(reviewId, userId);
+
+		return RangerResponse.ok(responses);
 	}
 
 	@Tag(name = "review")
