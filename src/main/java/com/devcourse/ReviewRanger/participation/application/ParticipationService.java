@@ -92,7 +92,7 @@ public class ParticipationService {
 		return true;
 	}
 
-	public AllResponserParticipateInReviewResponse getAllReponserParticipateInReviewOrThrow(Long reviewId) {
+	public AllResponserParticipateInReviewResponse getAllResponserParticipateInReviewOrThrow(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 
@@ -111,9 +111,9 @@ public class ParticipationService {
 				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 
 			ResponserResponse responser = new ResponserResponse(participation.getId(), user.getId(), user.getName(),
-				participation.getUpdatedAt());
+				participation.getSubmitAt());
 
-			allResponserParticipateInReviewDto.responsers().add(responser);
+			allResponserParticipateInReviewDto.responserResponses().add(responser);
 		}
 
 		return allResponserParticipateInReviewDto;

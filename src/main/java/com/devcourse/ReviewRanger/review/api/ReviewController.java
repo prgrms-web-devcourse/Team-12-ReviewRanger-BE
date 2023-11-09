@@ -73,7 +73,7 @@ public class ReviewController {
 	@GetMapping("/reviews/{id}/responser")
 	public RangerResponse<AllResponserParticipateInReviewResponse> getAllReponserParticipateInReview(
 		@PathVariable Long id, @AuthenticationPrincipal UserPrincipal user) {
-		AllResponserParticipateInReviewResponse response = participationService.getAllReponserParticipateInReviewOrThrow(
+		AllResponserParticipateInReviewResponse response = participationService.getAllResponserParticipateInReviewOrThrow(
 			id);
 
 		return RangerResponse.ok(response);

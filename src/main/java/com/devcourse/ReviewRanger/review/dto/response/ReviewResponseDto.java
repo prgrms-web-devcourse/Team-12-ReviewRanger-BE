@@ -20,10 +20,10 @@ public record ReviewResponseDto(
 			review.getId(),
 			review.getTitle(),
 			null,
-			review.getType(),
 			null,
-			review.getCreateAt(),
-			review.getUpdatedAt()
+			null,
+			null,
+			null
 		);
 	}
 }
