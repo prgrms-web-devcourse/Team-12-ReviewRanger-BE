@@ -6,6 +6,7 @@ import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 
 public record GetParticipationResponse(
+	Long participationId,
 	Long reviewId,
 	String title,
 	LocalDateTime submitAt,
@@ -14,6 +15,7 @@ public record GetParticipationResponse(
 	public GetParticipationResponse(Participation participation, String title) {
 		this(
 			participation.getId(),
+			participation.getReviewId(),
 			title,
 			participation.getSubmitAt(),
 			participation.getDeadlineStatus()
