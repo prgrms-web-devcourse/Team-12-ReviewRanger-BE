@@ -15,6 +15,7 @@ import com.devcourse.ReviewRanger.participation.dto.response.AllResponserPartici
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
 import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
+import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailFirstResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
@@ -79,15 +80,30 @@ public class ReviewController {
 	}
 
 	@Tag(name = "review")
+	@Operation(summary = "[토큰] 리뷰 첫 상세 조회", description = "[토큰] 리뷰 첫 상세 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "리뷰를 첫 상세 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우")
+	})
+	@GetMapping("/reviews/{id}/first")
+	public RangerResponse<GetReviewDetailFirstResponse> getReviewDetailFirst(
+		@PathVariable("id") Long reviewId,
+		@AuthenticationPrincipal UserPrincipal user
+	) {
+		GetReviewDetailFirstResponse response = reviewService.getReviewDetailFirstOrThrow(reviewId, user.getId());
+
+		return RangerResponse.ok(response);
+	}
+
+	@Tag(name = "review")
 	@Operation(summary = "응답자를 제외한 리뷰의 수신자 전체 조회", description = "응답자를 제외한 리뷰의 수신자 전체 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "응답자를 제외한 리뷰의 수신자 전체 조회")
 	})
-	@GetMapping("/reviews/{reviewId}/receiver/{userId}")
+	@GetMapping("/reviews/{reviewId}/responser/{responserId}/receiver")
 	public RangerResponse<List<GetUserResponse>> getAllReceivers(
 		@PathVariable Long reviewId,
-		@PathVariable Long userId
+		@PathVariable Long responserId
 	) {
-		List<GetUserResponse> responses = reviewService.getAllReceivers(reviewId, userId);
+		List<GetUserResponse> responses = reviewService.getAllReceivers(reviewId, responserId);
 
 		return RangerResponse.ok(responses);
 	}
