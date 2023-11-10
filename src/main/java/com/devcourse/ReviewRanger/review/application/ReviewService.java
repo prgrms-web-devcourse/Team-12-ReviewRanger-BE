@@ -19,6 +19,7 @@ import com.devcourse.ReviewRanger.question.application.QuestionService;
 import com.devcourse.ReviewRanger.question.dto.response.GetQuestionResponse;
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
+import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailFirstResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
@@ -72,14 +73,24 @@ public class ReviewService {
 	public GetReviewDetailResponse getReviewDetailOrThrow(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
-		List<GetQuestionResponse> questionResponse = questionService.getAllQuestionsByReview(reviewId);
+		List<GetQuestionResponse> questionResponses = questionService.getAllQuestionsByReview(reviewId);
 
-		return new GetReviewDetailResponse(review, questionResponse);
+		return new GetReviewDetailResponse(review, questionResponses);
 	}
 
-	public List<GetUserResponse> getAllReceivers(Long reviewId, Long id) {
+	public GetReviewDetailFirstResponse getReviewDetailFirstOrThrow(Long reviewId, Long responserId) {
+		Review review = reviewRepository.findById(reviewId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+		List<GetQuestionResponse> questionResponses = questionService.getAllQuestionsByReview(reviewId);
+
+		List<GetUserResponse> receiverResponses = getAllReceivers(reviewId, responserId);
+
+		return new GetReviewDetailFirstResponse(review, questionResponses, receiverResponses);
+	}
+
+	public List<GetUserResponse> getAllReceivers(Long reviewId, Long responserId) {
 		return participationService.getAllByReviewId(reviewId).stream()
-			.filter(participation -> participation.getResponserId() != id)
+			.filter(participation -> participation.getResponserId() != responserId)
 			.map(participation -> userService.getUserOrThrow(participation.getResponserId()))
 			.map(user -> new GetUserResponse(user.getId(), user.getName()))
 			.toList();
@@ -93,4 +104,5 @@ public class ReviewService {
 
 		participationService.closeParticipationOrThrow(reviewId);
 	}
+
 }
