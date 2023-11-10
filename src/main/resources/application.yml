@@ -6,6 +6,7 @@ spring:
     include:
       - jwt
       - jasypt
+      - db
 
   mvc:
     pathmatch:
