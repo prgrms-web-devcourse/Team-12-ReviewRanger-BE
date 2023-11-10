@@ -22,31 +22,31 @@ jobs:
           assignees: ${{ github.actor }}
           reviewers: ${{ env.REVIEWERS }}
 
-  #  check:
-  #    needs: assign-reviewer
-  #    runs-on: ubuntu-latest
-  #
-  #    steps:
-  #      - name: Checkout Branch
-  #        uses: actions/checkout@v3
-  #
-  #      - name: Set up JDK 17
-  #        uses: actions/setup-java@v3
-  #        with:
-  #          java-version: ${{ env.JAVA_VERSION }}
-  #          distribution: ${{ env.JAVA_DISTRIBUTION }}
-  #
-  #      - name: Make gradlew executable
-  #        run: chmod +x ./gradlew
-  #
-  #      - name: Wrapper gradle
-  #        run: gradle wrapper
-  #
-  #      - name: Check Tests
-  #        run: ./gradlew test
+    check:
+      needs: assign-reviewer
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout Branch
+          uses: actions/checkout@v3
+
+        - name: Set up JDK 17
+          uses: actions/setup-java@v3
+          with:
+            java-version: ${{ env.JAVA_VERSION }}
+            distribution: ${{ env.JAVA_DISTRIBUTION }}
+
+        - name: Make gradlew executable
+          run: chmod +x ./gradlew
+
+        - name: Wrapper gradle
+          run: gradle wrapper
+
+        - name: Check Tests
+          run: ./gradlew test
 
   build:
-    needs: assign-reviewer
+    needs: check
     runs-on: ubuntu-latest
 
     steps:
