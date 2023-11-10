@@ -21,8 +21,8 @@ import lombok.Getter;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 public class ReviewedTarget extends BaseEntity {
 
-	@Column(name = "subject_id", nullable = false)
-	private Long subjectId;
+	@Column(name = "receiver_id", nullable = false)
+	private Long receiverId;
 
 	@Column(name = "participation_id", nullable = false)
 	private Long participationId;
@@ -33,16 +33,16 @@ public class ReviewedTarget extends BaseEntity {
 	protected ReviewedTarget() {
 	}
 
-	public ReviewedTarget(Long subjectId) {
-		this.subjectId = subjectId;
+	public ReviewedTarget(Long receiverId) {
+		this.receiverId = receiverId;
 	}
 
 	public void setParticipationId(Long participationId) {
 		this.participationId = participationId;
 	}
 
-	public ReviewedTarget(Long subjectId, Long participationId) {
-		this.subjectId = subjectId;
+	public ReviewedTarget(Long receiverId, Long participationId) {
+		this.receiverId = receiverId;
 		this.participationId = participationId;
 	}
 }

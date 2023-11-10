@@ -89,25 +89,28 @@ public class ReviewController {
 		return RangerResponse.noData();
 	}
 
-	/**
-	 * 설문에 참여한 모든 응답자 조회
-	 */
+	@Tag(name = "review")
+	@Operation(summary = "[토큰] 설문에 참여한 모든 응답자 조회", description = "[토큰] 설문에 참여한 모든 응답자 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "설문에 참여한 모든 응답자 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "리뷰 존재하지 않는 경우"),
+		@ApiResponse(responseCode = "404", description = "사용자 존재하지 않는 경우")
+	})
 	@GetMapping("/reviews/{id}/responser")
 	public RangerResponse<AllResponserParticipateInReviewResponse> getAllReponserParticipateInReview(
-		@PathVariable Long id, @AuthenticationPrincipal UserPrincipal user) {
+		@PathVariable Long id) {
 		AllResponserParticipateInReviewResponse response = participationService.getAllResponserParticipateInReviewOrThrow(
 			id);
 
 		return RangerResponse.ok(response);
 	}
 
-	/**
-	 * 리뷰를 받은 모든 수신자 조회
-	 */
+	@Tag(name = "review")
+	@Operation(summary = "[토큰] 리뷰를 받은 모든 수신자 조회", description = "[토큰] 리뷰를 받은 모든 수신자 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "리뷰를 받은 모든 수신자 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "사용자 존재하지 않는 경우")
+	})
 	@GetMapping("/reviews/{id}/receiver")
-	public RangerResponse<List<ReceiverResponse>> getAllReceiverParticipateInReview(
-		@PathVariable Long id, @AuthenticationPrincipal UserPrincipal user
-	) {
+	public RangerResponse<List<ReceiverResponse>> getAllReceiverParticipateInReview(@PathVariable Long id) {
 		List<ReceiverResponse> response = participationService.getAllReceiverParticipateInReviewOrThrow(
 			id);
 
