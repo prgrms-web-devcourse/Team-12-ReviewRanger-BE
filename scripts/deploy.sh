@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 
-PROJECT_NAME=ReviewRanger
-REPOSITORY=/home/ubuntu/app
-PACKAGE=$REPOSITORY/build/libs/
-JAR_NAME=$(ls -tr $PACKAGE | grep 'SNAPSHOT.jar' | tail -n 1)
-JAR_PATH=$PACKAGE$JAR_NAME
+PROJECT_NAME=ranger
+REPOSITORY=/home/ubuntu/ranger
+cd $REPOSITORY
+
+JAR_NAME=$(ls $REPOSITORY/build/libs/ | grep 'SNAPSHOT.jar' | tail -n 1)
+JAR_PATH=$REPOSITORY/build/libs/JAR_NAME
 
 echo $JAR_NAME
 echo $JAR_PATH
-
-cd $REPOSITORY
 
 CURRENT_PID=$(pgrep -f $PROJECT_NAME)
 
