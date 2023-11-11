@@ -2,12 +2,11 @@ package com.devcourse.ReviewRanger.finalReviewResult.dto;
 
 import java.util.List;
 
-import com.devcourse.ReviewRanger.question.domain.QuestionType;
+import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestionType;
 
 public record CreateFinalReplyRequest(
 	String questionTitle,
-	QuestionType questionType,
+	FinalQuestionType questionType,
 	List<Object> answers
-	// List<HexStat> hexStats
 ) {
 }

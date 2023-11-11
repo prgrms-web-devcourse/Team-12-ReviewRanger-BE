@@ -5,18 +5,21 @@ import java.util.List;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResult;
 
 public record CreateFinalReviewRequest(
-	String receiverName,
+
+	Long userId,
+	String userName,
 	Long reviewId,
 	String reviewTitle,
+	String reviewDescription,
 	List<CreateFinalReplyRequest> replies
 ) {
-	FinalReviewResult toEntity(Long userId, String description) {
+	public FinalReviewResult toEntity() {
 		return new FinalReviewResult(
 			userId,
-			receiverName,
+			userName,
 			reviewId,
 			reviewTitle,
-			description
+			reviewDescription
 		);
 	}
 }

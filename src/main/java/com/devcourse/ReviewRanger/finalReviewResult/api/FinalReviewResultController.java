@@ -43,7 +43,7 @@ public class FinalReviewResultController {
 		@RequestBody @Valid CreateFinalReviewRequest finalReviewRequest
 	) {
 		CreateFinalReviewResponse finalReviewResponse
-			= finalReviewResultService.createFinalReviewResults(finalReviewRequest);
+			= finalReviewResultService.createFinalReviewResult(finalReviewRequest);
 
 		return RangerResponse.ok(finalReviewResponse);
 	}
