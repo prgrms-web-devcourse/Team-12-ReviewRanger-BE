@@ -1,5 +1,7 @@
 package com.devcourse.ReviewRanger.finalReviewResult.api;
 
+import static org.springframework.http.HttpStatus.*;
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
@@ -29,6 +32,7 @@ public class FinalReviewResultController {
 	}
 
 	@GetMapping
+	@ResponseStatus(OK)
 	public RangerResponse<List<FinalReviewResultListResponse>> getAllFinalReviewResults(
 		@AuthenticationPrincipal UserPrincipal user
 	) {
@@ -39,6 +43,7 @@ public class FinalReviewResultController {
 	}
 
 	@PostMapping
+	@ResponseStatus(CREATED)
 	public RangerResponse<CreateFinalReviewResponse> createFinalReviewResults(
 		@RequestBody @Valid CreateFinalReviewRequest finalReviewRequest
 	) {
