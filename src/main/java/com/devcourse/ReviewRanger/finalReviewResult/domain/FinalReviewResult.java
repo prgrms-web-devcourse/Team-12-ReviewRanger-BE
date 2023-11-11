@@ -3,12 +3,12 @@ package com.devcourse.ReviewRanger.finalReviewResult.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Lob;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -22,7 +22,7 @@ import lombok.Getter;
 @Table(name = "final_review_results")
 public class FinalReviewResult extends BaseEntity {
 
-	private enum Status {
+	public enum Status {
 		NOT_SENT,
 		SENT;
 	}
@@ -43,19 +43,16 @@ public class FinalReviewResult extends BaseEntity {
 	@Size(max = 50, message = "50자 이하로 입력하세요.")
 	private String title;
 
-	@Lob
-	@Column(nullable = true)
+	@Column(nullable = true, length = 100)
 	private String description;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Status status;
 
-	// @ElementCollection
-	// @CollectionTable(name = "final_review_replies")
-	// @OrderColumn(name = "reply_index")
-	@OneToMany(mappedBy = "finalReviewResult")
-	private List<FinalReviewResultReply> finalReviewResultReply = new ArrayList<>();
+	@ElementCollection
+	@CollectionTable(name = "final_questions")
+	private List<FinalQuestion> questions = new ArrayList<>();
 
 	protected FinalReviewResult() {
 	}
@@ -71,5 +68,9 @@ public class FinalReviewResult extends BaseEntity {
 
 	public void toSentStatus() {
 		this.status = Status.SENT;
+	}
+
+	public void addQuestions(FinalQuestion question) {
+		this.questions.add(question);
 	}
 }
