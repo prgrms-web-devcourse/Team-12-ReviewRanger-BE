@@ -1,6 +1,7 @@
 package com.devcourse.ReviewRanger.finalReviewResult.application;
 
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
+import static com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResult.Status.*;
 
 import java.util.List;
 
@@ -69,7 +70,7 @@ public class FinalReviewResultService {
 	}
 
 	public List<FinalReviewResultListResponse> getAllFinalReviewResults(Long userId) {
-		return finalReviewResultRepository.findAllByUserId(userId)
+		return finalReviewResultRepository.findAllByUserIdAndStatus(userId, SENT)
 			.stream()
 			.map(FinalReviewResultListResponse::new).toList();
 	}
