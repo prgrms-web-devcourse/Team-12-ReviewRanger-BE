@@ -1,16 +1,18 @@
 package com.devcourse.ReviewRanger.review.dto.response;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
+
+import com.devcourse.ReviewRanger.question.dto.response.GetQuestionResponse;
 import com.devcourse.ReviewRanger.review.domain.Review;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "리뷰 전체 조회 응답 DTO")
-public record GetReviewResponse(
+@Schema(description = "리뷰 상세 조회 응답 DTO")
+public record GetReviewDetailResponse(
 	@Schema(description = "리뷰 고유 id")
-	Long reviewId,
+	Long id,
 
 	@Schema(description = "리뷰 제목")
 	String title,
@@ -18,19 +20,15 @@ public record GetReviewResponse(
 	@Schema(description = "리뷰 진행 상태")
 	DeadlineStatus status,
 
-	@Schema(description = "리뷰 생성 일자")
-	LocalDateTime createdAt,
-
-	@Schema(description = "리뷰를 제출한 응답자 수")
-	Long responserCount
+	@Schema(description = "리뷰에 포함된 질문 목록")
+	List<GetQuestionResponse> questions
 ) {
-	public GetReviewResponse(Review review, Long responserCount) {
+	public GetReviewDetailResponse(Review review, List<GetQuestionResponse> questions) {
 		this(
 			review.getId(),
 			review.getTitle(),
 			review.getStatus(),
-			review.getCreateAt(),
-			responserCount
+			questions
 		);
 	}
 }

@@ -4,6 +4,7 @@ import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -14,8 +15,10 @@ import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
 import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
 import com.devcourse.ReviewRanger.question.application.QuestionService;
+import com.devcourse.ReviewRanger.question.dto.response.GetQuestionResponse;
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
+import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
 
@@ -59,6 +62,14 @@ public class ReviewService {
 		}
 
 		return reviewResponses;
+	}
+
+	public GetReviewDetailResponse getReviewDetailOrThrow(Long reviewId) {
+		Review review = reviewRepository.findById(reviewId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+		List<GetQuestionResponse> questionResponse = questionService.getAllQuestionsByReview(reviewId);
+
+		return new GetReviewDetailResponse(review, questionResponse);
 	}
 
 	@Transactional

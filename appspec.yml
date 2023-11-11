@@ -3,10 +3,10 @@ os: linux
 
 files:
   - source: /
-    destination: /home/ubuntu/app
+    destination: /home/ubuntu/ranger
 
 permissions:
-  - object: /home/ubuntu/app
+  - object: /home/ubuntu/ranger
     owner: ubuntu
     group: ubuntu
 

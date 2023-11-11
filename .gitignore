@@ -5,6 +5,7 @@ build/
 !**/src/test/**/build/
 application-jasypt.yml
 application-jwt.yml
+application-db.yml
 
 ### STS ###
 .apt_generated

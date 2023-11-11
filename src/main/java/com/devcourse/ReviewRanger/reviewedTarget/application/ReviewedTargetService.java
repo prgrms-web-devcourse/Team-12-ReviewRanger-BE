@@ -59,7 +59,7 @@ public class ReviewedTargetService {
 		List<ReviewedTarget> reviewedTargets = getAllByParticipationId(participationId);
 
 		for (ReviewedTarget reviewedTarget : reviewedTargets) {
-			User user = userService.getUserOrThrow(reviewedTarget.getSubjectId());
+			User user = userService.getUserOrThrow(reviewedTarget.getReceiverId());
 
 			List<ReplyResponse> replyResponses = reviewedTarget.getReplies().stream()
 				.map(ReplyResponse::new)
