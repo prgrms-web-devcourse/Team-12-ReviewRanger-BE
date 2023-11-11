@@ -3,6 +3,7 @@ package com.devcourse.ReviewRanger.finalReviewResult.dto;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestionType;
 
@@ -19,7 +20,7 @@ public record CreateFinalReplyRequest(
 	FinalQuestionType questionType,
 
 	@Schema(name = "답변 리스트")
-	@NotBlank(message = "답변은 빈값 일 수 없습니다.")
+	@NotEmpty(message = "답변은 빈값 일 수 없습니다.")
 	List<Object> answers
 ) {
 }
