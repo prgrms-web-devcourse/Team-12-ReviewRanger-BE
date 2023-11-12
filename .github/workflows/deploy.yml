@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
+  RESOURCE_PATH: ./src/main/resources/application.yml
   GRADLE_VERSION: 8.3
   JAVA_VERSION: '17'
   JAVA_DISTRIBUTION: 'temurin'
@@ -28,14 +29,21 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.JAVA_DISTRIBUTION }}
 
+      - name: Set yml file
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ${{ env.RESOURCE_PATH }}
+        env:
+          spring.datasource.url: ${{ secrets.DB_URL }}
+          spring.datasource.username: ${{ secrets.DB_NAME }}
+          spring.datasource.password: ${{ secrets.DB_PASSWORD }}
+          jasypt.encryptor.password: ${{ secrets.JASYPT_KEY }}
+
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Wrapper gradle
-        run: gradle wrapper
-
       - name: Build with gradle
-        run: ./gradlew build
+        run: ./gradlew clean build -x test
 
       - name: Make Zip File
         run: zip -qq -r ./$GITHUB_SHA.zip .

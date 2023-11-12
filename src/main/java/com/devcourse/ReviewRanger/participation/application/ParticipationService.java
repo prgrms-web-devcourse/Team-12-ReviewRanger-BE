@@ -127,10 +127,10 @@ public class ParticipationService {
 			List<ReviewedTarget> reviewedTargets = reviewedTargetService.getAllByParticipationId(participation.getId());
 
 			for (ReviewedTarget reviewedTarget : reviewedTargets) {
-				Long subjectId = reviewedTarget.getSubjectId();
-				List<Long> responsers = receiverToResponsersMap.getOrDefault(subjectId, new ArrayList<>());
+				Long receiverId = reviewedTarget.getReceiverId();
+				List<Long> responsers = receiverToResponsersMap.getOrDefault(receiverId, new ArrayList<>());
 				responsers.add(reviewedTarget.getId());
-				receiverToResponsersMap.put(subjectId, responsers);
+				receiverToResponsersMap.put(receiverId, responsers);
 			}
 		}
 

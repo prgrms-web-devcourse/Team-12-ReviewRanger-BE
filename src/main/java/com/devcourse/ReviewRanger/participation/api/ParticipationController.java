@@ -1,5 +1,7 @@
 package com.devcourse.ReviewRanger.participation.api;
 
+import static org.springframework.http.HttpStatus.*;
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
@@ -39,21 +42,26 @@ public class ParticipationController {
 	}
 
 	@Tag(name = "participation")
-	@Operation(summary = "응답자의 초대받은 리뷰 전체조회", description = "응답자의 초대받은 리뷰 전체조회 API", responses = {
+	@Operation(summary = "[토큰] 응답자의 초대받은 리뷰 전체조회", description = "[토큰] 응답자의 초대받은 리뷰 전체조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
 	@GetMapping("/participations")
 	public RangerResponse<List<GetParticipationResponse>> getAllParticipationsByResponser(
-		@AuthenticationPrincipal UserPrincipal user) {
+		@AuthenticationPrincipal UserPrincipal user
+	) {
 		Long responserId = user.getId();
 		List<GetParticipationResponse> responses = participationService.getAllParticipationsByResponser(responserId);
 
 		return RangerResponse.ok(responses);
 	}
 
-	/**
-	 * 리뷰 답변 기능
-	 */
+	@Tag(name = "participation")
+	@Operation(summary = "[토큰] 리뷰 답변 기능", description = "[토큰] 리뷰 답변 API", responses = {
+		@ApiResponse(responseCode = "201", description = "리뷰 답변 성공"),
+		@ApiResponse(responseCode = "404", description = "참여자로 존재하지 않는 경우"),
+
+	})
+	@ResponseStatus(CREATED)
 	@PostMapping(value = "/participations")
 	public RangerResponse<Void> submitParticipation(@RequestBody @Valid SubmitParticipationRequest request) {
 		participationService.submitResponse(request);
@@ -61,9 +69,12 @@ public class ParticipationController {
 		return RangerResponse.noData();
 	}
 
-	/**
-	 * 리뷰 답변 수정 기능
-	 */
+	@Tag(name = "participation")
+	@Operation(summary = "[토큰] 리뷰 답변 수정 기능", description = "[토큰] 리뷰 답변 수정 API", responses = {
+		@ApiResponse(responseCode = "200", description = "리뷰 답변 수정 성공"),
+		@ApiResponse(responseCode = "404", description = "답변이 존재하지 않는 경우"),
+
+	})
 	@PutMapping(value = "/participations")
 	public RangerResponse<Void> updateParticipation(@RequestBody @Valid UpdateParticipationRequest request) {
 		participationService.updateResponse(request);
@@ -71,12 +82,14 @@ public class ParticipationController {
 		return RangerResponse.noData();
 	}
 
-	/**
-	 * 응답자의 모든 답변 내용 조회
-	 */
+	@Tag(name = "participation")
+	@Operation(summary = "[토큰] 응답자의 모든 답변 내용 조회 기능", description = "[토큰] 응답자의 모든 답변 내용 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "응답자의 모든 답변 내용 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
+
+	})
 	@GetMapping("/participations/{id}/written-replies")
-	public RangerResponse<List<RepliesByResponserResponse>> getRepliesByResponser(@PathVariable Long id,
-		@AuthenticationPrincipal UserPrincipal user) {
+	public RangerResponse<List<RepliesByResponserResponse>> getRepliesByResponser(@PathVariable Long id) {
 		List<RepliesByResponserResponse> responses = reviewedTargetService.getAllRepliesByResponser(
 			id);
 
