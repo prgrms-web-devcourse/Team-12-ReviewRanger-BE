@@ -26,9 +26,12 @@ public class Participation extends BaseEntity {
 	@Column(name = "responser_id", nullable = false)
 	private Long responserId;
 
-	@Column(name = "deadline_status", nullable = false)
+	@Column(name = "is_answered", nullable = false)
+	private Boolean isAnswered;
+
+	@Column(name = "review_status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private DeadlineStatus deadlineStatus;
+	private ReviewStatus reviewStatus;
 
 	@Column(name = "submit_At")
 	@JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
@@ -39,14 +42,20 @@ public class Participation extends BaseEntity {
 
 	public Participation(Long responserId) {
 		this.responserId = responserId;
-		this.deadlineStatus = DeadlineStatus.PROCEEDING;
+		this.isAnswered = false;
+		this.reviewStatus = ReviewStatus.PROCEEDING;
 	}
 
 	public void assignReviewId(Long reviewId) {
 		this.reviewId = reviewId;
 	}
 
-	public void changeStatus(DeadlineStatus status) {
-		this.deadlineStatus = status;
+	public void changeStatus(ReviewStatus status) {
+		this.reviewStatus = status;
+	}
+
+	public void answeredReview() {
+		this.submitAt = LocalDateTime.now();
+		this.isAnswered = true;
 	}
 }

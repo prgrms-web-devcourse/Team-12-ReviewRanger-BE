@@ -2,7 +2,7 @@ package com.devcourse.ReviewRanger.review.dto.response;
 
 import java.time.LocalDateTime;
 
-import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
+import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.review.domain.Review;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +16,7 @@ public record GetReviewResponse(
 	String title,
 
 	@Schema(description = "리뷰 진행 상태")
-	DeadlineStatus status,
+	ReviewStatus status,
 
 	@Schema(description = "리뷰 생성 일자")
 	LocalDateTime createdAt,

@@ -3,14 +3,14 @@ package com.devcourse.ReviewRanger.participation.domain;
 import lombok.Getter;
 
 @Getter
-public enum DeadlineStatus {
+public enum ReviewStatus {
 	PROCEEDING("진행중"),
-	DEADLINE("제출"),
-	END("마감");
+	DEADLINE("마감"),
+	END("종료");
 
 	private final String displayName;
 
-	DeadlineStatus(String displayName) {
+	ReviewStatus(String displayName) {
 		this.displayName = displayName;
 	}
 }
