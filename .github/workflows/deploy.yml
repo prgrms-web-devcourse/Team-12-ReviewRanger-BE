@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  RESOURCE_PATH: ./Team-12-ReviewRanger-BE/src/main/resources/application.yml
+  RESOURCE_PATH: ./src/main/resources/application.yml
   GRADLE_VERSION: 8.3
   JAVA_VERSION: '17'
   JAVA_DISTRIBUTION: 'temurin'
