@@ -40,9 +40,9 @@ jobs:
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
-        
+
       - name: Build with gradle
-        run: ./gradlew build
+        run: ./gradlew build --warning-mode all
 
       - name: Make Zip File
         run: zip -qq -r ./$GITHUB_SHA.zip .
