@@ -2,7 +2,7 @@ package com.devcourse.ReviewRanger.review.dto.response;
 
 import java.util.List;
 
-import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
+import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 
 import com.devcourse.ReviewRanger.question.dto.response.GetQuestionResponse;
 import com.devcourse.ReviewRanger.review.domain.Review;
@@ -21,7 +21,7 @@ public record GetReviewDetailResponse(
 	String description,
 
 	@Schema(description = "리뷰 진행 상태")
-	DeadlineStatus status,
+	ReviewStatus status,
 
 	@Schema(description = "리뷰에 포함된 질문 목록")
 	List<GetQuestionResponse> questions

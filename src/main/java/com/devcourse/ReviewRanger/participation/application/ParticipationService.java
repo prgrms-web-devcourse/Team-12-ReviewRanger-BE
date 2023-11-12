@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
-import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
+import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationRequest;
@@ -80,14 +80,14 @@ public class ParticipationService {
 		List<Participation> participations = getAllByReviewId(reviewId);
 
 		return participations.stream()
-			.filter(participation -> participation.getDeadlineStatus() == DeadlineStatus.DEADLINE)
+			.filter(participation -> participation.getIsAnswered())
 			.count();
 	}
 
 	@Transactional
 	public void closeParticipationOrThrow(Long reviewId) {
 		List<Participation> participations = getAllByReviewId(reviewId);
-		participations.stream().forEach(participation -> participation.changeStatus(DeadlineStatus.END));
+		participations.stream().forEach(participation -> participation.changeStatus(ReviewStatus.END));
 	}
 
 	public AllResponserParticipateInReviewResponse getAllResponserParticipateInReviewOrThrow(Long reviewId) {
@@ -98,7 +98,7 @@ public class ParticipationService {
 
 		List<Participation> participations = participationRepository.findByReviewId(reviewId)
 			.stream()
-			.filter(participation -> participation.getDeadlineStatus() == DeadlineStatus.DEADLINE).toList();
+			.filter(participation -> participation.getIsAnswered()).toList();
 
 		ArrayList<ResponserResponse> responsers = new ArrayList<>();
 		AllResponserParticipateInReviewResponse allResponserParticipateInReviewDto = new AllResponserParticipateInReviewResponse(
@@ -152,7 +152,7 @@ public class ParticipationService {
 
 		reviewedTargetService.createReviewTarget(participation.getId(), request.createReviewedTargetRequests());
 
-		participation.changeStatus(DeadlineStatus.DEADLINE);
+		participation.answeredReview();
 	}
 
 	@Transactional

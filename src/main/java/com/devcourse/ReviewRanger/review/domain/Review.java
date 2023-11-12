@@ -1,6 +1,6 @@
 package com.devcourse.ReviewRanger.review.domain;
 
-import static com.devcourse.ReviewRanger.participation.domain.DeadlineStatus.*;
+import static com.devcourse.ReviewRanger.participation.domain.ReviewStatus.*;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.*;
 
 import java.time.Duration;
@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.devcourse.ReviewRanger.BaseEntity;
-import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
+import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
@@ -47,7 +47,7 @@ public class Review extends BaseEntity {
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private DeadlineStatus status;
+	private ReviewStatus status;
 
 	protected Review() {
 	}
@@ -64,7 +64,7 @@ public class Review extends BaseEntity {
 		this.requesterId = requesterId;
 	}
 
-	public void changeStatus(DeadlineStatus status) {
+	public void changeStatus(ReviewStatus status) {
 		this.status = status;
 	}
 }

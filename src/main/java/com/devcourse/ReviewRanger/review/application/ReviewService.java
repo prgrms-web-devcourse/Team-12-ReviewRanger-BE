@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
-import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
+import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 
 import com.devcourse.ReviewRanger.question.application.QuestionService;
 import com.devcourse.ReviewRanger.question.dto.response.GetQuestionResponse;
@@ -96,7 +96,7 @@ public class ReviewService {
 	public void closeReviewOrThrow(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
-		review.changeStatus(DeadlineStatus.END);
+		review.changeStatus(ReviewStatus.END);
 
 		participationService.closeParticipationOrThrow(reviewId);
 	}

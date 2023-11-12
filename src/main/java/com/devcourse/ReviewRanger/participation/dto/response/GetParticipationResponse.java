@@ -2,7 +2,7 @@ package com.devcourse.ReviewRanger.participation.dto.response;
 
 import java.time.LocalDateTime;
 
-import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
+import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,7 +22,7 @@ public record GetParticipationResponse(
 	LocalDateTime submitAt,
 
 	@Schema(description = "초대받은 리뷰 진행상태")
-	DeadlineStatus status
+	ReviewStatus status
 ) {
 	public GetParticipationResponse(Participation participation, String title) {
 		this(
@@ -30,7 +30,7 @@ public record GetParticipationResponse(
 			participation.getReviewId(),
 			title,
 			participation.getSubmitAt(),
-			participation.getDeadlineStatus()
+			participation.getReviewStatus()
 		);
 	}
 }
