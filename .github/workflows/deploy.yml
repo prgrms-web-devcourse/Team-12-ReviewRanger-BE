@@ -42,7 +42,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with gradle
-        run: ./gradlew build --warning-mode all
+        run: ./gradlew clean build -x test
 
       - name: Make Zip File
         run: zip -qq -r ./$GITHUB_SHA.zip .
