@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
+  RESOURCE_PATH: .\Team-12-ReviewRanger-BE\src\main\resources\application.yml
   GRADLE_VERSION: 8.3
   JAVA_VERSION: '17'
   JAVA_DISTRIBUTION: 'temurin'
@@ -27,6 +28,15 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.JAVA_DISTRIBUTION }}
+
+      - name: Set yml file
+        uses: microsoft/variable-substituiion@v1
+        with:
+          files: ${{ env.RESOURCE_PATH }}
+        env:
+        spring.datasource.url: ${{ secrets.DB_URL }}
+        spring.datasource.username: ${{ secrets.DB_NAME }}
+        spring.datasource.password: ${{ secrets.DB_PASSWORD }}
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
