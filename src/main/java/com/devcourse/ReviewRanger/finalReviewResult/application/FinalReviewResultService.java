@@ -27,6 +27,7 @@ import com.devcourse.ReviewRanger.finalReviewResult.repository.HexstatTypeReposi
 import com.devcourse.ReviewRanger.finalReviewResult.repository.ObjectTypeRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.RatingTypeRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.SubjectTypeRepository;
+import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
 import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.question.domain.QuestionType;
 import com.devcourse.ReviewRanger.question.repository.QuestionRepository;
@@ -46,6 +47,7 @@ public class FinalReviewResultService {
 	private final UserRepository userRepository;
 	private final ReviewRepository reviewRepository;
 	private final QuestionRepository questionRepository;
+	private final ParticipationRepository participationRepository;
 
 	public FinalReviewResultService(
 		FinalReviewResultRepository finalReviewResultRepository,
@@ -56,8 +58,8 @@ public class FinalReviewResultService {
 		DropdownTypeRepository dropdownTypeRepository,
 		UserRepository userRepository,
 		ReviewRepository reviewRepository,
-		QuestionRepository questionRepository
-	) {
+		QuestionRepository questionRepository,
+		ParticipationRepository participationRepository) {
 		this.finalReviewResultRepository = finalReviewResultRepository;
 		this.objectTypeRepository = objectTypeRepository;
 		this.ratingTypeRepository = ratingTypeRepository;
@@ -67,6 +69,7 @@ public class FinalReviewResultService {
 		this.userRepository = userRepository;
 		this.reviewRepository = reviewRepository;
 		this.questionRepository = questionRepository;
+		this.participationRepository = participationRepository;
 	}
 
 	public List<FinalReviewResultListResponse> getAllFinalReviewResults(Long userId) {
@@ -82,9 +85,7 @@ public class FinalReviewResultService {
 		userRepository.findById(userId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 
-		// 유효한 review인지 검사
-		reviewRepository.findById(createFinalReviewRequest.reviewId())
-			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+		validateReviewId(createFinalReviewRequest.reviewId());
 
 		List<CreateFinalReplyRequest> replies = createFinalReviewRequest.replies();
 		FinalReviewResult finalReviewResult = createFinalReviewRequest.toEntity();
@@ -144,5 +145,19 @@ public class FinalReviewResultService {
 		}
 
 		return new CreateFinalReviewResponse(userId);
+	}
+
+	public Boolean checkFinalResultStatus(Long reviewId) {
+		validateReviewId(reviewId);
+
+		int participantNums = participationRepository.findAllByReviewId(reviewId).size();
+		int notSentFinalResultNums = finalReviewResultRepository.findAllByReviewIdAndStatus(reviewId, NOT_SENT).size();
+
+		return participantNums == notSentFinalResultNums;
+	}
+
+	private void validateReviewId(Long reviewId) {
+		reviewRepository.findById(reviewId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 	}
 }

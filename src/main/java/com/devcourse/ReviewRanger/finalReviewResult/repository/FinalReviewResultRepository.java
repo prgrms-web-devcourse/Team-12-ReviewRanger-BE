@@ -10,4 +10,6 @@ import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResult;
 
 public interface FinalReviewResultRepository extends JpaRepository<FinalReviewResult, Long> {
 	List<FinalReviewResult> findAllByUserIdAndStatus(Long userId, Status status);
+
+	List<FinalReviewResult> findAllByReviewIdAndStatus(Long reviewId, Status status);
 }
