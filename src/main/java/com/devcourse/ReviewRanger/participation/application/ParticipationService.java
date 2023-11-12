@@ -11,21 +11,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
-import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
+import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationRequest;
-import com.devcourse.ReviewRanger.participation.dto.response.AllResponserParticipateInReviewResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
+import com.devcourse.ReviewRanger.participation.dto.response.ParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
-import com.devcourse.ReviewRanger.participation.dto.response.ResponserResponse;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
 import com.devcourse.ReviewRanger.review.domain.Review;
-import com.devcourse.ReviewRanger.review.dto.response.ReviewResponseDto;
+import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
 import com.devcourse.ReviewRanger.reviewedTarget.application.ReviewedTargetService;
 import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
 import com.devcourse.ReviewRanger.user.domain.User;
+import com.devcourse.ReviewRanger.user.dto.UserResponse;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
@@ -90,31 +90,26 @@ public class ParticipationService {
 		participations.stream().forEach(participation -> participation.changeStatus(ReviewStatus.END));
 	}
 
-	public AllResponserParticipateInReviewResponse getAllResponserParticipateInReviewOrThrow(Long reviewId) {
+	public List<ParticipationResponse> getAllParticipation(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+		User creator = userRepository.findById(review.getRequesterId())
+			.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+		UserResponse creatorResponse = UserResponse.toResponse(creator);
+		ReviewResponse reviewResponse = ReviewResponse.toResponse(review, creatorResponse);
 
-		ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
-
-		List<Participation> participations = participationRepository.findByReviewId(reviewId)
+		List<ParticipationResponse> responses = participationRepository.findByReviewId(review.getId())
 			.stream()
-			.filter(participation -> participation.getIsAnswered()).toList();
+			.map(participation -> {
+				User responser = userRepository.findById(participation.getResponserId())
+					.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+				UserResponse responserResponse = UserResponse.toResponse(responser);
 
-		ArrayList<ResponserResponse> responsers = new ArrayList<>();
-		AllResponserParticipateInReviewResponse allResponserParticipateInReviewDto = new AllResponserParticipateInReviewResponse(
-			participations.size(), reviewResponseDto, responsers);
+				return ParticipationResponse.toResponse(participation, responserResponse, reviewResponse);
+			})
+			.toList();
 
-		for (Participation participation : participations) {
-			User user = userRepository.findById(participation.getResponserId())
-				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
-
-			ResponserResponse responser = new ResponserResponse(participation.getId(), user.getId(), user.getName(),
-				participation.getSubmitAt());
-
-			allResponserParticipateInReviewDto.responserResponses().add(responser);
-		}
-
-		return allResponserParticipateInReviewDto;
+		return responses;
 	}
 
 	public List<ReceiverResponse> getAllReceiverParticipateInReviewOrThrow(Long reviewId) {

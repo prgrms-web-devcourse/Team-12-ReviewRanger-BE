@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
-import com.devcourse.ReviewRanger.participation.dto.response.AllResponserParticipateInReviewResponse;
+import com.devcourse.ReviewRanger.participation.dto.response.ParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
 import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
@@ -121,16 +121,15 @@ public class ReviewController {
 	}
 
 	@Tag(name = "review")
-	@Operation(summary = "[토큰] 설문에 참여한 모든 응답자 조회", description = "[토큰] 설문에 참여한 모든 응답자 조회 API", responses = {
+	@Operation(summary = "[토큰] 리뷰에 참여하는 모든 응답자 조회", description = "[토큰] 설문에 참여한 모든 응답자 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "설문에 참여한 모든 응답자 조회 성공"),
 		@ApiResponse(responseCode = "404", description = "리뷰 존재하지 않는 경우"),
 		@ApiResponse(responseCode = "404", description = "사용자 존재하지 않는 경우")
 	})
 	@GetMapping("/reviews/{id}/responser")
-	public RangerResponse<AllResponserParticipateInReviewResponse> getAllReponserParticipateInReview(
+	public RangerResponse<List<ParticipationResponse>> getAllParticipation(
 		@PathVariable Long id) {
-		AllResponserParticipateInReviewResponse response = participationService.getAllResponserParticipateInReviewOrThrow(
-			id);
+		List<ParticipationResponse> response = participationService.getAllParticipation(id);
 
 		return RangerResponse.ok(response);
 	}
