@@ -4,17 +4,13 @@ import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
 import com.devcourse.ReviewRanger.participation.domain.DeadlineStatus;
-import com.devcourse.ReviewRanger.participation.domain.Participation;
+
 import com.devcourse.ReviewRanger.question.application.QuestionService;
 import com.devcourse.ReviewRanger.question.dto.response.GetQuestionResponse;
 import com.devcourse.ReviewRanger.review.domain.Review;
@@ -104,5 +100,4 @@ public class ReviewService {
 
 		participationService.closeParticipationOrThrow(reviewId);
 	}
-
 }

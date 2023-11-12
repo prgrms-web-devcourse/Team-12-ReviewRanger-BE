@@ -95,15 +95,15 @@ public class ReviewController {
 	}
 
 	@Tag(name = "review")
-	@Operation(summary = "응답자를 제외한 리뷰의 수신자 전체 조회", description = "응답자를 제외한 리뷰의 수신자 전체 조회 API", responses = {
+	@Operation(summary = "[토큰] 응답자를 제외한 리뷰의 수신자 전체 조회", description = "[토큰] 응답자를 제외한 리뷰의 수신자 전체 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "응답자를 제외한 리뷰의 수신자 전체 조회")
 	})
-	@GetMapping("/reviews/{reviewId}/responser/{responserId}/receiver")
+	@GetMapping("/reviews/{reviewId}/responser/receiver")
 	public RangerResponse<List<GetUserResponse>> getAllReceivers(
 		@PathVariable Long reviewId,
-		@PathVariable Long responserId
+		@AuthenticationPrincipal UserPrincipal user
 	) {
-		List<GetUserResponse> responses = reviewService.getAllReceivers(reviewId, responserId);
+		List<GetUserResponse> responses = reviewService.getAllReceivers(reviewId, user.getId());
 
 		return RangerResponse.ok(responses);
 	}
