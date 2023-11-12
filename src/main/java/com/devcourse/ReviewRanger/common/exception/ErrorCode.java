@@ -27,9 +27,11 @@ public enum ErrorCode {
 	//404 error
 	NOT_FOUND_USER(NOT_FOUND, "존재하지 않는 사용자입니다."),
 	NOT_FOUND_REVIEW(NOT_FOUND, "존재하지 않는 리뷰입니다."),
+	NOT_FOUND_QUESTION(NOT_FOUND, "존재하지 않는 질문입니다."),
 	NOT_FOUND_PARTICIPATION(NOT_FOUND, "해당하는 리뷰가 없습니다."),
 	NOT_FOUND_REVIEW_TARGET(NOT_FOUND, "존재하지 않는 리뷰 대상입니다."),
-	NOT_FOUND_REPLY(NOT_FOUND, "존재하지 않는 답변입니다.");
+	NOT_FOUND_REPLY(NOT_FOUND, "존재하지 않는 답변입니다."),
+	NOT_FOUND_QUESTION_TYPE(NOT_FOUND, "존재하지 않는 질문 타입입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;
