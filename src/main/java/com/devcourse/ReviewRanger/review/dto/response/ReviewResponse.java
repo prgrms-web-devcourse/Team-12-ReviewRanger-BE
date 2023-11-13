@@ -9,6 +9,7 @@ import com.devcourse.ReviewRanger.user.dto.UserResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "리뷰 기본 응답 DTO")
 public record ReviewResponse(
 	@Schema(description = "리뷰 Id")
 	Long id,
@@ -50,17 +51,4 @@ public record ReviewResponse(
 			review.getUpdatedAt()
 		);
 	}
-
-	// public ReviewResponse(
-	// 	Review review) {
-	// 	this(
-	// 		review.getId(),
-	// 		review.getTitle(),
-	// 		null,
-	// 		null,
-	// 		null,
-	// 		null,
-	// 		null
-	// 	);
-	// }
 }
