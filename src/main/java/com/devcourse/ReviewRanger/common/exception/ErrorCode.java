@@ -19,19 +19,19 @@ public enum ErrorCode {
 
 	// 404 error
 	FAIL_USER_LOGIN(NOT_FOUND, "존재하지 않는 계정입니다."),
-
-	// 409 error
-	EXIST_SAME_NAME(CONFLICT, "이미 사용중인 이름 입니다."),
-	EXIST_SAME_EMAIL(CONFLICT, "이미 사용중인 이메일 입니다."),
-
-	//404 error
 	NOT_FOUND_USER(NOT_FOUND, "존재하지 않는 사용자입니다."),
 	NOT_FOUND_REVIEW(NOT_FOUND, "존재하지 않는 리뷰입니다."),
 	NOT_FOUND_QUESTION(NOT_FOUND, "존재하지 않는 질문입니다."),
 	NOT_FOUND_PARTICIPATION(NOT_FOUND, "해당하는 리뷰가 없습니다."),
 	NOT_FOUND_REVIEW_TARGET(NOT_FOUND, "존재하지 않는 리뷰 대상입니다."),
 	NOT_FOUND_REPLY(NOT_FOUND, "존재하지 않는 답변입니다."),
-	NOT_FOUND_QUESTION_TYPE(NOT_FOUND, "존재하지 않는 질문 타입입니다.");
+	NOT_FOUND_QUESTION_TYPE(NOT_FOUND, "존재하지 않는 질문 타입입니다."),
+	NOT_FOUND_FINAL_REVIEW_RESULT(NOT_FOUND, "존재하지 않는 최종 리뷰 결과입니다."),
+	NOT_FOUND_PARTICIPANTS(NOT_FOUND, "참여 목록이 존재하지 않습니다."),
+
+	// 409 error
+	EXIST_SAME_NAME(CONFLICT, "이미 사용중인 이름 입니다."),
+	EXIST_SAME_EMAIL(CONFLICT, "이미 사용중인 이메일 입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;

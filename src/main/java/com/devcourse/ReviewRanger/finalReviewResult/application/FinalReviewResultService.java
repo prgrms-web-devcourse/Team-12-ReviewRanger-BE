@@ -3,7 +3,9 @@ package com.devcourse.ReviewRanger.finalReviewResult.application;
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 import static com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResult.Status.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +29,14 @@ import com.devcourse.ReviewRanger.finalReviewResult.repository.HexstatTypeReposi
 import com.devcourse.ReviewRanger.finalReviewResult.repository.ObjectTypeRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.RatingTypeRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.SubjectTypeRepository;
+import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
 import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.question.domain.QuestionType;
 import com.devcourse.ReviewRanger.question.repository.QuestionRepository;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
+import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
+import com.devcourse.ReviewRanger.reviewedTarget.repository.ReviewedTargetRepository;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
@@ -48,6 +53,7 @@ public class FinalReviewResultService {
 	private final ReviewRepository reviewRepository;
 	private final QuestionRepository questionRepository;
 	private final ParticipationRepository participationRepository;
+	private final ReviewedTargetRepository reviewedTargetRepository;
 
 	public FinalReviewResultService(
 		FinalReviewResultRepository finalReviewResultRepository,
@@ -59,7 +65,7 @@ public class FinalReviewResultService {
 		UserRepository userRepository,
 		ReviewRepository reviewRepository,
 		QuestionRepository questionRepository,
-		ParticipationRepository participationRepository) {
+		ParticipationRepository participationRepository, ReviewedTargetRepository reviewedTargetRepository) {
 		this.finalReviewResultRepository = finalReviewResultRepository;
 		this.objectTypeRepository = objectTypeRepository;
 		this.ratingTypeRepository = ratingTypeRepository;
@@ -70,6 +76,7 @@ public class FinalReviewResultService {
 		this.reviewRepository = reviewRepository;
 		this.questionRepository = questionRepository;
 		this.participationRepository = participationRepository;
+		this.reviewedTargetRepository = reviewedTargetRepository;
 	}
 
 	public List<FinalReviewResultListResponse> getAllFinalReviewResults(Long userId) {
@@ -156,8 +163,46 @@ public class FinalReviewResultService {
 		return participantNums == notSentFinalResultNums;
 	}
 
+	@Transactional
+	public void sendFinalResultToUsers(Long reviewId) {
+		validateReviewId(reviewId);
+
+		List<Participation> participations = participationRepository.findAllByReviewId(reviewId);
+
+		if (participations.isEmpty()) {
+			throw new RangerException(NOT_FOUND_PARTICIPANTS);
+		}
+
+		Set<Long> userIds = new HashSet<>();
+
+		for (Participation participation : participations) {
+			Long participationId = participation.getId();
+			List<ReviewedTarget> reviewedTargets = reviewedTargetRepository.findAllByParticipationId(participationId);
+
+			for (ReviewedTarget reviewedTarget : reviewedTargets) {
+				Long receiverId = reviewedTarget.getReceiverId();
+				userIds.add(receiverId);
+			}
+		}
+
+		for (Long userId : userIds) {
+			validateUserId(userId);
+
+			FinalReviewResult finalReviewResult
+				= finalReviewResultRepository.findByReviewIdAndUserIdAndStatus(reviewId, userId, NOT_SENT)
+				.orElseThrow(() -> new RangerException(NOT_FOUND_FINAL_REVIEW_RESULT));
+
+			finalReviewResult.toSentStatus();
+		}
+	}
+
 	private void validateReviewId(Long reviewId) {
 		reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+	}
+
+	private void validateUserId(Long userId) {
+		userRepository.findById(userId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 	}
 }

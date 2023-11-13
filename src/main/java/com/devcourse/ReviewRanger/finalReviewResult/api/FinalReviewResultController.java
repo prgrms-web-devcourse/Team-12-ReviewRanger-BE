@@ -64,4 +64,13 @@ public class FinalReviewResultController {
 		return RangerResponse.ok(checkStatus);
 	}
 
+	@PostMapping("/{reviewId}")
+	@ResponseStatus(OK)
+	public RangerResponse<Void> sendFinalResultToUsers(
+		@PathVariable Long reviewId
+	) {
+		finalReviewResultService.sendFinalResultToUsers(reviewId);
+
+		return RangerResponse.noData();
+	}
 }
