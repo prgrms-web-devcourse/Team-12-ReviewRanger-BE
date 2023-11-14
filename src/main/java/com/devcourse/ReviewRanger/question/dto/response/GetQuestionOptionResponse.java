@@ -18,4 +18,11 @@ public record GetQuestionOptionResponse(
 			questionOption.getOptionName()
 		);
 	}
+
+	public static GetQuestionOptionResponse toResponse(QuestionOption questionOption) {
+		return new GetQuestionOptionResponse(
+			questionOption.getId(),
+			questionOption.getOptionName()
+		);
+	}
 }
