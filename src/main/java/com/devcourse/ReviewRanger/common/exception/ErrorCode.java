@@ -31,7 +31,10 @@ public enum ErrorCode {
 	NOT_FOUND_PARTICIPATION(NOT_FOUND, "해당하는 리뷰가 없습니다."),
 	NOT_FOUND_REVIEW_TARGET(NOT_FOUND, "존재하지 않는 리뷰 대상입니다."),
 	NOT_FOUND_REPLY(NOT_FOUND, "존재하지 않는 답변입니다."),
-	NOT_FOUND_QUESTION_TYPE(NOT_FOUND, "존재하지 않는 질문 타입입니다.");
+	NOT_FOUND_QUESTION_TYPE(NOT_FOUND, "존재하지 않는 질문 타입입니다."),
+
+	//500 error
+	NOT_RECEIVED_RESPONSE_FROM_EXTERNAL_API(INTERNAL_SERVER_ERROR, "외부 API로부터 응답받지 못했습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;
