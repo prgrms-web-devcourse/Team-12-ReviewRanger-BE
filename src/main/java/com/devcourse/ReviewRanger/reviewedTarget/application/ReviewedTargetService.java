@@ -9,29 +9,35 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
+import com.devcourse.ReviewRanger.question.domain.QuestionOption;
+import com.devcourse.ReviewRanger.question.dto.response.GetQuestionOptionResponse;
+import com.devcourse.ReviewRanger.question.repository.QuestionOptionRepository;
 import com.devcourse.ReviewRanger.reply.application.ReplyService;
 import com.devcourse.ReviewRanger.reply.dto.response.ReplyResponse;
 import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
 import com.devcourse.ReviewRanger.reviewedTarget.dto.request.CreateReviewedTargetRequest;
 import com.devcourse.ReviewRanger.reviewedTarget.dto.request.UpdateReviewedTargetRequest;
-import com.devcourse.ReviewRanger.reviewedTarget.dto.response.RepliesByResponserResponse;
+import com.devcourse.ReviewRanger.reviewedTarget.dto.response.ReviewedTargetResponse;
 import com.devcourse.ReviewRanger.reviewedTarget.repository.ReviewedTargetRepository;
-import com.devcourse.ReviewRanger.user.application.UserService;
 import com.devcourse.ReviewRanger.user.domain.User;
+import com.devcourse.ReviewRanger.user.dto.UserResponse;
+import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
 @Transactional(readOnly = true)
 public class ReviewedTargetService {
 
 	private final ReviewedTargetRepository reviewedTargetRepository;
+	private final UserRepository userRepository;
+	private final QuestionOptionRepository questionOptionRepository;
 	private final ReplyService replyService;
-	private final UserService userService;
 
 	public ReviewedTargetService(ReviewedTargetRepository reviewedTargetRepository,
-		ReplyService replyService, UserService userService) {
+		UserRepository userRepository, QuestionOptionRepository questionOptionRepository, ReplyService replyService) {
 		this.reviewedTargetRepository = reviewedTargetRepository;
+		this.userRepository = userRepository;
+		this.questionOptionRepository = questionOptionRepository;
 		this.replyService = replyService;
-		this.userService = userService;
 	}
 
 	@Transactional
@@ -54,23 +60,42 @@ public class ReviewedTargetService {
 		}
 	}
 
-	public List<RepliesByResponserResponse> getAllRepliesByResponser(Long participationId) {
-		List<RepliesByResponserResponse> repliesByResponserResponses = new ArrayList<>();
+	public List<ReviewedTargetResponse> getAllRepliesByResponser(Long participationId) {
 		List<ReviewedTarget> reviewedTargets = getAllByParticipationId(participationId);
+		List<ReviewedTargetResponse> responses = new ArrayList<>();
 
 		for (ReviewedTarget reviewedTarget : reviewedTargets) {
-			User user = userService.getUserOrThrow(reviewedTarget.getReceiverId());
+			User receiver = userRepository.findById(reviewedTarget.getReceiverId())
+				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+			UserResponse receiverResponse = UserResponse.toResponse(receiver);
+
+			ReviewedTargetResponse reviewedTargetResponse = ReviewedTargetResponse.toResponse(reviewedTarget,
+				receiverResponse);
 
 			List<ReplyResponse> replyResponses = reviewedTarget.getReplies().stream()
-				.map(ReplyResponse::new)
+				.map(reply -> {
+					User responser = userRepository.findById(reply.getResponserId())
+						.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+					UserResponse responserResponse = UserResponse.toResponse(responser);
+
+					if (reply.getObjectOptionId() == null) {
+						return ReplyResponse.toResponse(reply, responserResponse);
+					}
+
+					QuestionOption questionOption = questionOptionRepository.findById(reply.getObjectOptionId())
+						.orElseThrow(() -> new RangerException(NOT_FOUND_QUESTION_OPTION));
+					GetQuestionOptionResponse questionOptionResponse = GetQuestionOptionResponse.toResponse(
+						questionOption);
+
+					return ReplyResponse.toResponse(reply, responserResponse, questionOptionResponse);
+				})
 				.toList();
 
-			RepliesByResponserResponse repliesByResponserResponse = new RepliesByResponserResponse(user.getId(),
-				user.getName(), replyResponses);
-			repliesByResponserResponses.add(repliesByResponserResponse);
+			reviewedTargetResponse.addRepliesResponse(replyResponses);
+			responses.add(reviewedTargetResponse);
 		}
 
-		return repliesByResponserResponses;
+		return responses;
 	}
 
 	public ReviewedTarget getByIdOrThrow(Long id) {

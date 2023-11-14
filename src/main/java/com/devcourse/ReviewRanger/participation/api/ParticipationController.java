@@ -21,7 +21,7 @@ import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationR
 import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
 import com.devcourse.ReviewRanger.reviewedTarget.application.ReviewedTargetService;
-import com.devcourse.ReviewRanger.reviewedTarget.dto.response.RepliesByResponserResponse;
+import com.devcourse.ReviewRanger.reviewedTarget.dto.response.ReviewedTargetResponse;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -89,8 +89,8 @@ public class ParticipationController {
 
 	})
 	@GetMapping("/participations/{id}/written-replies")
-	public RangerResponse<List<RepliesByResponserResponse>> getRepliesByResponser(@PathVariable Long id) {
-		List<RepliesByResponserResponse> responses = reviewedTargetService.getAllRepliesByResponser(
+	public RangerResponse<List<ReviewedTargetResponse>> getRepliesByResponser(@PathVariable Long id) {
+		List<ReviewedTargetResponse> responses = reviewedTargetService.getAllRepliesByResponser(
 			id);
 
 		return RangerResponse.ok(responses);
