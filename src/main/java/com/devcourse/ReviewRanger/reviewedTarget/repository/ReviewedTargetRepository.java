@@ -10,4 +10,6 @@ public interface ReviewedTargetRepository extends JpaRepository<ReviewedTarget, 
 	List<ReviewedTarget> findAllByParticipationId(Long participationId);
 
 	List<ReviewedTarget> findAllByReceiverId(Long receiverId);
+
+	List<ReviewedTarget> findAllByResponserId(Long responerId);
 }

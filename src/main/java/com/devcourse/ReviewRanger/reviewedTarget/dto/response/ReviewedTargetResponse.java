@@ -13,7 +13,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record ReviewedTargetResponse(
 	Long id,
 
-	UserResponse user, //receiver
+	UserResponse receiver, //receiver
+
+	UserResponse responser,
 
 	Long participationId,
 
@@ -25,10 +27,12 @@ public record ReviewedTargetResponse(
 	@Schema(description = "수정일")
 	LocalDateTime updatedAt
 ) {
-	public static ReviewedTargetResponse toResponse(ReviewedTarget reviewedTarget, UserResponse user) {
+	public static ReviewedTargetResponse toResponse(ReviewedTarget reviewedTarget, UserResponse receiver,
+		UserResponse responer) {
 		return new ReviewedTargetResponse(
 			reviewedTarget.getId(),
-			user,
+			receiver,
+			responer,
 			reviewedTarget.getParticipationId(),
 			new ArrayList<>(),
 			reviewedTarget.getCreateAt(),

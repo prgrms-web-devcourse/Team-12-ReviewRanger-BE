@@ -10,10 +10,6 @@ public record UpdateReplyRequest(
 	@NotNull(message = "답변 Id는 Null값 일 수 없습니다.")
 	Long id,
 
-	@Schema(description = "응답자 Id")
-	@NotNull(message = "응답자 Id는 Null값 일 수 없습니다.")
-	Long responserId,
-
 	@Schema(description = "질문 Id")
 	@NotNull(message = "질문 Id는 Null값 일 수 없습니다.")
 	Long questionId,

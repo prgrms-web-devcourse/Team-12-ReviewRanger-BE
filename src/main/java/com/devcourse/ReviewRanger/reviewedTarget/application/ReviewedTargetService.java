@@ -60,15 +60,15 @@ public class ReviewedTargetService {
 		}
 	}
 
-	public List<ReviewedTargetResponse> getAllRepliesByResponser(Long participationId) {
-		List<ReviewedTarget> reviewedTargets = getAllByParticipationId(participationId);
+	public List<ReviewedTargetResponse> getAllRepliesByResponser(Long responserId) {
+		List<ReviewedTarget> reviewedTargets = reviewedTargetRepository.findAllByResponserId(responserId);
 		List<ReviewedTargetResponse> responses = getAllRepliesByReviewedTargets(reviewedTargets);
 
 		return responses;
 	}
 
 	public List<ReviewedTargetResponse> getAllRepliesByReceiver(Long receiverId) {
-		List<ReviewedTarget> reviewedTargets = reviewedTargetRepository.findAllByReceiverId(receiverId);//수신자의 답변들
+		List<ReviewedTarget> reviewedTargets = reviewedTargetRepository.findAllByReceiverId(receiverId);
 		List<ReviewedTargetResponse> responses = getAllRepliesByReviewedTargets(reviewedTargets);
 
 		return responses;
@@ -82,8 +82,12 @@ public class ReviewedTargetService {
 				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 			UserResponse receiverResponse = UserResponse.toResponse(receiver);
 
+			User responser = userRepository.findById(reviewedTarget.getResponserId())
+				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+			UserResponse responserResponse = UserResponse.toResponse(responser);
+
 			ReviewedTargetResponse reviewedTargetResponse = ReviewedTargetResponse.toResponse(reviewedTarget,
-				receiverResponse);
+				receiverResponse, responserResponse);
 
 			List<ReplyResponse> replyResponses = getAllReplies(reviewedTarget);
 
@@ -97,12 +101,8 @@ public class ReviewedTargetService {
 	private List<ReplyResponse> getAllReplies(ReviewedTarget reviewedTarget) {
 		return reviewedTarget.getReplies().stream()
 			.map(reply -> {
-				User responser = userRepository.findById(reply.getResponserId())
-					.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
-				UserResponse responserResponse = UserResponse.toResponse(responser);
-
 				if (reply.getObjectOptionId() == null) {
-					return ReplyResponse.toResponse(reply, responserResponse);
+					return ReplyResponse.toResponse(reply);
 				}
 
 				QuestionOption questionOption = questionOptionRepository.findById(reply.getObjectOptionId())
@@ -110,7 +110,7 @@ public class ReviewedTargetService {
 				GetQuestionOptionResponse questionOptionResponse = GetQuestionOptionResponse.toResponse(
 					questionOption);
 
-				return ReplyResponse.toResponse(reply, responserResponse, questionOptionResponse);
+				return ReplyResponse.toResponse(reply, questionOptionResponse);
 			})
 			.toList();
 	}

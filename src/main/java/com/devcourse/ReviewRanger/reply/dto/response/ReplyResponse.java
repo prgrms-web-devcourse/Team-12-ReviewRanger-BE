@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import com.devcourse.ReviewRanger.question.dto.response.GetQuestionOptionResponse;
 import com.devcourse.ReviewRanger.reply.domain.Reply;
-import com.devcourse.ReviewRanger.user.dto.UserResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -12,9 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record ReplyResponse(
 	@Schema(description = "답변 Id")
 	Long id,
-
-	@Schema(description = "응답자 Id")
-	UserResponse user, //responser
 
 	@Schema(description = "질문 Id")
 	Long questionId,
@@ -34,10 +30,9 @@ public record ReplyResponse(
 	@Schema(description = "답변 수정일")
 	LocalDateTime updatedAt
 ) {
-	public static ReplyResponse toResponse(Reply reply, UserResponse user, GetQuestionOptionResponse questionOption) {
+	public static ReplyResponse toResponse(Reply reply, GetQuestionOptionResponse questionOption) {
 		return new ReplyResponse(
 			reply.getId(),
-			user,
 			reply.getQuestionId(),
 			questionOption,
 			reply.getAnswerText(),
@@ -47,10 +42,9 @@ public record ReplyResponse(
 		);
 	}
 
-	public static ReplyResponse toResponse(Reply reply, UserResponse user) {
+	public static ReplyResponse toResponse(Reply reply) {
 		return new ReplyResponse(
 			reply.getId(),
-			user,
 			reply.getQuestionId(),
 			null,
 			reply.getAnswerText(),

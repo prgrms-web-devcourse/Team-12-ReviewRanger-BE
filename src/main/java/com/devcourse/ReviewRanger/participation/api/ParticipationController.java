@@ -83,12 +83,12 @@ public class ParticipationController {
 	}
 
 	@Tag(name = "participation")
-	@Operation(summary = "[토큰] 응답자의 모든 답변 내용 조회 기능", description = "[토큰] 응답자의 모든 답변 내용 조회 API", responses = {
-		@ApiResponse(responseCode = "200", description = "응답자의 모든 답변 내용 조회 성공"),
+	@Operation(summary = "[토큰] 응답자별 답변 조회 기능", description = "[토큰] 응답자별 답변 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "응답자별 답변 조회 성공"),
 		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
 
 	})
-	@GetMapping("/participations/{id}/written-replies")
+	@GetMapping("/reviewed-target/{id}/responser")
 	public RangerResponse<List<ReviewedTargetResponse>> getRepliesByResponser(@PathVariable Long id) {
 		List<ReviewedTargetResponse> responses = reviewedTargetService.getAllRepliesByResponser(
 			id);
@@ -97,14 +97,14 @@ public class ParticipationController {
 	}
 
 	@Tag(name = "participation")
-	@Operation(summary = "[토큰] 수신자별 응답자의 모든 답변 내용 조회 기능", description = "[토큰] 수신자별 응답자의 모든 답변 내용 조회 API", responses = {
-		@ApiResponse(responseCode = "200", description = "수신자별 응답자의 모든 답변 내용 조회 성공"),
+	@Operation(summary = "[토큰] 수신자별 답변 조회 기능", description = "[토큰] 수신자별 답변 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "수신자별 답변 조회 성공"),
 		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
 
 	})
-	@GetMapping("/participations/receiver/{receiverId}")
-	public RangerResponse<List<ReviewedTargetResponse>> getRepliesByReceiver(@PathVariable Long receiverId) {
-		List<ReviewedTargetResponse> responses = reviewedTargetService.getAllRepliesByReceiver(receiverId);
+	@GetMapping("/reviewed-target/{id}/receiver")
+	public RangerResponse<List<ReviewedTargetResponse>> getRepliesByReceiver(@PathVariable Long id) {
+		List<ReviewedTargetResponse> responses = reviewedTargetService.getAllRepliesByReceiver(id);
 
 		return RangerResponse.ok(responses);
 	}
