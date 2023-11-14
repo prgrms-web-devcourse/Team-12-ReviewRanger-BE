@@ -10,15 +10,21 @@ import com.devcourse.ReviewRanger.user.dto.UserResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "리뷰 타겟 기본 응답 DTO")
 public record ReviewedTargetResponse(
+	@Schema(description = "리뷰 타겟 Id")
 	Long id,
 
-	UserResponse receiver, //receiver
+	@Schema(description = "수신자")
+	UserResponse receiver,
 
+	@Schema(description = "응답자")
 	UserResponse responser,
 
+	@Schema(description = "참여 Id")
 	Long participationId,
 
+	@Schema(description = "답변들")
 	List<ReplyResponse> replies,
 
 	@Schema(description = "생성일")

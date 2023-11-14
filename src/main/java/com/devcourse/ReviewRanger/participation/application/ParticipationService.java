@@ -116,7 +116,7 @@ public class ParticipationService {
 		List<ReceiverResponse> responses = new ArrayList<>();
 		Map<Long, Integer> receiverToResponsersMap = new HashMap<>();
 
-		List<Participation> participations = getAllByReviewId(reviewId);//전체 참여 조회
+		List<Participation> participations = getAllByReviewId(reviewId);
 
 		for (Participation participation : participations) {
 			List<ReviewedTarget> reviewedTargets = reviewedTargetService.getAllByParticipationId(participation.getId());
@@ -133,7 +133,7 @@ public class ParticipationService {
 
 			ReceiverResponse response = new ReceiverResponse(receiver.getKey(), user.getName(),
 				receiver.getValue());
-			
+
 			responses.add(response);
 		}
 

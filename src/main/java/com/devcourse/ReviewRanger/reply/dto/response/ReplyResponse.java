@@ -7,7 +7,7 @@ import com.devcourse.ReviewRanger.reply.domain.Reply;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "응답자의 모든 답변 내용 조회 기능 응답 DTO")
+@Schema(description = "답변 기본 응답 DTO")
 public record ReplyResponse(
 	@Schema(description = "답변 Id")
 	Long id,
@@ -15,19 +15,19 @@ public record ReplyResponse(
 	@Schema(description = "질문 Id")
 	Long questionId,
 
-	@Schema(description = "객관식, 드롭다운 용 답변 Id")
-	GetQuestionOptionResponse questionOption,//QuestionOption
+	@Schema(description = "객관식, 드롭다운, 육각스탯 용 옵션")
+	GetQuestionOptionResponse questionOption,
 
 	@Schema(description = "주관식 답변")
 	String answerText,
 
-	@Schema(description = "답변자와 응답자 관계")
+	@Schema(description = "리뷰 타겟")
 	Long reviewedTargetId,
 
-	@Schema(description = "답변 생성일")
+	@Schema(description = "생성일")
 	LocalDateTime createdAt,
 
-	@Schema(description = "답변 수정일")
+	@Schema(description = "수정일")
 	LocalDateTime updatedAt
 ) {
 	public static ReplyResponse toResponse(Reply reply, GetQuestionOptionResponse questionOption) {
