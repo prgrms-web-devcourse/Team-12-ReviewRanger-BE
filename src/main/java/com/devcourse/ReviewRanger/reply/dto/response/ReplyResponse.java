@@ -1,38 +1,56 @@
 package com.devcourse.ReviewRanger.reply.dto.response;
 
+import java.time.LocalDateTime;
+
+import com.devcourse.ReviewRanger.question.dto.response.GetQuestionOptionResponse;
 import com.devcourse.ReviewRanger.reply.domain.Reply;
-import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "응답자의 모든 답변 내용 조회 기능 응답 DTO")
+@Schema(description = "답변 기본 응답 DTO")
 public record ReplyResponse(
 	@Schema(description = "답변 Id")
 	Long id,
 
-	@Schema(description = "응답자 Id")
-	Long responserId,
-
 	@Schema(description = "질문 Id")
 	Long questionId,
 
-	@Schema(description = "객관식, 드롭다운 용 답변 Id")
-	Long objectOptionId,
+	@Schema(description = "객관식, 드롭다운, 육각스탯 용 옵션")
+	GetQuestionOptionResponse questionOption,
 
 	@Schema(description = "주관식 답변")
 	String answerText,
 
-	@Schema(description = "답변자와 응답자 관계")
-	ReviewedTarget reviewedTarget
+	@Schema(description = "리뷰 타겟")
+	Long reviewedTargetId,
+
+	@Schema(description = "생성일")
+	LocalDateTime createdAt,
+
+	@Schema(description = "수정일")
+	LocalDateTime updatedAt
 ) {
-	public ReplyResponse(Reply reply) {
-		this(
+	public static ReplyResponse toResponse(Reply reply, GetQuestionOptionResponse questionOption) {
+		return new ReplyResponse(
 			reply.getId(),
-			reply.getResponserId(),
 			reply.getQuestionId(),
-			reply.getObjectOptionId(),
+			questionOption,
 			reply.getAnswerText(),
-			null
+			reply.getReviewedTarget().getId(),
+			reply.getCreateAt(),
+			reply.getUpdatedAt()
+		);
+	}
+
+	public static ReplyResponse toResponse(Reply reply) {
+		return new ReplyResponse(
+			reply.getId(),
+			reply.getQuestionId(),
+			null,
+			reply.getAnswerText(),
+			reply.getReviewedTarget().getId(),
+			reply.getCreateAt(),
+			reply.getUpdatedAt()
 		);
 	}
 }
