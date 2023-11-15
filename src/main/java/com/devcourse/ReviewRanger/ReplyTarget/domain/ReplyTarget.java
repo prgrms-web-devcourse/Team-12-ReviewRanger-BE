@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.reviewedTarget.domain;
+package com.devcourse.ReviewRanger.ReplyTarget.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +17,9 @@ import lombok.Getter;
 
 @Getter
 @Entity
-@Table(name = "reviewed_targets")
+@Table(name = "reply_targets")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
-public class ReviewedTarget extends BaseEntity {
+public class ReplyTarget extends BaseEntity {
 
 	@Column(name = "receiver_id", nullable = false)
 	private Long receiverId;
@@ -30,13 +30,13 @@ public class ReviewedTarget extends BaseEntity {
 	@Column(name = "participation_id", nullable = false)
 	private Long participationId;
 
-	@OneToMany(mappedBy = "reviewedTarget", orphanRemoval = true)
+	@OneToMany(mappedBy = "replyTarget", orphanRemoval = true)
 	private List<Reply> replies = new ArrayList<>();
 
-	protected ReviewedTarget() {
+	protected ReplyTarget() {
 	}
 
-	public ReviewedTarget(Long receiverId, Long responserId) {
+	public ReplyTarget(Long receiverId, Long responserId) {
 		this.receiverId = receiverId;
 		this.responserId = responserId;
 	}

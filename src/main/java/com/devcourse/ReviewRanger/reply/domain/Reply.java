@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.devcourse.ReviewRanger.BaseEntity;
-import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
+import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -31,8 +31,8 @@ public class Reply extends BaseEntity {
 	private String answerText;
 
 	@ManyToOne
-	@JoinColumn(name = "reviewed_target_id")
-	private ReviewedTarget reviewedTarget;
+	@JoinColumn(name = "reply_target_id")
+	private ReplyTarget replyTarget;
 
 	protected Reply() {
 	}
@@ -43,12 +43,12 @@ public class Reply extends BaseEntity {
 		this.answerText = answerText;
 	}
 
-	public void assignReviewedTarget(ReviewedTarget reviewedTarget) {
-		if (this.reviewedTarget != null) {
-			this.reviewedTarget.getReplies().remove(this);
+	public void assignReviewedTarget(ReplyTarget replyTarget) {
+		if (this.replyTarget != null) {
+			this.replyTarget.getReplies().remove(this);
 		}
-		this.reviewedTarget = reviewedTarget;
-		reviewedTarget.getReplies().add(this);
+		this.replyTarget = replyTarget;
+		replyTarget.getReplies().add(this);
 	}
 
 	public void update(Long objectOptionId, String answerText) {

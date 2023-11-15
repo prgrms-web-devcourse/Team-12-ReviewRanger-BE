@@ -36,7 +36,7 @@ public record ReplyResponse(
 			reply.getQuestionId(),
 			questionOption,
 			reply.getAnswerText(),
-			reply.getReviewedTarget().getId(),
+			reply.getReplyTarget().getId(),
 			reply.getCreateAt(),
 			reply.getUpdatedAt()
 		);
@@ -48,7 +48,7 @@ public record ReplyResponse(
 			reply.getQuestionId(),
 			null,
 			reply.getAnswerText(),
-			reply.getReviewedTarget().getId(),
+			reply.getReplyTarget().getId(),
 			reply.getCreateAt(),
 			reply.getUpdatedAt()
 		);
