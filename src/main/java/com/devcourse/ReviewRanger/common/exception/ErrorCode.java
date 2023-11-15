@@ -34,7 +34,7 @@ public enum ErrorCode {
 	NOT_FOUND_QUESTION_TYPE(NOT_FOUND, "존재하지 않는 질문 타입입니다."),
 
 	//500 error
-	NOT_RECEIVED_RESPONSE_FROM_EXTERNAL_API(INTERNAL_SERVER_ERROR, "외부 API로부터 응답받지 못했습니다.");
+	NOT_RECEIVED_RESPONSE_FROM_OPEN_AI_API(INTERNAL_SERVER_ERROR, "OPEN AI API로부터 응답받지 못했습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;

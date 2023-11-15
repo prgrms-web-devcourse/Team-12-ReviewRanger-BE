@@ -39,19 +39,15 @@ public class OpenAIController {
 
 	@PostMapping("/replies/clean")
 	public RangerResponse<String> chat(@RequestBody ElementRequest elementRequest) {
-		PromptUtil promptUtil = new PromptUtil();
-		promptUtil.setTargetFromElements(elementRequest.replies());
-		promptUtil.setCommand(COMMAND_FOR_CLEAN_REPLIES);
-		String prompt = promptUtil.generateCommand();
+		PromptUtil promptUtil = new PromptUtil(elementRequest.replies(), COMMAND_FOR_CLEAN_REPLIES);
 
-		OpenAIRequest request = new OpenAIRequest(model, n, temperature, prompt);
+		OpenAIRequest request = new OpenAIRequest(model, n, temperature, promptUtil.generateCommand());
 		OpenAIResponse response = restTemplate.postForObject(apiUrl, request, OpenAIResponse.class);
 
 		if (response == null || response.choices() == null || response.choices().isEmpty()) {
-			new RangerException(NOT_RECEIVED_RESPONSE_FROM_EXTERNAL_API);
+			new RangerException(NOT_RECEIVED_RESPONSE_FROM_OPEN_AI_API);
 		}
 
-		String result = response.choices().get(0).message().content();
-		return RangerResponse.ok(result);
+		return RangerResponse.ok(response.getAnswer());
 	}
 }

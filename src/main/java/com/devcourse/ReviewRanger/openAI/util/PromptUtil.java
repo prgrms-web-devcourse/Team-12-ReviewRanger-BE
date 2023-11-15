@@ -8,19 +8,13 @@ public class PromptUtil {
 
 	private String command;
 
-	public PromptUtil() {
-	}
-
-	public void setTargetFromElement(String element) {
-		this.target = element;
-	}
-
-	public void setTargetFromElements(List<String> elements) {
-		this.target = String.join(", ", elements);
-	}
-
-	public void setCommand(String command) {
+	public PromptUtil(List<String> elements, String command) {
+		this.target = generateTargetFromElements(elements);
 		this.command = command;
+	}
+
+	private String generateTargetFromElements(List<String> elements) {
+		return String.join(", ", elements);
 	}
 
 	public String generateCommand() {
