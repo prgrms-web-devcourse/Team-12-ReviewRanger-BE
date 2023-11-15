@@ -101,11 +101,11 @@ public class ReplyTargetService {
 	private List<ReplyResponse> getAllReplies(ReplyTarget replyTarget) {
 		return replyTarget.getReplies().stream()
 			.map(reply -> {
-				if (reply.getObjectOptionId() == null) {
+				if (reply.getQuestionOptionId() == null) {
 					return ReplyResponse.toResponse(reply);
 				}
 
-				QuestionOption questionOption = questionOptionRepository.findById(reply.getObjectOptionId())
+				QuestionOption questionOption = questionOptionRepository.findById(reply.getQuestionOptionId())
 					.orElseThrow(() -> new RangerException(NOT_FOUND_QUESTION_OPTION));
 				GetQuestionOptionResponse questionOptionResponse = GetQuestionOptionResponse.toResponse(
 					questionOption);

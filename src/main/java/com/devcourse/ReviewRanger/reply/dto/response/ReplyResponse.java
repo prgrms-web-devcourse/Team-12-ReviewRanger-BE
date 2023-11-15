@@ -21,6 +21,12 @@ public record ReplyResponse(
 	@Schema(description = "주관식 답변")
 	String answerText,
 
+	@Schema(description = "별점 답변")
+	Double rating,
+
+	@Schema(description = "육각스탯 답변")
+	Integer hexastat,
+
 	@Schema(description = "리뷰 타겟")
 	Long reviewedTargetId,
 
@@ -36,6 +42,8 @@ public record ReplyResponse(
 			reply.getQuestionId(),
 			questionOption,
 			reply.getAnswerText(),
+			reply.getRating(),
+			reply.getHexastat(),
 			reply.getReplyTarget().getId(),
 			reply.getCreateAt(),
 			reply.getUpdatedAt()
@@ -48,6 +56,8 @@ public record ReplyResponse(
 			reply.getQuestionId(),
 			null,
 			reply.getAnswerText(),
+			reply.getRating(),
+			reply.getHexastat(),
 			reply.getReplyTarget().getId(),
 			reply.getCreateAt(),
 			reply.getUpdatedAt()

@@ -37,16 +37,16 @@ public class ReplyService {
 	public void updateReply(List<UpdateReplyRequest> updateReplyRequests) {
 		for (UpdateReplyRequest updateReplyRequest : updateReplyRequests) {
 			Reply reply = getByIdOrThrow(updateReplyRequest.id());
-			reply.update(updateReplyRequest.questionOptionId(), updateReplyRequest.answerText());
+			reply.update(
+				updateReplyRequest.questionOptionId(),
+				updateReplyRequest.answerText(),
+				updateReplyRequest.rating(),
+				updateReplyRequest.hexastat());
 		}
 	}
 
 	public Reply getByIdOrThrow(Long id) {
 		return replyRepository.findById(id)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REPLY));
-	}
-
-	public List<Reply> getAllByReviewedTargetId(Long reviewedTargetId) {
-		return replyRepository.findAllByReviewedTargetId(reviewedTargetId);
 	}
 }

@@ -23,12 +23,18 @@ public class Reply extends BaseEntity {
 	@Column(name = "question_id", nullable = false)
 	private Long questionId;
 
-	@Column(name = "object_option_id", nullable = true)
-	private Long objectOptionId;
+	@Column(name = "question_option_id", nullable = true)
+	private Long questionOptionId;
 
 	@Lob
 	@Column(name = "answer_text", nullable = true)
 	private String answerText;
+
+	@Column(name = "rating", nullable = true)
+	private Double rating;
+
+	@Column(name = "hexastat", nullable = true)
+	private Integer hexastat;
 
 	@ManyToOne
 	@JoinColumn(name = "reply_target_id")
@@ -37,10 +43,18 @@ public class Reply extends BaseEntity {
 	protected Reply() {
 	}
 
-	public Reply(Long questionId, Long objectOptionId, String answerText) {
+	public Reply(Long questionId, Long questionOptionId, String answerText) {
 		this.questionId = questionId;
-		this.objectOptionId = objectOptionId;
+		this.questionOptionId = questionOptionId;
 		this.answerText = answerText;
+	}
+
+	public Reply(Long questionId, Long questionOptionId, String answerText, Double rating, Integer hexastat) {
+		this.questionId = questionId;
+		this.questionOptionId = questionOptionId;
+		this.answerText = answerText;
+		this.rating = rating;
+		this.hexastat = hexastat;
 	}
 
 	public void assignReviewedTarget(ReplyTarget replyTarget) {
@@ -51,8 +65,10 @@ public class Reply extends BaseEntity {
 		replyTarget.getReplies().add(this);
 	}
 
-	public void update(Long objectOptionId, String answerText) {
-		this.objectOptionId = objectOptionId;
+	public void update(Long questionOptionId, String answerText, Double rating, Integer hexastat) {
+		this.questionOptionId = questionOptionId;
 		this.answerText = answerText;
+		this.rating = rating;
+		this.hexastat = hexastat;
 	}
 }

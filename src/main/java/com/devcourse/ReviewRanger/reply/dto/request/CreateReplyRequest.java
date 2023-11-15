@@ -18,9 +18,17 @@ public record CreateReplyRequest(
 	Long questionOptionId,
 
 	@Schema(description = "주관식 답변")
-	String answerText
+	String answerText,
+
+	@Schema(description = "별점 답변")
+	@JsonProperty("answerRating")
+	Double rating,
+
+	@Schema(description = "육각스탯 답변")
+	@JsonProperty("answerHexa")
+	Integer hexastat
 ) {
 	public Reply toEntity() {
-		return new Reply(questionId, questionOptionId, answerText);
+		return new Reply(questionId, questionOptionId, answerText, rating, hexastat);
 	}
 }
