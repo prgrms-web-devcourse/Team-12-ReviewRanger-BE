@@ -20,6 +20,8 @@ import com.devcourse.ReviewRanger.finalReviewResult.application.FinalReviewResul
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewRequest;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.FinalReviewResultListResponse;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewAnswerResponse;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewResultResponse;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
 @RestController
@@ -72,5 +74,27 @@ public class FinalReviewResultController {
 		finalReviewResultService.sendFinalResultToUsers(reviewId);
 
 		return RangerResponse.noData();
+	}
+
+	@GetMapping("/{finalReviewId}")
+	@ResponseStatus(OK)
+	public RangerResponse<GetFinalReviewResultResponse> getFinalReviewResultInfo(
+		@PathVariable Long finalReviewId
+	) {
+		GetFinalReviewResultResponse finalReviewResultInfo
+			= finalReviewResultService.getFinalReviewResultInfo(finalReviewId);
+
+		return RangerResponse.ok(finalReviewResultInfo);
+	}
+
+	@GetMapping("/{finalReviewId}/qna")
+	@ResponseStatus(OK)
+	public RangerResponse<List<GetFinalReviewAnswerResponse>> getFinalReviewAnswers(
+		@PathVariable Long finalReviewId
+	) {
+		List<GetFinalReviewAnswerResponse> finalReviewAnswerInfo
+			= finalReviewResultService.getFinalReviewAnswerList(finalReviewId);
+
+		return RangerResponse.ok(finalReviewAnswerInfo);
 	}
 }
