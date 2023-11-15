@@ -5,6 +5,9 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Getter;
+
+@Getter
 @Entity
 @Table(name = "answers_rating")
 public class FinalReviewResultAnswerRating extends FinalReviewResultAnswer {
