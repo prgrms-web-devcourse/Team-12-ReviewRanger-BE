@@ -8,10 +8,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "리뷰 답변 요청 DTO")
 public record CreateReplyRequest(
-	@Schema(description = "응답자 Id")
-	@NotNull(message = "응답자 Id는 Null값 일 수 없습니다.")
-	Long responserId,
-
 	@Schema(description = "질문 Id")
 	@NotNull(message = "질문 Id는 Null값 일 수 없습니다.")
 	Long questionId,
@@ -23,6 +19,6 @@ public record CreateReplyRequest(
 	String answerText
 ) {
 	public Reply toEntity() {
-		return new Reply(responserId, questionId, objectOptionId, answerText);
+		return new Reply(questionId, objectOptionId, answerText);
 	}
 }

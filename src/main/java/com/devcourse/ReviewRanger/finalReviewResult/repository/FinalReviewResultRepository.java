@@ -3,6 +3,7 @@ package com.devcourse.ReviewRanger.finalReviewResult.repository;
 import static com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResult.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,4 +13,6 @@ public interface FinalReviewResultRepository extends JpaRepository<FinalReviewRe
 	List<FinalReviewResult> findAllByUserIdAndStatus(Long userId, Status status);
 
 	List<FinalReviewResult> findAllByReviewIdAndStatus(Long reviewId, Status status);
+
+	Optional<FinalReviewResult> findByReviewIdAndUserIdAndStatus(Long reviewId, Long userId, Status status);
 }

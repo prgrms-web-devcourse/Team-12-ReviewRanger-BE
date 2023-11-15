@@ -3,7 +3,10 @@ package com.devcourse.ReviewRanger.finalReviewResult.application;
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 import static com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResult.Status.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,21 +20,25 @@ import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResultAnsw
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResultAnswerObjects;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResultAnswerRating;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResultAnswerSubject;
+import com.devcourse.ReviewRanger.finalReviewResult.domain.Hexstat;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReplyRequest;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewRequest;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.FinalReviewResultListResponse;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewAnswerResponse;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewResultResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.DropdownTypeRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.FinalReviewResultRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.HexstatTypeRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.ObjectTypeRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.RatingTypeRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.SubjectTypeRepository;
+import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
-import com.devcourse.ReviewRanger.question.domain.Question;
-import com.devcourse.ReviewRanger.question.domain.QuestionType;
 import com.devcourse.ReviewRanger.question.repository.QuestionRepository;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
+import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
+import com.devcourse.ReviewRanger.reviewedTarget.repository.ReviewedTargetRepository;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
@@ -48,6 +55,7 @@ public class FinalReviewResultService {
 	private final ReviewRepository reviewRepository;
 	private final QuestionRepository questionRepository;
 	private final ParticipationRepository participationRepository;
+	private final ReviewedTargetRepository reviewedTargetRepository;
 
 	public FinalReviewResultService(
 		FinalReviewResultRepository finalReviewResultRepository,
@@ -59,7 +67,7 @@ public class FinalReviewResultService {
 		UserRepository userRepository,
 		ReviewRepository reviewRepository,
 		QuestionRepository questionRepository,
-		ParticipationRepository participationRepository) {
+		ParticipationRepository participationRepository, ReviewedTargetRepository reviewedTargetRepository) {
 		this.finalReviewResultRepository = finalReviewResultRepository;
 		this.objectTypeRepository = objectTypeRepository;
 		this.ratingTypeRepository = ratingTypeRepository;
@@ -70,6 +78,7 @@ public class FinalReviewResultService {
 		this.reviewRepository = reviewRepository;
 		this.questionRepository = questionRepository;
 		this.participationRepository = participationRepository;
+		this.reviewedTargetRepository = reviewedTargetRepository;
 	}
 
 	public List<FinalReviewResultListResponse> getAllFinalReviewResults(Long userId) {
@@ -80,63 +89,50 @@ public class FinalReviewResultService {
 
 	@Transactional
 	public CreateFinalReviewResponse createFinalReviewResult(CreateFinalReviewRequest createFinalReviewRequest) {
-		// 유효한 user인지 검사
 		Long userId = createFinalReviewRequest.userId();
-		userRepository.findById(userId)
-			.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
-
+		validateUserId(userId);
 		validateReviewId(createFinalReviewRequest.reviewId());
 
-		List<CreateFinalReplyRequest> replies = createFinalReviewRequest.replies();
 		FinalReviewResult finalReviewResult = createFinalReviewRequest.toEntity();
+		List<CreateFinalReplyRequest> replies = createFinalReviewRequest.replies();
 
 		for (CreateFinalReplyRequest reply : replies) {
-			FinalQuestionType finalQuestionType = reply.questionType();
-			String question_title = reply.questionTitle();
-			QuestionType questionType = FinalQuestionType.convertToQuestionType(finalQuestionType);
+			Long questionId = reply.questionId();
+			validateQuestionId(questionId);
 
-			// 내가 question id 찾아와야 함!!
-			Question question = questionRepository.findByTitleAndType(question_title, questionType)
-				.orElseThrow(() -> new RangerException(NOT_FOUND_QUESTION));
-
-			Long question_id = question.getId();
-
-			FinalQuestion finalQuestion = new FinalQuestion(question_id, finalQuestionType, question_title);
+			FinalQuestion finalQuestion = reply.toEntity();
 			finalReviewResult.addQuestions(finalQuestion);
+			finalReviewResultRepository.save(finalReviewResult);
 
 			// answer를 가져와서 question type에 따라 해당하는 테이블에 데이터를 저장하자 => addAnswer 호출
 			List<Object> answers = reply.answers();
+			FinalQuestionType finalQuestionType = reply.questionType();
 
 			for (Object answer : answers) {
 				switch (finalQuestionType) {
 					case SUBJECTIVE -> {
-						FinalReviewResultAnswerSubject subjectAnswer = new FinalReviewResultAnswerSubject(question_id);
+						FinalReviewResultAnswerSubject subjectAnswer = new FinalReviewResultAnswerSubject(questionId);
 						subjectAnswer.addAnswer(answer);
 						subjectTypeRepository.save(subjectAnswer);
 					}
-					case SINGLE_CHOICE -> {
-						FinalReviewResultAnswerObjects objectAnswer = new FinalReviewResultAnswerObjects(question_id);
-						objectAnswer.addAnswer(answer);
-						objectTypeRepository.save(objectAnswer);
-					}
-					case MULTIPLE_CHOICE -> {
-						FinalReviewResultAnswerObjects objectAnswer = new FinalReviewResultAnswerObjects(question_id);
+					case SINGLE_CHOICE, MULTIPLE_CHOICE -> {
+						FinalReviewResultAnswerObjects objectAnswer = new FinalReviewResultAnswerObjects(questionId);
 						objectAnswer.addAnswer(answer);
 						objectTypeRepository.save(objectAnswer);
 					}
 					case RATING -> {
-						FinalReviewResultAnswerRating ratingAnswer = new FinalReviewResultAnswerRating(question_id);
+						FinalReviewResultAnswerRating ratingAnswer = new FinalReviewResultAnswerRating(questionId);
 						ratingAnswer.addAnswer(answer);
 						ratingTypeRepository.save(ratingAnswer);
 					}
 					case DROPDOWN -> {
 						FinalReviewResultAnswerDropdown dropdownAnswer = new FinalReviewResultAnswerDropdown(
-							question_id);
+							questionId);
 						dropdownAnswer.addAnswer(answer);
 						dropdownTypeRepository.save(dropdownAnswer);
 					}
 					case HEXASTAT -> {
-						FinalReviewResultAnswerHexStat hexStatAnswer = new FinalReviewResultAnswerHexStat(question_id);
+						FinalReviewResultAnswerHexStat hexStatAnswer = new FinalReviewResultAnswerHexStat(questionId);
 						hexStatAnswer.addAnswer(answer);
 						hexstatTypeRepository.save(hexStatAnswer);
 					}
@@ -156,8 +152,144 @@ public class FinalReviewResultService {
 		return participantNums == notSentFinalResultNums;
 	}
 
+	@Transactional
+	public void sendFinalResultToUsers(Long reviewId) {
+		validateReviewId(reviewId);
+
+		List<Participation> participations = participationRepository.findAllByReviewId(reviewId);
+
+		if (participations.isEmpty()) {
+			throw new RangerException(NOT_FOUND_PARTICIPANTS);
+		}
+
+		Set<Long> userIds = new HashSet<>();
+
+		for (Participation participation : participations) {
+			Long participationId = participation.getId();
+			List<ReviewedTarget> reviewedTargets = reviewedTargetRepository.findAllByParticipationId(participationId);
+
+			for (ReviewedTarget reviewedTarget : reviewedTargets) {
+				Long receiverId = reviewedTarget.getReceiverId();
+				userIds.add(receiverId);
+			}
+		}
+
+		for (Long userId : userIds) {
+			validateUserId(userId);
+
+			FinalReviewResult finalReviewResult
+				= finalReviewResultRepository.findByReviewIdAndUserIdAndStatus(reviewId, userId, NOT_SENT)
+				.orElseThrow(() -> new RangerException(NOT_FOUND_FINAL_REVIEW_RESULT));
+
+			finalReviewResult.toSentStatus();
+		}
+	}
+
+	public GetFinalReviewResultResponse getFinalReviewResultInfo(Long userId, Long finalReviewId) {
+		FinalReviewResult finalReviewResult = getFinalReviewResultOrThrow(finalReviewId);
+
+		boolean validateOwnerOfReviewResult = (finalReviewResult.getUserId() == userId);
+
+		if (validateOwnerOfReviewResult) {
+			return new GetFinalReviewResultResponse(finalReviewResult);
+		} else {
+			throw new RangerException(NOT_OWNER_OF_FINAL_REVIEW_RESULT);
+		}
+	}
+
+	public List<GetFinalReviewAnswerResponse> getFinalReviewAnswerList(Long finalReviewId) {
+		FinalReviewResult finalReviewResult = getFinalReviewResultOrThrow(finalReviewId);
+		List<FinalQuestion> questions = finalReviewResult.getQuestions();
+
+		// 질문들의 식별자를 하나씩 사용하여 질문 타입에 맞는 답변들을 가져온다
+		List<GetFinalReviewAnswerResponse> finalReviewAnswerResponseList = new ArrayList<>();
+
+		for (FinalQuestion question : questions) {
+			Long questionId = question.getQuestionId();
+			FinalQuestionType finalQuestionType = question.getQuestionType();
+
+			List<Long> answerIdList = new ArrayList<>();
+			List<Object> answers = new ArrayList<>();
+
+			switch (finalQuestionType) {
+				case SUBJECTIVE -> {
+					List<FinalReviewResultAnswerSubject> subjectAnswers
+						= subjectTypeRepository.findAllByQuestionId(questionId);
+
+					for (FinalReviewResultAnswerSubject answer : subjectAnswers) {
+						answerIdList.add(answer.getId());
+						answers.add(answer.getSubjects());
+					}
+				}
+				case SINGLE_CHOICE, MULTIPLE_CHOICE -> {
+					List<FinalReviewResultAnswerObjects> objectAnswers
+						= objectTypeRepository.findAllByQuestionId(questionId);
+
+					for (FinalReviewResultAnswerObjects answer : objectAnswers) {
+						answerIdList.add(answer.getId());
+						answers.add(answer.getObject());
+					}
+				}
+				case RATING -> {
+					List<FinalReviewResultAnswerRating> ratingAnswers
+						= ratingTypeRepository.findAllByQuestionId(questionId);
+
+					for (FinalReviewResultAnswerRating answer : ratingAnswers) {
+						answerIdList.add(answer.getId());
+						answers.add(answer.getRate());
+					}
+				}
+				case DROPDOWN -> {
+					List<FinalReviewResultAnswerDropdown> dropdownAnswers
+						= dropdownTypeRepository.findAllByQuestionId(questionId);
+
+					for (FinalReviewResultAnswerDropdown answer : dropdownAnswers) {
+						answerIdList.add(answer.getId());
+						answers.add(answer.getDrops());
+					}
+				}
+				case HEXASTAT -> {
+					List<FinalReviewResultAnswerHexStat> hexstatAnswers
+						= hexstatTypeRepository.findAllByQuestionId(questionId);
+
+					for (FinalReviewResultAnswerHexStat answer : hexstatAnswers) {
+						answerIdList.add(answer.getId());
+
+						String statName = answer.getStatName();
+						Double statScore = answer.getStatScore();
+						Hexstat hexstat = new Hexstat(statName, statScore);
+						answers.add(hexstat);
+					}
+				}
+			}
+
+			GetFinalReviewAnswerResponse getFinalReviewAnswer
+				= new GetFinalReviewAnswerResponse(questionId, finalQuestionType, question.getQuestionTitle(),
+				answerIdList, answers);
+
+			finalReviewAnswerResponseList.add(getFinalReviewAnswer);
+		}
+
+		return finalReviewAnswerResponseList;
+	}
+
+	private FinalReviewResult getFinalReviewResultOrThrow(Long finalResultId) {
+		return finalReviewResultRepository.findById(finalResultId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_FINAL_REVIEW_RESULT));
+	}
+
+	private void validateQuestionId(Long questionId) {
+		questionRepository.findById(questionId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+	}
+
 	private void validateReviewId(Long reviewId) {
 		reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+	}
+
+	private void validateUserId(Long userId) {
+		userRepository.findById(userId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 	}
 }

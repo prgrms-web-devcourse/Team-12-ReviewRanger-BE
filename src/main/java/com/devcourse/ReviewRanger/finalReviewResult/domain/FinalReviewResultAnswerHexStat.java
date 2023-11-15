@@ -6,6 +6,9 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Getter;
+
+@Getter
 @Entity
 @Table(name = "answers_hexstats")
 public class FinalReviewResultAnswerHexStat extends FinalReviewResultAnswer {

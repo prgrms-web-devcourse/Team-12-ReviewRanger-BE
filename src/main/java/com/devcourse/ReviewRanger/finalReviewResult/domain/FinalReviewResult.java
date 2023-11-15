@@ -11,6 +11,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.devcourse.ReviewRanger.BaseEntity;
@@ -28,14 +29,14 @@ public class FinalReviewResult extends BaseEntity {
 	}
 
 	@Column(name = "user_id", nullable = false)
-	@NotBlank(message = "리뷰 대상 id는 빈값 일 수 없습니다.")
+	@NotNull(message = "리뷰 대상 id는 빈값 일 수 없습니다.")
 	private Long userId;
 
 	@Column(name = "user_name", nullable = false)
 	private String userName;
 
 	@Column(name = "review_id", nullable = false)
-	@NotBlank(message = "리뷰 id는 빈값 일 수 없습니다.")
+	@NotNull(message = "리뷰 id는 빈값 일 수 없습니다.")
 	private Long reviewId;
 
 	@Column(nullable = false, length = 50)

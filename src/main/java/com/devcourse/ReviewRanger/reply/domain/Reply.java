@@ -20,9 +20,6 @@ import lombok.Getter;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 public class Reply extends BaseEntity {
 
-	@Column(name = "responser_id", nullable = false)
-	private Long responserId;
-
 	@Column(name = "question_id", nullable = false)
 	private Long questionId;
 
@@ -40,8 +37,7 @@ public class Reply extends BaseEntity {
 	protected Reply() {
 	}
 
-	public Reply(Long responserId, Long questionId, Long objectOptionId, String answerText) {
-		this.responserId = responserId;
+	public Reply(Long questionId, Long objectOptionId, String answerText) {
 		this.questionId = questionId;
 		this.objectOptionId = objectOptionId;
 		this.answerText = answerText;

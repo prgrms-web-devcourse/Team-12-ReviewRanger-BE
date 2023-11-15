@@ -15,6 +15,10 @@ public record UpdateReviewedTargetRequest(
 	@NotNull(message = "수신자 Id는 Null값 일 수 없습니다.")
 	Long receiverId,
 
+	@Schema(description = "응답자 Id")
+	@NotNull(message = "응답자 Id는 Null값 일 수 없습니다.")
+	Long responserId,
+
 	@Schema(description = "리뷰 답변 수정 요청 DTO")
 	@JsonProperty("replies")
 	List<UpdateReplyRequest> updateReplyRequests

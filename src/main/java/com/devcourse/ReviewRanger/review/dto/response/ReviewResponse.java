@@ -2,14 +2,20 @@ package com.devcourse.ReviewRanger.review.dto.response;
 
 import java.time.LocalDateTime;
 
+import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.domain.ReviewType;
+import com.devcourse.ReviewRanger.user.dto.UserResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public record ReviewResponseDto(
+@Schema(description = "리뷰 기본 응답 DTO")
+public record ReviewResponse(
 	@Schema(description = "리뷰 Id")
-	Long reviewId,
+	Long id,
+
+	@Schema(description = "생성자")
+	UserResponse user, //creator
 
 	@Schema(description = "리뷰 제목")
 	String title,
@@ -18,10 +24,13 @@ public record ReviewResponseDto(
 	String description,
 
 	@Schema(description = "리뷰 타입")
-	ReviewType reviewType,
+	ReviewType type,
 
 	@Schema(description = "리뷰 마감일")
 	LocalDateTime closeAt,
+
+	@Schema(description = "리뷰 상태")
+	ReviewStatus reviewStatus,
 
 	@Schema(description = "리뷰 생성일")
 	LocalDateTime createdAt,
@@ -29,16 +38,17 @@ public record ReviewResponseDto(
 	@Schema(description = "리뷰 수정일")
 	LocalDateTime updatedAt
 ) {
-	public ReviewResponseDto(
-		Review review) {
-		this(
+	public static ReviewResponse toResponse(Review review, UserResponse user) {
+		return new ReviewResponse(
 			review.getId(),
+			user,
 			review.getTitle(),
-			null,
-			null,
-			null,
-			null,
-			null
+			review.getDescription(),
+			review.getType(),
+			review.getClosedAt(),
+			review.getStatus(),
+			review.getCreateAt(),
+			review.getUpdatedAt()
 		);
 	}
 }
