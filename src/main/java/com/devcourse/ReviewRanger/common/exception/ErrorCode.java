@@ -32,7 +32,8 @@ public enum ErrorCode {
 
 	// 409 error
 	EXIST_SAME_NAME(CONFLICT, "이미 사용중인 이름 입니다."),
-	EXIST_SAME_EMAIL(CONFLICT, "이미 사용중인 이메일 입니다.");
+	EXIST_SAME_EMAIL(CONFLICT, "이미 사용중인 이메일 입니다."),
+	NOT_OWNER_OF_FINAL_REVIEW_RESULT(CONFLICT, "리뷰 결과의 주인이 아닙니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;
