@@ -3,6 +3,9 @@ package com.devcourse.ReviewRanger.openAI;
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 import static com.devcourse.ReviewRanger.openAI.constant.Command.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
+import com.devcourse.ReviewRanger.openAI.dto.common.Message;
 import com.devcourse.ReviewRanger.openAI.dto.request.ElementRequest;
 import com.devcourse.ReviewRanger.openAI.dto.request.OpenAIRequest;
 import com.devcourse.ReviewRanger.openAI.dto.response.OpenAIResponse;
@@ -37,11 +41,18 @@ public class OpenAIController {
 	@Value("${openai.api.temperature}")
 	private double temperature;
 
+	private final String request_role = "user";
+
 	@PostMapping("/replies/clean")
 	public RangerResponse<String> chat(@RequestBody ElementRequest elementRequest) {
 		PromptUtil promptUtil = new PromptUtil(elementRequest.replies(), COMMAND_FOR_CLEAN_REPLIES);
 
-		OpenAIRequest request = new OpenAIRequest(model, n, temperature, promptUtil.generateCommand());
+		OpenAIRequest request = new OpenAIRequest(
+			model,
+			n,
+			temperature,
+			List.of(new Message(request_role, promptUtil.generateCommand()))
+		);
 		OpenAIResponse response = restTemplate.postForObject(apiUrl, request, OpenAIResponse.class);
 
 		if (response == null || response.choices() == null || response.choices().isEmpty()) {
