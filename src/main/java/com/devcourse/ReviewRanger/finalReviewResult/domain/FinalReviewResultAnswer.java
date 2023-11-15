@@ -6,10 +6,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
-import lombok.Setter;
+import lombok.Getter;
 
+@Getter
 @MappedSuperclass
-@Setter
 public abstract class FinalReviewResultAnswer {
 
 	@Id

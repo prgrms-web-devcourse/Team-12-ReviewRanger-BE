@@ -7,6 +7,9 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import lombok.Getter;
+
+@Getter
 @Embeddable
 public class FinalQuestion {
 
