@@ -26,6 +26,7 @@ public enum ErrorCode {
 	NOT_FOUND_REVIEW_TARGET(NOT_FOUND, "존재하지 않는 리뷰 대상입니다."),
 	NOT_FOUND_REPLY(NOT_FOUND, "존재하지 않는 답변입니다."),
 	NOT_FOUND_QUESTION_TYPE(NOT_FOUND, "존재하지 않는 질문 타입입니다."),
+
 	NOT_FOUND_QUESTION_OPTION(NOT_FOUND, "존재하지 않는 질문 옵션입니다."),
 	NOT_FOUND_FINAL_REVIEW_RESULT(NOT_FOUND, "존재하지 않는 최종 리뷰 결과입니다."),
 	NOT_FOUND_PARTICIPANTS(NOT_FOUND, "참여 목록이 존재하지 않습니다."),
@@ -33,8 +34,11 @@ public enum ErrorCode {
 	// 409 error
 	EXIST_SAME_NAME(CONFLICT, "이미 사용중인 이름 입니다."),
 	EXIST_SAME_EMAIL(CONFLICT, "이미 사용중인 이메일 입니다."),
-	NOT_OWNER_OF_FINAL_REVIEW_RESULT(CONFLICT, "리뷰 결과의 주인이 아닙니다.");
+	NOT_OWNER_OF_FINAL_REVIEW_RESULT(CONFLICT, "리뷰 결과의 주인이 아닙니다."),
 
+	//500 error
+	NOT_RECEIVED_RESPONSE_FROM_OPEN_AI_API(INTERNAL_SERVER_ERROR, "OPEN AI API로부터 응답받지 못했습니다.");
+  
 	private final HttpStatus httpStatus;
 	private final String message;
 
