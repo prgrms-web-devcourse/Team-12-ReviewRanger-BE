@@ -37,7 +37,7 @@ public class ReplyService {
 	public void updateReply(List<UpdateReplyRequest> updateReplyRequests) {
 		for (UpdateReplyRequest updateReplyRequest : updateReplyRequests) {
 			Reply reply = getByIdOrThrow(updateReplyRequest.id());
-			reply.update(updateReplyRequest.objectOptionId(), updateReplyRequest.answerText());
+			reply.update(updateReplyRequest.questionOptionId(), updateReplyRequest.answerText());
 		}
 	}
 
