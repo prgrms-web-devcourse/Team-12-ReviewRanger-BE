@@ -185,10 +185,16 @@ public class FinalReviewResultService {
 		}
 	}
 
-	public GetFinalReviewResultResponse getFinalReviewResultInfo(Long finalReviewId) {
+	public GetFinalReviewResultResponse getFinalReviewResultInfo(Long userId, Long finalReviewId) {
 		FinalReviewResult finalReviewResult = getFinalReviewResultOrThrow(finalReviewId);
 
-		return new GetFinalReviewResultResponse(finalReviewResult);
+		boolean validateOwnerOfReviewResult = (finalReviewResult.getUserId() == userId);
+
+		if (validateOwnerOfReviewResult) {
+			return new GetFinalReviewResultResponse(finalReviewResult);
+		} else {
+			throw new RangerException(NOT_OWNER_OF_FINAL_REVIEW_RESULT);
+		}
 	}
 
 	public List<GetFinalReviewAnswerResponse> getFinalReviewAnswerList(Long finalReviewId) {
