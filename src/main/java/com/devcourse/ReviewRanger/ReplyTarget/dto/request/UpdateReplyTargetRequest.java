@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.reviewedTarget.dto.request;
+package com.devcourse.ReviewRanger.ReplyTarget.dto.request;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "리뷰 답변 수정 요청 DTO")
-public record UpdateReviewedTargetRequest(
+@Schema(description = "답변 타겟 수정 요청 DTO")
+public record UpdateReplyTargetRequest(
 	@Schema(description = "수신자 Id")
 	@NotNull(message = "수신자 Id는 Null값 일 수 없습니다.")
 	Long receiverId,
@@ -19,7 +19,7 @@ public record UpdateReviewedTargetRequest(
 	@NotNull(message = "응답자 Id는 Null값 일 수 없습니다.")
 	Long responserId,
 
-	@Schema(description = "리뷰 답변 수정 요청 DTO")
+	@Schema(description = "답변 수정 요청 DTO")
 	@JsonProperty("replies")
 	List<UpdateReplyRequest> updateReplyRequests
 ) {

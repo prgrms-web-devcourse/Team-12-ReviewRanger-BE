@@ -11,6 +11,8 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
+import com.devcourse.ReviewRanger.ReplyTarget.repository.ReplyTargetRepository;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestion;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestionType;
@@ -37,8 +39,6 @@ import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
 import com.devcourse.ReviewRanger.question.repository.QuestionRepository;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
-import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
-import com.devcourse.ReviewRanger.reviewedTarget.repository.ReviewedTargetRepository;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
@@ -55,7 +55,7 @@ public class FinalReviewResultService {
 	private final ReviewRepository reviewRepository;
 	private final QuestionRepository questionRepository;
 	private final ParticipationRepository participationRepository;
-	private final ReviewedTargetRepository reviewedTargetRepository;
+	private final ReplyTargetRepository replyTargetRepository;
 
 	public FinalReviewResultService(
 		FinalReviewResultRepository finalReviewResultRepository,
@@ -67,7 +67,7 @@ public class FinalReviewResultService {
 		UserRepository userRepository,
 		ReviewRepository reviewRepository,
 		QuestionRepository questionRepository,
-		ParticipationRepository participationRepository, ReviewedTargetRepository reviewedTargetRepository) {
+		ParticipationRepository participationRepository, ReplyTargetRepository replyTargetRepository) {
 		this.finalReviewResultRepository = finalReviewResultRepository;
 		this.objectTypeRepository = objectTypeRepository;
 		this.ratingTypeRepository = ratingTypeRepository;
@@ -78,7 +78,7 @@ public class FinalReviewResultService {
 		this.reviewRepository = reviewRepository;
 		this.questionRepository = questionRepository;
 		this.participationRepository = participationRepository;
-		this.reviewedTargetRepository = reviewedTargetRepository;
+		this.replyTargetRepository = replyTargetRepository;
 	}
 
 	public List<FinalReviewResultListResponse> getAllFinalReviewResults(Long userId) {
@@ -166,10 +166,10 @@ public class FinalReviewResultService {
 
 		for (Participation participation : participations) {
 			Long participationId = participation.getId();
-			List<ReviewedTarget> reviewedTargets = reviewedTargetRepository.findAllByParticipationId(participationId);
+			List<ReplyTarget> replyTargets = replyTargetRepository.findAllByParticipationId(participationId);
 
-			for (ReviewedTarget reviewedTarget : reviewedTargets) {
-				Long receiverId = reviewedTarget.getReceiverId();
+			for (ReplyTarget replyTarget : replyTargets) {
+				Long receiverId = replyTarget.getReceiverId();
 				userIds.add(receiverId);
 			}
 		}

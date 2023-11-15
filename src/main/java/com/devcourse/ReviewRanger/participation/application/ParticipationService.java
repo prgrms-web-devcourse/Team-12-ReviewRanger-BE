@@ -10,6 +10,8 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devcourse.ReviewRanger.ReplyTarget.application.ReplyTargetService;
+import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
@@ -22,8 +24,6 @@ import com.devcourse.ReviewRanger.participation.repository.ParticipationReposito
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
-import com.devcourse.ReviewRanger.reviewedTarget.application.ReviewedTargetService;
-import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
 import com.devcourse.ReviewRanger.user.domain.User;
 import com.devcourse.ReviewRanger.user.dto.UserResponse;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
@@ -35,14 +35,14 @@ public class ParticipationService {
 	private final ParticipationRepository participationRepository;
 	private final UserRepository userRepository;
 	private final ReviewRepository reviewRepository;
-	private final ReviewedTargetService reviewedTargetService;
+	private final ReplyTargetService replyTargetService;
 
 	public ParticipationService(ParticipationRepository participationRepository, UserRepository userRepository,
-		ReviewRepository reviewRepository, ReviewedTargetService reviewedTargetService) {
+		ReviewRepository reviewRepository, ReplyTargetService replyTargetService) {
 		this.participationRepository = participationRepository;
 		this.userRepository = userRepository;
 		this.reviewRepository = reviewRepository;
-		this.reviewedTargetService = reviewedTargetService;
+		this.replyTargetService = replyTargetService;
 	}
 
 	@Transactional
@@ -119,10 +119,10 @@ public class ParticipationService {
 		List<Participation> participations = getAllByReviewId(reviewId);
 
 		for (Participation participation : participations) {
-			List<ReviewedTarget> reviewedTargets = reviewedTargetService.getAllByParticipationId(participation.getId());
+			List<ReplyTarget> replyTargets = replyTargetService.getAllByParticipationId(participation.getId());
 
-			for (ReviewedTarget reviewedTarget : reviewedTargets) {
-				Long receiverId = reviewedTarget.getReceiverId();
+			for (ReplyTarget replyTarget : replyTargets) {
+				Long receiverId = replyTarget.getReceiverId();
 				receiverToResponsersMap.put(receiverId, receiverToResponsersMap.getOrDefault(receiverId, 0) + 1);
 			}
 		}
@@ -144,14 +144,14 @@ public class ParticipationService {
 	public void submitResponse(SubmitParticipationRequest request) {
 		Participation participation = getByIdOrThrow(request.participationId());
 
-		reviewedTargetService.createReviewTarget(participation.getId(), request.createReviewedTargetRequests());
+		replyTargetService.createReviewTarget(participation.getId(), request.createReplyTargetRequests());
 
 		participation.answeredReview();
 	}
 
 	@Transactional
 	public void updateResponse(UpdateParticipationRequest request) {
-		reviewedTargetService.updateReviewTarget(request.updateReviewedTargetRequests());
+		replyTargetService.updateReviewTarget(request.updateReplyTargetRequests());
 	}
 
 	public Participation getByIdOrThrow(Long id) {
