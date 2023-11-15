@@ -26,6 +26,7 @@ public enum ErrorCode {
 	NOT_FOUND_REVIEW_TARGET(NOT_FOUND, "존재하지 않는 리뷰 대상입니다."),
 	NOT_FOUND_REPLY(NOT_FOUND, "존재하지 않는 답변입니다."),
 	NOT_FOUND_QUESTION_TYPE(NOT_FOUND, "존재하지 않는 질문 타입입니다."),
+	NOT_FOUND_QUESTION_OPTION(NOT_FOUND, "존재하지 않는 질문 옵션입니다."),
 	NOT_FOUND_FINAL_REVIEW_RESULT(NOT_FOUND, "존재하지 않는 최종 리뷰 결과입니다."),
 	NOT_FOUND_PARTICIPANTS(NOT_FOUND, "참여 목록이 존재하지 않습니다."),
 

@@ -21,7 +21,7 @@ import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationR
 import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
 import com.devcourse.ReviewRanger.reviewedTarget.application.ReviewedTargetService;
-import com.devcourse.ReviewRanger.reviewedTarget.dto.response.RepliesByResponserResponse;
+import com.devcourse.ReviewRanger.reviewedTarget.dto.response.ReviewedTargetResponse;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -83,15 +83,28 @@ public class ParticipationController {
 	}
 
 	@Tag(name = "participation")
-	@Operation(summary = "[토큰] 응답자의 모든 답변 내용 조회 기능", description = "[토큰] 응답자의 모든 답변 내용 조회 API", responses = {
-		@ApiResponse(responseCode = "200", description = "응답자의 모든 답변 내용 조회 성공"),
+	@Operation(summary = "[토큰] 응답자별 답변 조회 기능", description = "[토큰] 응답자별 답변 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "응답자별 답변 조회 성공"),
 		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
 
 	})
-	@GetMapping("/participations/{id}/written-replies")
-	public RangerResponse<List<RepliesByResponserResponse>> getRepliesByResponser(@PathVariable Long id) {
-		List<RepliesByResponserResponse> responses = reviewedTargetService.getAllRepliesByResponser(
+	@GetMapping("/reviewed-target/{id}/responser")
+	public RangerResponse<List<ReviewedTargetResponse>> getRepliesByResponser(@PathVariable Long id) {
+		List<ReviewedTargetResponse> responses = reviewedTargetService.getAllRepliesByResponser(
 			id);
+
+		return RangerResponse.ok(responses);
+	}
+
+	@Tag(name = "participation")
+	@Operation(summary = "[토큰] 수신자별 답변 조회 기능", description = "[토큰] 수신자별 답변 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "수신자별 답변 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
+
+	})
+	@GetMapping("/reviewed-target/{id}/receiver")
+	public RangerResponse<List<ReviewedTargetResponse>> getRepliesByReceiver(@PathVariable Long id) {
+		List<ReviewedTargetResponse> responses = reviewedTargetService.getAllRepliesByReceiver(id);
 
 		return RangerResponse.ok(responses);
 	}

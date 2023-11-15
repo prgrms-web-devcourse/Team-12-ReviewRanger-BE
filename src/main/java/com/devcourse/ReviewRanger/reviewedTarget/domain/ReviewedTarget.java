@@ -24,6 +24,9 @@ public class ReviewedTarget extends BaseEntity {
 	@Column(name = "receiver_id", nullable = false)
 	private Long receiverId;
 
+	@Column(name = "responser_id", nullable = false)
+	private Long responserId;
+
 	@Column(name = "participation_id", nullable = false)
 	private Long participationId;
 
@@ -33,16 +36,12 @@ public class ReviewedTarget extends BaseEntity {
 	protected ReviewedTarget() {
 	}
 
-	public ReviewedTarget(Long receiverId) {
+	public ReviewedTarget(Long receiverId, Long responserId) {
 		this.receiverId = receiverId;
+		this.responserId = responserId;
 	}
 
 	public void setParticipationId(Long participationId) {
-		this.participationId = participationId;
-	}
-
-	public ReviewedTarget(Long receiverId, Long participationId) {
-		this.receiverId = receiverId;
 		this.participationId = participationId;
 	}
 }
