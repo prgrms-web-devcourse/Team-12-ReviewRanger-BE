@@ -9,7 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResult;
 
-public interface FinalReviewResultRepository extends JpaRepository<FinalReviewResult, Long> {
+public interface FinalReviewResultRepository
+	extends JpaRepository<FinalReviewResult, Long>, FinalReviewResultCustomRepository {
 	List<FinalReviewResult> findAllByUserIdAndStatus(Long userId, Status status);
 
 	List<FinalReviewResult> findAllByReviewIdAndStatus(Long reviewId, Status status);
