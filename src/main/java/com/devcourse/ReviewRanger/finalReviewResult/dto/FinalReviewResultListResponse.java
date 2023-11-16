@@ -15,7 +15,7 @@ public record FinalReviewResultListResponse(
 	String title,
 
 	@Schema(description = "최종 리뷰 결과 생성 날짜")
-	LocalDateTime created_at
+	LocalDateTime createdAt
 ) {
 	public FinalReviewResultListResponse(FinalReviewResult finalReviewResult) {
 		this(
