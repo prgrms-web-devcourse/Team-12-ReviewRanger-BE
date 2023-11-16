@@ -19,7 +19,6 @@ import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationRequest;
-import com.devcourse.ReviewRanger.participation.dto.response.CursorResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
@@ -62,13 +61,12 @@ public class ParticipationService {
 		return true;
 	}
 
-	public CursorResponse<GetParticipationResponse> getAllParticipationsByResponser(
+	public Slice<GetParticipationResponse> getAllParticipationsByResponser(
 		Long cursorId,
 		Long responserId,
 		Integer size
 	) {
 		Slice<Participation> participations  = participationRepository.findByResponserId(cursorId, responserId, size);
-		Long nextCursor = participations.getContent().get(participations.getContent().size()-1).getId();
 
 		List<GetParticipationResponse> getParticipationResponses = new ArrayList<>();
 		for (Participation participation : participations.getContent()) {
@@ -80,7 +78,7 @@ public class ParticipationService {
 			getParticipationResponses.add(getParticipationResponse);
 		}
 
-		return new CursorResponse<>(getParticipationResponses, participations.hasNext(), nextCursor);
+		return new SliceImpl<>(getParticipationResponses, participations.getPageable(), participations.hasNext());
 	}
 
 	public Long getResponserCount(Long reviewId) {

@@ -19,7 +19,6 @@ import com.devcourse.ReviewRanger.participation.application.ParticipationService
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
-import com.devcourse.ReviewRanger.participation.dto.response.CursorResponse;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,12 +40,12 @@ public class ParticipationController {
 		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
 	@GetMapping("/participations")
-	public RangerResponse<CursorResponse<GetParticipationResponse>> getAllParticipationsByResponser(
+	public RangerResponse<Slice<GetParticipationResponse>> getAllParticipationsByResponser(
 		@AuthenticationPrincipal UserPrincipal user,
 		@RequestParam(required = false) Long cursorId,
 		@RequestParam(defaultValue = "12") Integer size
 	) {
-		CursorResponse<GetParticipationResponse> responses = participationService.getAllParticipationsByResponser(
+		Slice<GetParticipationResponse> responses = participationService.getAllParticipationsByResponser(
 			cursorId,
 			user.getId(),
 			size
