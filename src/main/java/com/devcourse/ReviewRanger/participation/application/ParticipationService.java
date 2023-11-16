@@ -20,6 +20,7 @@ import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationR
 import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
+import com.devcourse.ReviewRanger.participation.repository.ParticipationQueryRepository;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
@@ -33,13 +34,16 @@ import com.devcourse.ReviewRanger.user.repository.UserRepository;
 public class ParticipationService {
 
 	private final ParticipationRepository participationRepository;
+	private final ParticipationQueryRepository participationQueryRepository;
 	private final UserRepository userRepository;
 	private final ReviewRepository reviewRepository;
 	private final ReplyTargetService replyTargetService;
 
-	public ParticipationService(ParticipationRepository participationRepository, UserRepository userRepository,
+	public ParticipationService(ParticipationRepository participationRepository,
+		ParticipationQueryRepository participationQueryRepository, UserRepository userRepository,
 		ReviewRepository reviewRepository, ReplyTargetService replyTargetService) {
 		this.participationRepository = participationRepository;
+		this.participationQueryRepository = participationQueryRepository;
 		this.userRepository = userRepository;
 		this.reviewRepository = reviewRepository;
 		this.replyTargetService = replyTargetService;
@@ -49,8 +53,11 @@ public class ParticipationService {
 	public boolean createParticipations(Long reviewId, List<Long> responserIds) {
 		List<Participation> participations = responserIds.stream()
 			.map(responserId -> {
-				Participation participation = new Participation(responserId);
+				User responer = userRepository.findById(responserId)
+					.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+				Participation participation = new Participation(responer);
 				participation.assignReviewId(reviewId);
+
 				return participation;
 			}).toList();
 
@@ -90,7 +97,7 @@ public class ParticipationService {
 		participations.stream().forEach(participation -> participation.changeStatus(ReviewStatus.END));
 	}
 
-	public List<ParticipationResponse> getAllParticipation(Long reviewId) {
+	public List<ParticipationResponse> getAllParticipation(Long reviewId, String name, String sortCondition) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 		User creator = userRepository.findById(review.getRequesterId())
@@ -98,12 +105,11 @@ public class ParticipationService {
 		UserResponse creatorResponse = UserResponse.toResponse(creator);
 		ReviewResponse reviewResponse = ReviewResponse.toResponse(review, creatorResponse);
 
-		List<ParticipationResponse> responses = participationRepository.findByReviewId(review.getId())
+		List<ParticipationResponse> responses = participationQueryRepository.findAllbyReviewId(review.getId(),
+				name, sortCondition)
 			.stream()
 			.map(participation -> {
-				User responser = userRepository.findById(participation.getResponserId())
-					.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
-				UserResponse responserResponse = UserResponse.toResponse(responser);
+				UserResponse responserResponse = UserResponse.toResponse(participation.getResponser());
 
 				return ParticipationResponse.toResponse(participation, responserResponse, reviewResponse);
 			})
@@ -112,11 +118,13 @@ public class ParticipationService {
 		return responses;
 	}
 
-	public List<ReceiverResponse> getAllReceiverParticipateInReviewOrThrow(Long reviewId) {
+	public List<ReceiverResponse> getAllReceiverParticipateInReviewOrThrow(Long reviewId, String searchName,
+		String sortCondition) {
 		List<ReceiverResponse> responses = new ArrayList<>();
 		Map<Long, Integer> receiverToResponsersMap = new HashMap<>();
 
-		List<Participation> participations = getAllByReviewId(reviewId);
+		List<Participation> participations = participationQueryRepository.findAllbyReviewId(reviewId,
+			searchName, sortCondition);
 
 		for (Participation participation : participations) {
 			List<ReplyTarget> replyTargets = replyTargetService.getAllByParticipationId(participation.getId());
@@ -141,7 +149,7 @@ public class ParticipationService {
 	}
 
 	@Transactional
-	public void submitResponse(SubmitParticipationRequest request) {
+	public void submitReplies(SubmitParticipationRequest request) {
 		Participation participation = getByIdOrThrow(request.participationId());
 
 		replyTargetService.createReviewTarget(participation.getId(), request.createReplyTargetRequests());
