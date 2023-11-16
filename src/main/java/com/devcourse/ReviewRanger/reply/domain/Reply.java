@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.devcourse.ReviewRanger.BaseEntity;
-import com.devcourse.ReviewRanger.reviewedTarget.domain.ReviewedTarget;
+import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -23,36 +23,52 @@ public class Reply extends BaseEntity {
 	@Column(name = "question_id", nullable = false)
 	private Long questionId;
 
-	@Column(name = "object_option_id", nullable = true)
-	private Long objectOptionId;
+	@Column(name = "question_option_id", nullable = true)
+	private Long questionOptionId;
 
 	@Lob
 	@Column(name = "answer_text", nullable = true)
 	private String answerText;
 
+	@Column(name = "rating", nullable = true)
+	private Double rating;
+
+	@Column(name = "hexastat", nullable = true)
+	private Integer hexastat;
+
 	@ManyToOne
-	@JoinColumn(name = "reviewed_target_id")
-	private ReviewedTarget reviewedTarget;
+	@JoinColumn(name = "reply_target_id")
+	private ReplyTarget replyTarget;
 
 	protected Reply() {
 	}
 
-	public Reply(Long questionId, Long objectOptionId, String answerText) {
+	public Reply(Long questionId, Long questionOptionId, String answerText) {
 		this.questionId = questionId;
-		this.objectOptionId = objectOptionId;
+		this.questionOptionId = questionOptionId;
 		this.answerText = answerText;
 	}
 
-	public void assignReviewedTarget(ReviewedTarget reviewedTarget) {
-		if (this.reviewedTarget != null) {
-			this.reviewedTarget.getReplies().remove(this);
+	public Reply(Long questionId, Long questionOptionId, String answerText, Double rating, Integer hexastat) {
+		this.questionId = questionId;
+		this.questionOptionId = questionOptionId;
+		this.answerText = answerText;
+		this.rating = rating;
+		this.hexastat = hexastat;
+	}
+
+	public void assignReviewedTarget(ReplyTarget replyTarget) {
+		if (this.replyTarget != null) {
+			this.replyTarget.getReplies().remove(this);
 		}
-		this.reviewedTarget = reviewedTarget;
-		reviewedTarget.getReplies().add(this);
+		this.replyTarget = replyTarget;
+		replyTarget.getReplies().add(this);
 	}
 
-	public void update(Long objectOptionId, String answerText) {
-		this.objectOptionId = objectOptionId;
+	public void update(Long questionOptionId, String answerText, Double rating, Integer hexastat) {
+		this.questionOptionId = questionOptionId;
 		this.answerText = answerText;
+		this.rating = rating;
+		this.hexastat = hexastat;
 	}
 }
