@@ -102,14 +102,10 @@ public class ParticipationService {
 		UserResponse creatorResponse = UserResponse.toResponse(creator);
 		ReviewResponse reviewResponse = ReviewResponse.toResponse(review, creatorResponse);
 
-		List<ParticipationResponse> responses = participationRepository.findAllByReviewId(review.getId(),
-				name, sort)
+		List<ParticipationResponse> responses = participationRepository.findAllByReviewIdToDynamic(review.getId(), name,
+				sort)
 			.stream()
-			.map(participation -> {
-				UserResponse responserResponse = UserResponse.toResponse(participation.getResponser());
-
-				return ParticipationResponse.toResponse(participation, responserResponse, reviewResponse);
-			})
+			.map(participation -> ParticipationResponse.toResponse(participation, reviewResponse))
 			.toList();
 
 		return responses;
@@ -120,8 +116,7 @@ public class ParticipationService {
 		List<ReceiverResponse> responses = new ArrayList<>();
 		Map<Long, Integer> receiverToResponsersMap = new HashMap<>();
 
-		List<Participation> participations = participationRepository.findAllByReviewId(reviewId,
-			searchName, sortCondition);
+		List<Participation> participations = getAllByReviewId(reviewId);
 
 		for (Participation participation : participations) {
 			List<ReplyTarget> replyTargets = replyTargetService.getAllByParticipationId(participation.getId());

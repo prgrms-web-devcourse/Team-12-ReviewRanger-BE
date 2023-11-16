@@ -2,7 +2,6 @@ package com.devcourse.ReviewRanger.participation.repository;
 
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import com.devcourse.ReviewRanger.participation.domain.Participation;
@@ -12,8 +11,7 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-@Repository
-public class ParticipationQueryRepository implements ParticipationCustomRepository {
+public class ParticipationCustomRepositoryImpl implements ParticipationCustomRepository {
 
 	private static final String SUBMIT_AT = "submitAt";
 	private static final String RESPONSER_NAME = "responserName";
@@ -22,12 +20,12 @@ public class ParticipationQueryRepository implements ParticipationCustomReposito
 
 	QParticipation qParticipation = QParticipation.participation;
 
-	public ParticipationQueryRepository(JPAQueryFactory queryFactory) {
+	public ParticipationCustomRepositoryImpl(JPAQueryFactory queryFactory) {
 		this.queryFactory = queryFactory;
 	}
 
 	@Override
-	public List<Participation> findAllByReviewId(Long reviewId, String searchName, String sort) {
+	public List<Participation> findAllByReviewIdToDynamic(Long reviewId, String searchName, String sort) {
 		BooleanBuilder builder = new BooleanBuilder();
 		if (reviewId != null) {
 			builder.and(qParticipation.reviewId.eq(reviewId));
