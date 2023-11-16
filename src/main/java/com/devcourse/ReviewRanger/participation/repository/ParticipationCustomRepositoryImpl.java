@@ -1,14 +1,12 @@
 package com.devcourse.ReviewRanger.participation.repository;
 
 import java.util.List;
-
-import org.springframework.util.StringUtils;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
-import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.domain.QParticipation;
@@ -22,12 +20,12 @@ public class ParticipationCustomRepositoryImpl implements ParticipationCustomRep
 	private static final String SUBMIT_AT = "submitAt";
 	private static final String RESPONSER_NAME = "responserName";
 
-	private final JPAQueryFactory queryFactory;
+	private final JPAQueryFactory jpaQueryFactory;
 
 	QParticipation qParticipation = QParticipation.participation;
 
-	public ParticipationCustomRepositoryImpl(JPAQueryFactory queryFactory) {
-		this.queryFactory = queryFactory;
+	public ParticipationCustomRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
+		this.jpaQueryFactory = jpaQueryFactory;
 	}
 
 	@Override
@@ -41,7 +39,7 @@ public class ParticipationCustomRepositoryImpl implements ParticipationCustomRep
 			builder.and(qParticipation.responser.name.contains(searchName));
 		}
 
-		List<Participation> participations = queryFactory.selectFrom(qParticipation)
+		List<Participation> participations = jpaQueryFactory.selectFrom(qParticipation)
 			.where(builder)
 			.orderBy(makeOrdersSpecifiers(sort))
 			.fetch();
@@ -63,15 +61,14 @@ public class ParticipationCustomRepositoryImpl implements ParticipationCustomRep
 		}
 
 		return null;
-  }
-
+	}
 
 	@Override
 	public Slice<Participation> findByResponserId(Long cursorId, Long responserId, Integer size) {
 		QParticipation participation = QParticipation.participation;
 
 		BooleanBuilder where = new BooleanBuilder();
-		Optional.ofNullable(responserId).ifPresent(key -> where.and(participation.responserId.eq(key)));
+		Optional.ofNullable(responserId).ifPresent(key -> where.and(participation.responser.id.eq(key)));
 		Optional.ofNullable(cursorId).ifPresent(key -> where.and(participation.id.gt(cursorId)));
 
 		List<Participation> participations = jpaQueryFactory
