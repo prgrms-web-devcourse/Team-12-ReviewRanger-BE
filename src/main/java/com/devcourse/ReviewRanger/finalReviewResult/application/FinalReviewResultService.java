@@ -175,8 +175,7 @@ public class FinalReviewResultService {
 			List<ReplyTarget> replyTargets = replyTargetRepository.findAllByParticipationId(participationId);
 
 			for (ReplyTarget replyTarget : replyTargets) {
-				Long receiverId = replyTarget.getReceiverId();
-				userIds.add(receiverId);
+				userIds.add(replyTarget.getReceiver().getId());
 			}
 		}
 

@@ -20,7 +20,6 @@ import com.devcourse.ReviewRanger.question.repository.QuestionOptionRepository;
 import com.devcourse.ReviewRanger.reply.application.ReplyService;
 import com.devcourse.ReviewRanger.reply.dto.response.ReplyResponse;
 import com.devcourse.ReviewRanger.user.domain.User;
-import com.devcourse.ReviewRanger.user.dto.UserResponse;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
@@ -44,7 +43,13 @@ public class ReplyTargetService {
 	public void createReviewTarget(Long participationId,
 		List<CreateReplyTargetRequest> createReplyTargetRequests) {
 		for (CreateReplyTargetRequest createReplyTargetRequest : createReplyTargetRequests) {
-			ReplyTarget replyTarget = createReplyTargetRequest.toEntity();
+			User receiver = userRepository.findById(createReplyTargetRequest.receiverId())
+				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+
+			User responer = userRepository.findById(createReplyTargetRequest.responserId())
+				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+
+			ReplyTarget replyTarget = createReplyTargetRequest.toEntity(receiver, responer);
 			replyTarget.setParticipationId(participationId);
 
 			ReplyTarget savedReplyTarget = replyTargetRepository.save(replyTarget);
@@ -78,16 +83,7 @@ public class ReplyTargetService {
 		List<ReplyTargetResponse> responses = new ArrayList<>();
 
 		for (ReplyTarget replyTarget : replyTargets) {
-			User receiver = userRepository.findById(replyTarget.getReceiverId())
-				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
-			UserResponse receiverResponse = UserResponse.toResponse(receiver);
-
-			User responser = userRepository.findById(replyTarget.getResponserId())
-				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
-			UserResponse responserResponse = UserResponse.toResponse(responser);
-
-			ReplyTargetResponse replyTargetResponse = ReplyTargetResponse.toResponse(replyTarget,
-				receiverResponse, responserResponse);
+			ReplyTargetResponse replyTargetResponse = ReplyTargetResponse.toResponse(replyTarget);
 
 			List<ReplyResponse> replyResponses = getAllReplies(replyTarget);
 

@@ -33,12 +33,11 @@ public record ReplyTargetResponse(
 	@Schema(description = "수정일")
 	LocalDateTime updatedAt
 ) {
-	public static ReplyTargetResponse toResponse(ReplyTarget replyTarget, UserResponse receiver,
-		UserResponse responer) {
+	public static ReplyTargetResponse toResponse(ReplyTarget replyTarget) {
 		return new ReplyTargetResponse(
 			replyTarget.getId(),
-			receiver,
-			responer,
+			UserResponse.toResponse(replyTarget.getReceiver()),
+			UserResponse.toResponse(replyTarget.getResponser()),
 			replyTarget.getParticipationId(),
 			new ArrayList<>(),
 			replyTarget.getCreateAt(),

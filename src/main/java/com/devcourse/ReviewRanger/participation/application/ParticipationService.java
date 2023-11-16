@@ -122,7 +122,7 @@ public class ParticipationService {
 			List<ReplyTarget> replyTargets = replyTargetService.getAllByParticipationId(participation.getId());
 
 			for (ReplyTarget replyTarget : replyTargets) {
-				Long receiverId = replyTarget.getReceiverId();
+				Long receiverId = replyTarget.getReceiver().getId();
 				receiverToResponsersMap.put(receiverId, receiverToResponsersMap.getOrDefault(receiverId, 0) + 1);
 			}
 		}

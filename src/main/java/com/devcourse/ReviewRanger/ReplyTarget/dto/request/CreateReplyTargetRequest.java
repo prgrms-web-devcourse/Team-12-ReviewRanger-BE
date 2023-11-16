@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 
 import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
 import com.devcourse.ReviewRanger.reply.dto.request.CreateReplyRequest;
+import com.devcourse.ReviewRanger.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,7 +25,7 @@ public record CreateReplyTargetRequest(
 	@JsonProperty("replies")
 	List<CreateReplyRequest> createReplyRequests
 ) {
-	public ReplyTarget toEntity() {
-		return new ReplyTarget(receiverId, responserId);
+	public ReplyTarget toEntity(User receiver, User Responer) {
+		return new ReplyTarget(receiver, Responer);
 	}
 }
