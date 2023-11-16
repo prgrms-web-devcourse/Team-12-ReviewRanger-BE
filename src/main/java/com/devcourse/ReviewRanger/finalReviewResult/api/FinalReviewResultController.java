@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewRespons
 import com.devcourse.ReviewRanger.finalReviewResult.dto.FinalReviewResultListResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewAnswerResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewResultResponse;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.PagingFinalReviewRequest;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -53,6 +55,24 @@ public class FinalReviewResultController {
 			= finalReviewResultService.getAllFinalReviewResults(user.getId());
 
 		return RangerResponse.ok(allFinalReviewResults);
+	}
+
+	@Tag(name = "final-result")
+	@Operation(summary = "[토큰] 마이페이지 리뷰 결과 목록 커서 페이징", description = "[토큰] 리뷰 결과 목록을 커서 기반 페이징 API", responses = {
+		@ApiResponse(responseCode = "200", description = "마이페이지 리뷰 결과 목록 페이징 성공"),
+		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우"),
+	})
+	@GetMapping("/paging")
+	@ResponseStatus(OK)
+	public RangerResponse<Slice<FinalReviewResultListResponse>> getAllFinalReviewResultsOfCursorPaging(
+		@AuthenticationPrincipal UserPrincipal user,
+		@RequestBody @Valid PagingFinalReviewRequest pagingFinalReviewRequest
+	) {
+		Slice<FinalReviewResultListResponse> finalReviewResultsOfCursorPaging
+			= finalReviewResultService.getAllFinalReviewResultsOfCursorPaging(pagingFinalReviewRequest.cursorId(),
+			user.getId(), pagingFinalReviewRequest.size());
+
+		return RangerResponse.ok(finalReviewResultsOfCursorPaging);
 	}
 
 	@Tag(name = "final-result")
