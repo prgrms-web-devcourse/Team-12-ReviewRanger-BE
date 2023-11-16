@@ -19,9 +19,6 @@ import com.devcourse.ReviewRanger.participation.domain.Participation;
 class ParticipationCustomRepositoryImplTest {
 
 	@Autowired
-	private ParticipationCustomRepository participationCustomRepository;
-
-	@Autowired
 	private ParticipationRepository participationRepository;
 
 	@BeforeEach
@@ -38,7 +35,7 @@ class ParticipationCustomRepositoryImplTest {
 	@Test
 	@DisplayName("커서 페이징 커리 첫 조회 시 cursorId 값이 null일때 성공")
 	public void fwhenCursorIdIsNullOnInitialCursorPaging_thenSucceed() {
-		Slice<Participation> results = participationCustomRepository.findByResponserId(null, 1L, 3);
+		Slice<Participation> results = participationRepository.findByResponserId(null, 1L, 3);
 
 		Assertions.assertEquals(3, results.getContent().size());
 		Assertions.assertEquals(1, results.getContent().get(0).getId());
@@ -48,7 +45,7 @@ class ParticipationCustomRepositoryImplTest {
 	@Test
 	@DisplayName("커서 페이징 커리 첫 번재가 아닌 조회 시 cursorId 값이 null이 아닐 때 성공")
 	public void whenCursorIdIsNotNullOnInitialCursorPaging_thenSucceed() {
-		Slice<Participation> results = participationCustomRepository.findByResponserId(3L, 1L, 3);
+		Slice<Participation> results = participationRepository.findByResponserId(3L, 1L, 3);
 
 		Assertions.assertEquals(3, results.getContent().size());
 		Assertions.assertEquals(4, results.getContent().get(0).getId());
