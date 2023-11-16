@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationRequest;
+import com.devcourse.ReviewRanger.participation.dto.response.CursorResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
@@ -59,12 +62,16 @@ public class ParticipationService {
 		return true;
 	}
 
-	public List<GetParticipationResponse> getAllParticipationsByResponser(Long responserId) {
-		List<Participation> participations = participationRepository.findByResponserId(responserId);
+	public CursorResponse<GetParticipationResponse> getAllParticipationsByResponser(
+		Long cursorId,
+		Long responserId,
+		Integer size
+	) {
+		Slice<Participation> participations  = participationRepository.findByResponserId(cursorId, responserId, size);
+		Long nextCursor = participations.getContent().get(participations.getContent().size()-1).getId();
 
 		List<GetParticipationResponse> getParticipationResponses = new ArrayList<>();
-
-		for (Participation participation : participations) {
+		for (Participation participation : participations.getContent()) {
 			Long reviewId = participation.getReviewId();
 			Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new RangerException(NOT_FOUND_REPLY));
 			String title = review.getTitle();
@@ -73,7 +80,7 @@ public class ParticipationService {
 			getParticipationResponses.add(getParticipationResponse);
 		}
 
-		return getParticipationResponses;
+		return new CursorResponse<>(getParticipationResponses, participations.hasNext(), nextCursor);
 	}
 
 	public Long getResponserCount(Long reviewId) {
