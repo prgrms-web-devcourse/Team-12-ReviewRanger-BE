@@ -13,7 +13,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @Repository
-public class ParticipationQueryRepository {
+public class ParticipationQueryRepository implements ParticipationCustomRepository {
 
 	private static final String SUBMIT_AT = "submitAt";
 	private static final String RESPONSER_NAME = "responserName";
@@ -26,7 +26,8 @@ public class ParticipationQueryRepository {
 		this.queryFactory = queryFactory;
 	}
 
-	public List<Participation> findAllbyReviewId(Long reviewId, String searchName, String sort) {
+	@Override
+	public List<Participation> findAllByReviewId(Long reviewId, String searchName, String sort) {
 		BooleanBuilder builder = new BooleanBuilder();
 		if (reviewId != null) {
 			builder.and(qParticipation.reviewId.eq(reviewId));
@@ -44,16 +45,16 @@ public class ParticipationQueryRepository {
 		return participations;
 	}
 
-	private OrderSpecifier<?> makeOrdersSpecifiers(String sortCondition) {
-		if (sortCondition == null) {
+	private OrderSpecifier<?> makeOrdersSpecifiers(String sort) {
+		if (sort == null) {
 			return new OrderSpecifier(Order.DESC, qParticipation.submitAt);
 		}
 
-		if (sortCondition.equalsIgnoreCase(SUBMIT_AT)) {
+		if (sort.equalsIgnoreCase(SUBMIT_AT)) {
 			return new OrderSpecifier(Order.ASC, qParticipation.submitAt);
 		}
 
-		if (sortCondition.equalsIgnoreCase(RESPONSER_NAME)) {
+		if (sort.equalsIgnoreCase(RESPONSER_NAME)) {
 			return new OrderSpecifier(Order.ASC, qParticipation.responser.name);
 		}
 

@@ -20,7 +20,6 @@ import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationR
 import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
-import com.devcourse.ReviewRanger.participation.repository.ParticipationQueryRepository;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
@@ -34,16 +33,14 @@ import com.devcourse.ReviewRanger.user.repository.UserRepository;
 public class ParticipationService {
 
 	private final ParticipationRepository participationRepository;
-	private final ParticipationQueryRepository participationQueryRepository;
 	private final UserRepository userRepository;
 	private final ReviewRepository reviewRepository;
 	private final ReplyTargetService replyTargetService;
 
 	public ParticipationService(ParticipationRepository participationRepository,
-		ParticipationQueryRepository participationQueryRepository, UserRepository userRepository,
+		UserRepository userRepository,
 		ReviewRepository reviewRepository, ReplyTargetService replyTargetService) {
 		this.participationRepository = participationRepository;
-		this.participationQueryRepository = participationQueryRepository;
 		this.userRepository = userRepository;
 		this.reviewRepository = reviewRepository;
 		this.replyTargetService = replyTargetService;
@@ -97,7 +94,7 @@ public class ParticipationService {
 		participations.stream().forEach(participation -> participation.changeStatus(ReviewStatus.END));
 	}
 
-	public List<ParticipationResponse> getAllParticipation(Long reviewId, String name, String sortCondition) {
+	public List<ParticipationResponse> getAllParticipation(Long reviewId, String name, String sort) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 		User creator = userRepository.findById(review.getRequesterId())
@@ -105,8 +102,8 @@ public class ParticipationService {
 		UserResponse creatorResponse = UserResponse.toResponse(creator);
 		ReviewResponse reviewResponse = ReviewResponse.toResponse(review, creatorResponse);
 
-		List<ParticipationResponse> responses = participationQueryRepository.findAllbyReviewId(review.getId(),
-				name, sortCondition)
+		List<ParticipationResponse> responses = participationRepository.findAllByReviewId(review.getId(),
+				name, sort)
 			.stream()
 			.map(participation -> {
 				UserResponse responserResponse = UserResponse.toResponse(participation.getResponser());
@@ -123,7 +120,7 @@ public class ParticipationService {
 		List<ReceiverResponse> responses = new ArrayList<>();
 		Map<Long, Integer> receiverToResponsersMap = new HashMap<>();
 
-		List<Participation> participations = participationQueryRepository.findAllbyReviewId(reviewId,
+		List<Participation> participations = participationRepository.findAllByReviewId(reviewId,
 			searchName, sortCondition);
 
 		for (Participation participation : participations) {
