@@ -145,9 +145,8 @@ public class ReviewController {
 	@GetMapping("/reviews/{id}/receiver")
 	public RangerResponse<List<ReceiverResponse>> getAllReceiverParticipateInReview(
 		@PathVariable Long id,
-		@RequestParam(value = "searchName", required = false) String searchName,
-		@RequestParam(value = "sort", required = false) String sort) {
-		List<ReceiverResponse> response = participationService.getAllReceiver(id, searchName, sort);
+		@RequestParam(value = "searchName", required = false) String searchName) {
+		List<ReceiverResponse> response = participationService.getAllReceiver(id, searchName);
 
 		return RangerResponse.ok(response);
 	}

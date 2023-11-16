@@ -115,7 +115,7 @@ public class ParticipationService {
 		return responses;
 	}
 
-	public List<ReceiverResponse> getAllReceiver(Long reviewId, String searchName, String sort) {
+	public List<ReceiverResponse> getAllReceiver(Long reviewId, String searchName) {
 		List<ReceiverResponse> responses = new ArrayList<>();
 		Map<User, Integer> receiverToResponserCountsMap = new LinkedHashMap<>();
 
@@ -123,7 +123,7 @@ public class ParticipationService {
 
 		for (Participation participation : participations) {
 			List<ReplyTarget> replyTargets = replyTargetRepository.findAllByParticipationIdToDynamic(
-				participation.getId(), searchName, sort);
+				participation.getId(), searchName);
 
 			for (ReplyTarget replyTarget : replyTargets) {
 				receiverToResponserCountsMap.put(replyTarget.getReceiver(),
