@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
 
-public interface ReplyTargetRepository extends JpaRepository<ReplyTarget, Long> {
+public interface ReplyTargetRepository extends JpaRepository<ReplyTarget, Long>, ReplyTargetCustomRepository {
 	List<ReplyTarget> findAllByParticipationId(Long participationId);
 
 	List<ReplyTarget> findAllByReceiverId(Long receiverId);
