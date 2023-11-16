@@ -54,7 +54,7 @@ public class ParticipationQueryRepository {
 		}
 
 		if (sortCondition.equalsIgnoreCase(RESPONSER_NAME)) {
-			return new OrderSpecifier(Order.DESC, qParticipation.responser.name);
+			return new OrderSpecifier(Order.ASC, qParticipation.responser.name);
 		}
 
 		return null;
