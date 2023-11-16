@@ -4,13 +4,13 @@ import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
 import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
-
 import com.devcourse.ReviewRanger.question.application.QuestionService;
 import com.devcourse.ReviewRanger.question.dto.response.GetQuestionResponse;
 import com.devcourse.ReviewRanger.review.domain.Review;
@@ -86,8 +86,8 @@ public class ReviewService {
 
 	public List<GetUserResponse> getAllReceivers(Long reviewId, Long responserId) {
 		return participationService.getAllByReviewId(reviewId).stream()
-			.filter(participation -> participation.getResponserId() != responserId)
-			.map(participation -> userService.getUserOrThrow(participation.getResponserId()))
+			.filter(participation -> participation.getResponser().getId() != responserId)
+			.map(participation -> userService.getUserOrThrow(participation.getResponser().getId()))
 			.map(user -> new GetUserResponse(user.getId(), user.getName()))
 			.toList();
 	}

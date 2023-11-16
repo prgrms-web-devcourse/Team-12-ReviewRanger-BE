@@ -58,7 +58,7 @@ public class ParticipationController {
 	@ResponseStatus(CREATED)
 	@PostMapping(value = "/participations")
 	public RangerResponse<Void> submitParticipation(@RequestBody @Valid SubmitParticipationRequest request) {
-		participationService.submitResponse(request);
+		participationService.submitReplies(request);
 
 		return RangerResponse.noData();
 	}
