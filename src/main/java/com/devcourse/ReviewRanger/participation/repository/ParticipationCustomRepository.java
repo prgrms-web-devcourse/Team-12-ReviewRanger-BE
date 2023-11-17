@@ -10,5 +10,5 @@ public interface ParticipationCustomRepository {
 
 	List<Participation> findAllByReviewIdToDynamic(Long reviewId, String searchName, String sort);
 
-	Slice<Participation> findByResponserId(Long cursorId, Long userId, Integer size);
+	Slice<Participation> findByResponserId(Long cursorId, Long responserId, Integer size);
 }

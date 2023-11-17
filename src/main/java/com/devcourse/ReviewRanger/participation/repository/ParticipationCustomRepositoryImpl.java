@@ -72,7 +72,7 @@ public class ParticipationCustomRepositoryImpl implements ParticipationCustomRep
 		Optional.ofNullable(cursorId).ifPresent(key -> where.and(participation.id.gt(cursorId)));
 
 		List<Participation> participations = jpaQueryFactory
-			.selectFrom(QParticipation.participation)
+			.selectFrom(participation)
 			.where(where)
 			.limit(size + 1)
 			.fetch();
