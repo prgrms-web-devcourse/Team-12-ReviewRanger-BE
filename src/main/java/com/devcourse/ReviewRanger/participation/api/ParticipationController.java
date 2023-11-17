@@ -4,6 +4,8 @@ import static org.springframework.http.HttpStatus.*;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,15 +42,16 @@ public class ParticipationController {
 		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
 	@GetMapping("/participations")
-	public RangerResponse<Slice<GetParticipationResponse>> getAllParticipationsByResponser(
+	public RangerResponse<Slice<GetParticipationResponse>> getAllParticipationsByResponserOfCursorPaging(
 		@AuthenticationPrincipal UserPrincipal user,
 		@RequestParam(required = false) Long cursorId,
 		@RequestParam(defaultValue = "12") Integer size
 	) {
-		Slice<GetParticipationResponse> responses = participationService.getAllParticipationsByResponser(
+		Pageable pageable = PageRequest.of(0, size);
+		Slice<GetParticipationResponse> responses = participationService.getAllParticipationsByResponserOfCursorPaging(
 			cursorId,
 			user.getId(),
-			size
+			pageable
 		);
 
 		return RangerResponse.ok(responses);

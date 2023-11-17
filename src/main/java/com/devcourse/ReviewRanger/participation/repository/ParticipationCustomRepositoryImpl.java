@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.util.StringUtils;
@@ -64,8 +65,9 @@ public class ParticipationCustomRepositoryImpl implements ParticipationCustomRep
 	}
 
 	@Override
-	public Slice<Participation> findByResponserId(Long cursorId, Long responserId, Integer size) {
+	public Slice<Participation> findByResponserId(Long cursorId, Long responserId, Pageable pageable) {
 		QParticipation participation = QParticipation.participation;
+		int pageSize = pageable.getPageSize();
 
 		BooleanBuilder where = new BooleanBuilder();
 		Optional.ofNullable(responserId).ifPresent(key -> where.and(participation.responser.id.eq(key)));
@@ -74,14 +76,14 @@ public class ParticipationCustomRepositoryImpl implements ParticipationCustomRep
 		List<Participation> participations = jpaQueryFactory
 			.selectFrom(participation)
 			.where(where)
-			.limit(size + 1)
+			.limit(pageSize + 1)
 			.fetch();
 
-		boolean hasNext = participations.size() > size;
+		boolean hasNext = participations.size() > pageSize;
 		if (hasNext) {
-			participations.remove(participations.size() - 1);
+			participations.remove(pageSize);
 		}
 
-		return new SliceImpl<>(participations, PageRequest.of(0, size), hasNext);
+		return new SliceImpl<>(participations, PageRequest.of(0, pageSize), hasNext);
 	}
 }
