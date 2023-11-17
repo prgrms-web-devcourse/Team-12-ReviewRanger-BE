@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.finalReviewResult.service;
+package com.devcourse.ReviewRanger.finalReviewResult.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,7 +11,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.devcourse.ReviewRanger.finalReviewResult.dto.FinalReviewResultListResponse;
-import com.devcourse.ReviewRanger.finalReviewResult.repository.FinalReviewResultRepository;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
