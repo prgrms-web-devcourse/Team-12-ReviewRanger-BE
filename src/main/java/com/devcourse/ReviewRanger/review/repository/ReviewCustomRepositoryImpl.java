@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
@@ -21,8 +22,9 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
 	}
 
 	@Override
-	public Slice<Review> findByRequesterId(Long cursorId, Long requesterId, Integer size) {
+	public Slice<Review> findByRequesterId(Long cursorId, Long requesterId, Pageable pageable) {
 		QReview review = QReview.review;
+		int pageSize = pageable.getPageSize();
 
 		BooleanBuilder where = new BooleanBuilder();
 		Optional.ofNullable(requesterId).ifPresent(key -> where.and(review.requesterId.eq(key)));
@@ -31,14 +33,14 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
 		List<Review> reviews = jpaQueryFactory
 			.selectFrom(review)
 			.where(where)
-			.limit(size + 1)
+			.limit(pageSize + 1)
 			.fetch();
 
-		boolean hasNext = reviews.size() > size;
+		boolean hasNext = reviews.size() > pageSize;
 		if (hasNext) {
-			reviews.remove(reviews.size() - 1);
+			reviews.remove(pageSize);
 		}
 
-		return new SliceImpl<>(reviews, PageRequest.of(0, size), hasNext);
+		return new SliceImpl<>(reviews, PageRequest.of(0, pageSize), hasNext);
 	}
 }

@@ -2,6 +2,8 @@ package com.devcourse.ReviewRanger.review.api;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,12 +61,13 @@ public class ReviewController {
 		@ApiResponse(responseCode = "200", description = "요청자가 만든 리뷰 전체 조회 성공"),
 	})
 	@GetMapping("/reviews")
-	public RangerResponse<Slice<GetReviewResponse>> getAllReviewsByRequester(
+	public RangerResponse<Slice<GetReviewResponse>> getAllReviewsByRequesterOfCursorPaging(
 		@AuthenticationPrincipal UserPrincipal user,
 		@RequestParam(required = false ) Long cursorId,
 		@RequestParam(defaultValue = "12" ) Integer size
 	) {
-		Slice<GetReviewResponse> responses = reviewService.getAllReviewsByRequester(cursorId, user.getId(),size);
+		Pageable pageable = PageRequest.of(0, size);
+		Slice<GetReviewResponse> responses = reviewService.getAllReviewsByRequesterOfCursorPaging(cursorId, user.getId(),pageable);
 
 		return RangerResponse.ok(responses);
 	}
