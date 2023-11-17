@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,8 +90,10 @@ public class FinalReviewResultService {
 	}
 
 	public Slice<FinalReviewResultListResponse> getAllFinalReviewResultsOfCursorPaging(Long cursorId, Long userId,
-		Integer size) {
-		return finalReviewResultRepository.findAllFinalReviewResults(cursorId, userId, size);
+		Pageable pageable) {
+		validateUserId(userId);
+
+		return finalReviewResultRepository.findAllFinalReviewResults(cursorId, userId, pageable);
 	}
 
 	@Transactional

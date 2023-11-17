@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,11 +26,10 @@ import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewRespons
 import com.devcourse.ReviewRanger.finalReviewResult.dto.FinalReviewResultListResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewAnswerResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewResultResponse;
-import com.devcourse.ReviewRanger.finalReviewResult.dto.PagingFinalReviewRequest;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "final-result", description = "최종 리뷰 결과 API")
@@ -46,7 +48,7 @@ public class FinalReviewResultController {
 		@ApiResponse(responseCode = "200", description = "전송 된 리뷰 결과 목록 조회 성공"),
 		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우"),
 	})
-	@GetMapping
+	@GetMapping("/list")
 	@ResponseStatus(OK)
 	public RangerResponse<List<FinalReviewResultListResponse>> getAllFinalReviewResults(
 		@AuthenticationPrincipal UserPrincipal user
@@ -62,15 +64,16 @@ public class FinalReviewResultController {
 		@ApiResponse(responseCode = "200", description = "마이페이지 리뷰 결과 목록 페이징 성공"),
 		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우"),
 	})
-	@GetMapping("/paging")
+	@GetMapping
 	@ResponseStatus(OK)
 	public RangerResponse<Slice<FinalReviewResultListResponse>> getAllFinalReviewResultsOfCursorPaging(
 		@AuthenticationPrincipal UserPrincipal user,
-		@RequestBody @Valid PagingFinalReviewRequest pagingFinalReviewRequest
+		@RequestParam(required = false) Long cursorId,
+		@RequestParam(defaultValue = "12") Integer size
 	) {
+		Pageable pageable = PageRequest.of(0, size);
 		Slice<FinalReviewResultListResponse> finalReviewResultsOfCursorPaging
-			= finalReviewResultService.getAllFinalReviewResultsOfCursorPaging(pagingFinalReviewRequest.cursorId(),
-			user.getId(), pagingFinalReviewRequest.size());
+			= finalReviewResultService.getAllFinalReviewResultsOfCursorPaging(cursorId, user.getId(), pageable);
 
 		return RangerResponse.ok(finalReviewResultsOfCursorPaging);
 	}
