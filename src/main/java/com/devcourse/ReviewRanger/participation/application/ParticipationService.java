@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
@@ -65,12 +66,12 @@ public class ParticipationService {
 		return true;
 	}
 
-	public Slice<GetParticipationResponse> getAllParticipationsByResponser(
+	public Slice<GetParticipationResponse> getAllParticipationsByResponserOfCursorPaging(
 		Long cursorId,
 		Long responserId,
-		Integer size
+		Pageable pageable
 	) {
-		Slice<Participation> participations  = participationRepository.findByResponserId(cursorId, responserId, size);
+		Slice<Participation> participations  = participationRepository.findByResponserId(cursorId, responserId, pageable);
 
 		List<GetParticipationResponse> getParticipationResponses = new ArrayList<>();
 		for (Participation participation : participations.getContent()) {

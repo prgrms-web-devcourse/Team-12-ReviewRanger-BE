@@ -5,6 +5,9 @@ import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,8 +55,12 @@ public class ReviewService {
 		return true;
 	}
 
-	public List<GetReviewResponse> getAllReviewsByRequester(Long requesterId) {
-		List<Review> requesterReviews = reviewRepository.findByRequesterId(requesterId);
+	public Slice<GetReviewResponse> getAllReviewsByRequesterOfCursorPaging(
+		Long cursorId,
+		Long requesterId,
+		Pageable pageable
+	) {
+		Slice<Review> requesterReviews = reviewRepository.findByRequesterId(cursorId,requesterId, pageable);
 
 		List<GetReviewResponse> reviewResponses = new ArrayList<>();
 		for (Review requesterReview : requesterReviews) {
@@ -63,7 +70,7 @@ public class ReviewService {
 			reviewResponses.add(reviewResponse);
 		}
 
-		return reviewResponses;
+		return new SliceImpl<>(reviewResponses, requesterReviews.getPageable(), requesterReviews.hasNext());
 	}
 
 	public GetReviewDetailResponse getReviewDetailOrThrow(Long reviewId) {
