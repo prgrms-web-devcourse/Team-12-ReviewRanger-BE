@@ -18,6 +18,9 @@ public record GetParticipationResponse(
 	@Schema(description = "초대받은 리뷰 제목")
 	String title,
 
+	@Schema(description = "초대받은 리뷰 생성일자")
+	LocalDateTime createAt,
+
 	@Schema(description = "초대받은 리뷰 제출일자")
 	LocalDateTime submitAt,
 
@@ -29,6 +32,7 @@ public record GetParticipationResponse(
 			participation.getId(),
 			participation.getReviewId(),
 			title,
+			participation.getCreateAt(),
 			participation.getSubmitAt(),
 			participation.getReviewStatus()
 		);

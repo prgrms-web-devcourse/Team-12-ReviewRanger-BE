@@ -8,9 +8,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.devcourse.ReviewRanger.BaseEntity;
+import com.devcourse.ReviewRanger.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
@@ -23,8 +27,9 @@ public class Participation extends BaseEntity {
 	@Column(name = "review_id", nullable = false)
 	private Long reviewId;
 
-	@Column(name = "responser_id", nullable = false)
-	private Long responserId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "responser_id", nullable = false)
+	private User responser;
 
 	@Column(name = "is_answered", nullable = false)
 	private Boolean isAnswered;
@@ -40,8 +45,8 @@ public class Participation extends BaseEntity {
 	protected Participation() {
 	}
 
-	public Participation(Long responserId) {
-		this.responserId = responserId;
+	public Participation(User responser) {
+		this.responser = responser;
 		this.isAnswered = false;
 		this.reviewStatus = ReviewStatus.PROCEEDING;
 	}

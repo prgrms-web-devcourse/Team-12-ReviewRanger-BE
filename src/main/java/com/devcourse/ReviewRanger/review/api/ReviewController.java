@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
@@ -128,8 +129,11 @@ public class ReviewController {
 	})
 	@GetMapping("/reviews/{id}/responser")
 	public RangerResponse<List<ParticipationResponse>> getAllParticipation(
-		@PathVariable Long id) {
-		List<ParticipationResponse> response = participationService.getAllParticipation(id);
+		@PathVariable Long id,
+		@RequestParam(value = "searchName", required = false) String searchName,
+		@RequestParam(value = "sort", required = false) String sort
+	) {
+		List<ParticipationResponse> response = participationService.getAllParticipation(id, searchName, sort);
 
 		return RangerResponse.ok(response);
 	}
@@ -140,9 +144,12 @@ public class ReviewController {
 		@ApiResponse(responseCode = "404", description = "사용자 존재하지 않는 경우")
 	})
 	@GetMapping("/reviews/{id}/receiver")
-	public RangerResponse<List<ReceiverResponse>> getAllReceiverParticipateInReview(@PathVariable Long id) {
+	public RangerResponse<List<ReceiverResponse>> getAllReceiverParticipateInReview(
+		@PathVariable Long id,
+		@RequestParam(value = "searchName", required = false) String searchName,
+		@RequestParam(value = "sort", required = false) String sort) {
 		List<ReceiverResponse> response = participationService.getAllReceiverParticipateInReviewOrThrow(
-			id);
+			id, searchName, sort);
 
 		return RangerResponse.ok(response);
 	}

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +39,8 @@ public class ParticipationService {
 	private final ReviewRepository reviewRepository;
 	private final ReplyTargetService replyTargetService;
 
-	public ParticipationService(ParticipationRepository participationRepository, UserRepository userRepository,
+	public ParticipationService(ParticipationRepository participationRepository,
+		UserRepository userRepository,
 		ReviewRepository reviewRepository, ReplyTargetService replyTargetService) {
 		this.participationRepository = participationRepository;
 		this.userRepository = userRepository;
@@ -49,8 +52,11 @@ public class ParticipationService {
 	public boolean createParticipations(Long reviewId, List<Long> responserIds) {
 		List<Participation> participations = responserIds.stream()
 			.map(responserId -> {
-				Participation participation = new Participation(responserId);
+				User responer = userRepository.findById(responserId)
+					.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+				Participation participation = new Participation(responer);
 				participation.assignReviewId(reviewId);
+
 				return participation;
 			}).toList();
 
@@ -59,12 +65,15 @@ public class ParticipationService {
 		return true;
 	}
 
-	public List<GetParticipationResponse> getAllParticipationsByResponser(Long responserId) {
-		List<Participation> participations = participationRepository.findByResponserId(responserId);
+	public Slice<GetParticipationResponse> getAllParticipationsByResponser(
+		Long cursorId,
+		Long responserId,
+		Integer size
+	) {
+		Slice<Participation> participations  = participationRepository.findByResponserId(cursorId, responserId, size);
 
 		List<GetParticipationResponse> getParticipationResponses = new ArrayList<>();
-
-		for (Participation participation : participations) {
+		for (Participation participation : participations.getContent()) {
 			Long reviewId = participation.getReviewId();
 			Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new RangerException(NOT_FOUND_REPLY));
 			String title = review.getTitle();
@@ -73,7 +82,7 @@ public class ParticipationService {
 			getParticipationResponses.add(getParticipationResponse);
 		}
 
-		return getParticipationResponses;
+		return new SliceImpl<>(getParticipationResponses, participations.getPageable(), participations.hasNext());
 	}
 
 	public Long getResponserCount(Long reviewId) {
@@ -90,7 +99,7 @@ public class ParticipationService {
 		participations.stream().forEach(participation -> participation.changeStatus(ReviewStatus.END));
 	}
 
-	public List<ParticipationResponse> getAllParticipation(Long reviewId) {
+	public List<ParticipationResponse> getAllParticipation(Long reviewId, String name, String sort) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 		User creator = userRepository.findById(review.getRequesterId())
@@ -98,21 +107,17 @@ public class ParticipationService {
 		UserResponse creatorResponse = UserResponse.toResponse(creator);
 		ReviewResponse reviewResponse = ReviewResponse.toResponse(review, creatorResponse);
 
-		List<ParticipationResponse> responses = participationRepository.findByReviewId(review.getId())
+		List<ParticipationResponse> responses = participationRepository.findAllByReviewIdToDynamic(review.getId(), name,
+				sort)
 			.stream()
-			.map(participation -> {
-				User responser = userRepository.findById(participation.getResponserId())
-					.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
-				UserResponse responserResponse = UserResponse.toResponse(responser);
-
-				return ParticipationResponse.toResponse(participation, responserResponse, reviewResponse);
-			})
+			.map(participation -> ParticipationResponse.toResponse(participation, reviewResponse))
 			.toList();
 
 		return responses;
 	}
 
-	public List<ReceiverResponse> getAllReceiverParticipateInReviewOrThrow(Long reviewId) {
+	public List<ReceiverResponse> getAllReceiverParticipateInReviewOrThrow(Long reviewId, String searchName,
+		String sortCondition) {
 		List<ReceiverResponse> responses = new ArrayList<>();
 		Map<Long, Integer> receiverToResponsersMap = new HashMap<>();
 
@@ -141,7 +146,7 @@ public class ParticipationService {
 	}
 
 	@Transactional
-	public void submitResponse(SubmitParticipationRequest request) {
+	public void submitReplies(SubmitParticipationRequest request) {
 		Participation participation = getByIdOrThrow(request.participationId());
 
 		replyTargetService.createReviewTarget(participation.getId(), request.createReplyTargetRequests());
