@@ -43,8 +43,7 @@ public class ReplyTarget extends BaseEntity {
 	}
 
 	public ReplyTarget(User receiver, User responser) {
-		this.receiver = receiver;
-		this.responser = responser;
+		this(receiver, responser, null);
 	}
 
 	public ReplyTarget(User receiver, User responser, Long participationId) {
