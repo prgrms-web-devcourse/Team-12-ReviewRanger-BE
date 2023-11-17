@@ -1,9 +1,10 @@
 package com.devcourse.ReviewRanger.finalReviewResult.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 import com.devcourse.ReviewRanger.finalReviewResult.dto.FinalReviewResultListResponse;
 
 public interface FinalReviewResultCustomRepository {
-	Slice<FinalReviewResultListResponse> findAllFinalReviewResults(Long cursorId, Long userId, Integer size);
+	Slice<FinalReviewResultListResponse> findAllFinalReviewResults(Long cursorId, Long userId, Pageable pageable);
 }

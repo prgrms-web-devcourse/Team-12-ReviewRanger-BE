@@ -5,7 +5,7 @@ import static com.devcourse.ReviewRanger.finalReviewResult.domain.QFinalReviewRe
 
 import java.util.List;
 
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
@@ -24,8 +24,10 @@ public class FinalReviewResultCustomRepositoryImpl implements FinalReviewResultC
 	}
 
 	@Override
-	public Slice<FinalReviewResultListResponse> findAllFinalReviewResults(Long cursorId, Long userId, Integer size) {
+	public Slice<FinalReviewResultListResponse> findAllFinalReviewResults(Long cursorId, Long userId,
+		Pageable pageable) {
 		QFinalReviewResult finalReviewResult = QFinalReviewResult.finalReviewResult;
+		int pageSize = pageable.getPageSize();
 
 		List<FinalReviewResultListResponse> results = jpaQueryFactory
 			.select(
@@ -42,22 +44,19 @@ public class FinalReviewResultCustomRepositoryImpl implements FinalReviewResultC
 					.and(finalReviewResult.status.eq(SENT))
 			)
 			.orderBy(finalReviewResult.id.asc())
-			.limit(size)
+			.limit(pageSize + 1)
 			.fetch();
 
 		boolean hasNext = false;
-		if (results.size() > size) {
-			results.remove(size);
+		if (results.size() > pageSize) {
+			results.remove(pageSize);
 			hasNext = true;
 		}
 
-		return new SliceImpl<>(results, PageRequest.of(0, size), hasNext);
+		return new SliceImpl<>(results, pageable, hasNext);
 	}
 
 	private BooleanExpression eqCursorId(Long cursorId) {
-		if (cursorId != null) {
-			return finalReviewResult.id.gt(cursorId);
-		}
-		return null;
+		return (cursorId == null) ? null : finalReviewResult.id.gt(cursorId);
 	}
 }
