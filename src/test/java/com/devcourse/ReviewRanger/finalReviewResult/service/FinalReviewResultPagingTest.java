@@ -34,5 +34,6 @@ class FinalReviewResultPagingTest {
 		assertEquals(4, finalReviewResultResponses.getNumberOfElements());
 		assertEquals(4, finalReviewResultResponses.getContent().get(0).id());
 		assertEquals(5, finalReviewResultResponses.getContent().get(1).id());
+		assertFalse(finalReviewResultResponses.hasNext());
 	}
 }
