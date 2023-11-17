@@ -63,6 +63,7 @@ public class FinalReviewResultController {
 	@Operation(summary = "[토큰] 마이페이지 리뷰 결과 목록 커서 페이징", description = "[토큰] 리뷰 결과 목록을 커서 기반 페이징 API", responses = {
 		@ApiResponse(responseCode = "200", description = "마이페이지 리뷰 결과 목록 페이징 성공"),
 		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우"),
+		@ApiResponse(responseCode = "404", description = "유효하지 않은 사용자 id인 경우"),
 	})
 	@GetMapping
 	@ResponseStatus(OK)
