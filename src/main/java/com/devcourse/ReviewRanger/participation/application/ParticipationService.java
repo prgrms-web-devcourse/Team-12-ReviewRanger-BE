@@ -3,7 +3,7 @@ package com.devcourse.ReviewRanger.participation.application;
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.ReplyTarget.application.ReplyTargetService;
 import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
+import com.devcourse.ReviewRanger.ReplyTarget.repository.ReplyTargetRepository;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
@@ -39,14 +40,17 @@ public class ParticipationService {
 	private final UserRepository userRepository;
 	private final ReviewRepository reviewRepository;
 	private final ReplyTargetService replyTargetService;
+	private final ReplyTargetRepository replyTargetRepository;
 
 	public ParticipationService(ParticipationRepository participationRepository,
 		UserRepository userRepository,
-		ReviewRepository reviewRepository, ReplyTargetService replyTargetService) {
+		ReviewRepository reviewRepository, ReplyTargetService replyTargetService,
+		ReplyTargetRepository replyTargetRepository) {
 		this.participationRepository = participationRepository;
 		this.userRepository = userRepository;
 		this.reviewRepository = reviewRepository;
 		this.replyTargetService = replyTargetService;
+		this.replyTargetRepository = replyTargetRepository;
 	}
 
 	@Transactional
@@ -100,7 +104,7 @@ public class ParticipationService {
 		participations.stream().forEach(participation -> participation.changeStatus(ReviewStatus.END));
 	}
 
-	public List<ParticipationResponse> getAllParticipation(Long reviewId, String name, String sort) {
+	public List<ParticipationResponse> getAllParticipationOrThrow(Long reviewId, String name, String sort) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 		User creator = userRepository.findById(review.getRequesterId())
@@ -117,27 +121,24 @@ public class ParticipationService {
 		return responses;
 	}
 
-	public List<ReceiverResponse> getAllReceiverParticipateInReviewOrThrow(Long reviewId, String searchName,
-		String sortCondition) {
+	public List<ReceiverResponse> getAllReceiver(Long reviewId, String searchName) {
 		List<ReceiverResponse> responses = new ArrayList<>();
-		Map<Long, Integer> receiverToResponsersMap = new HashMap<>();
+		Map<User, Integer> receiverToResponserCountsMap = new LinkedHashMap<>();
 
-		List<Participation> participations = getAllByReviewId(reviewId);
+		List<Participation> participations = participationRepository.findByReviewId(reviewId);
 
 		for (Participation participation : participations) {
-			List<ReplyTarget> replyTargets = replyTargetService.getAllByParticipationId(participation.getId());
+			List<ReplyTarget> replyTargets = replyTargetRepository.findAllByParticipationIdToDynamic(
+				participation.getId(), searchName);
 
 			for (ReplyTarget replyTarget : replyTargets) {
-				Long receiverId = replyTarget.getReceiverId();
-				receiverToResponsersMap.put(receiverId, receiverToResponsersMap.getOrDefault(receiverId, 0) + 1);
+				receiverToResponserCountsMap.put(replyTarget.getReceiver(),
+					receiverToResponserCountsMap.getOrDefault(replyTarget.getReceiver(), 0) + 1);
 			}
 		}
 
-		for (Map.Entry<Long, Integer> receiver : receiverToResponsersMap.entrySet()) {
-			User user = userRepository.findById(receiver.getKey())
-				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
-
-			ReceiverResponse response = new ReceiverResponse(receiver.getKey(), user.getName(),
+		for (Map.Entry<User, Integer> receiver : receiverToResponserCountsMap.entrySet()) {
+			ReceiverResponse response = new ReceiverResponse(receiver.getKey().getId(), receiver.getKey().getName(),
 				receiver.getValue());
 
 			responses.add(response);

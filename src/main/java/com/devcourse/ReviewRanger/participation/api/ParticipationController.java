@@ -60,8 +60,7 @@ public class ParticipationController {
 	@Tag(name = "participation")
 	@Operation(summary = "[토큰] 리뷰 답변 기능", description = "[토큰] 리뷰 답변 API", responses = {
 		@ApiResponse(responseCode = "201", description = "리뷰 답변 성공"),
-		@ApiResponse(responseCode = "404", description = "참여자로 존재하지 않는 경우"),
-
+		@ApiResponse(responseCode = "404", description = "사용자가 존재하지 않는 경우")
 	})
 	@ResponseStatus(CREATED)
 	@PostMapping(value = "/participations")
@@ -74,8 +73,7 @@ public class ParticipationController {
 	@Tag(name = "participation")
 	@Operation(summary = "[토큰] 리뷰 답변 수정 기능", description = "[토큰] 리뷰 답변 수정 API", responses = {
 		@ApiResponse(responseCode = "200", description = "리뷰 답변 수정 성공"),
-		@ApiResponse(responseCode = "404", description = "답변이 존재하지 않는 경우"),
-
+		@ApiResponse(responseCode = "404", description = "답변이 존재하지 않는 경우")
 	})
 	@PutMapping(value = "/participations")
 	public RangerResponse<Void> updateParticipation(@RequestBody @Valid UpdateParticipationRequest request) {

@@ -139,23 +139,20 @@ public class ReviewController {
 		@RequestParam(value = "searchName", required = false) String searchName,
 		@RequestParam(value = "sort", required = false) String sort
 	) {
-		List<ParticipationResponse> response = participationService.getAllParticipation(id, searchName, sort);
+		List<ParticipationResponse> response = participationService.getAllParticipationOrThrow(id, searchName, sort);
 
 		return RangerResponse.ok(response);
 	}
 
 	@Tag(name = "review")
 	@Operation(summary = "[토큰] 리뷰를 받은 모든 수신자 조회", description = "[토큰] 리뷰를 받은 모든 수신자 조회 API", responses = {
-		@ApiResponse(responseCode = "200", description = "리뷰를 받은 모든 수신자 조회 성공"),
-		@ApiResponse(responseCode = "404", description = "사용자 존재하지 않는 경우")
+		@ApiResponse(responseCode = "200", description = "리뷰를 받은 모든 수신자 조회 성공")
 	})
 	@GetMapping("/reviews/{id}/receiver")
 	public RangerResponse<List<ReceiverResponse>> getAllReceiverParticipateInReview(
 		@PathVariable Long id,
-		@RequestParam(value = "searchName", required = false) String searchName,
-		@RequestParam(value = "sort", required = false) String sort) {
-		List<ReceiverResponse> response = participationService.getAllReceiverParticipateInReviewOrThrow(
-			id, searchName, sort);
+		@RequestParam(value = "searchName", required = false) String searchName) {
+		List<ReceiverResponse> response = participationService.getAllReceiver(id, searchName);
 
 		return RangerResponse.ok(response);
 	}
