@@ -35,12 +35,12 @@ public record ParticipationResponse(
 	@Schema(description = "수정일")
 	LocalDateTime updatedAt
 ) {
-	public static ParticipationResponse toResponse(Participation participation, UserResponse user,
+	public static ParticipationResponse toResponse(Participation participation,
 		ReviewResponse review) {
 		return new ParticipationResponse(
 			participation.getId(),
 			review,
-			user,
+			UserResponse.toResponse(participation.getResponser()),
 			participation.getIsAnswered(),
 			participation.getReviewStatus(),
 			participation.getSubmitAt(),

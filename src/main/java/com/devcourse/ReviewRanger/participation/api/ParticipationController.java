@@ -2,15 +2,15 @@ package com.devcourse.ReviewRanger.participation.api;
 
 import static org.springframework.http.HttpStatus.*;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,11 +40,16 @@ public class ParticipationController {
 		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
 	@GetMapping("/participations")
-	public RangerResponse<List<GetParticipationResponse>> getAllParticipationsByResponser(
-		@AuthenticationPrincipal UserPrincipal user
+	public RangerResponse<Slice<GetParticipationResponse>> getAllParticipationsByResponser(
+		@AuthenticationPrincipal UserPrincipal user,
+		@RequestParam(required = false) Long cursorId,
+		@RequestParam(defaultValue = "12") Integer size
 	) {
-		Long responserId = user.getId();
-		List<GetParticipationResponse> responses = participationService.getAllParticipationsByResponser(responserId);
+		Slice<GetParticipationResponse> responses = participationService.getAllParticipationsByResponser(
+			cursorId,
+			user.getId(),
+			size
+		);
 
 		return RangerResponse.ok(responses);
 	}
@@ -58,7 +63,7 @@ public class ParticipationController {
 	@ResponseStatus(CREATED)
 	@PostMapping(value = "/participations")
 	public RangerResponse<Void> submitParticipation(@RequestBody @Valid SubmitParticipationRequest request) {
-		participationService.submitResponse(request);
+		participationService.submitReplies(request);
 
 		return RangerResponse.noData();
 	}

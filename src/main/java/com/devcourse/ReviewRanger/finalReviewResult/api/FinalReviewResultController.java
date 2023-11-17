@@ -26,6 +26,7 @@ import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewRespons
 import com.devcourse.ReviewRanger.finalReviewResult.dto.FinalReviewResultListResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewAnswerResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewResultResponse;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.PagingFinalReviewRequest;
 import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,7 +75,7 @@ public class FinalReviewResultController {
 		Pageable pageable = PageRequest.of(0, size);
 		Slice<FinalReviewResultListResponse> finalReviewResultsOfCursorPaging
 			= finalReviewResultService.getAllFinalReviewResultsOfCursorPaging(cursorId, user.getId(), pageable);
-
+  
 		return RangerResponse.ok(finalReviewResultsOfCursorPaging);
 	}
 

@@ -38,6 +38,7 @@ jobs:
           spring.datasource.username: ${{ secrets.DB_NAME }}
           spring.datasource.password: ${{ secrets.DB_PASSWORD }}
           jasypt.encryptor.password: ${{ secrets.JASYPT_KEY }}
+          openai.api.key: ${{ secrets.OPEN_AI_KEY }}
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
