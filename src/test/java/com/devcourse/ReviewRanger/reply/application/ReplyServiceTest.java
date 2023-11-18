@@ -24,6 +24,7 @@ import com.devcourse.ReviewRanger.user.domain.User;
 
 @ExtendWith(MockitoExtension.class)
 class ReplyServiceTest {
+
 	@InjectMocks
 	private ReplyService replyService;
 

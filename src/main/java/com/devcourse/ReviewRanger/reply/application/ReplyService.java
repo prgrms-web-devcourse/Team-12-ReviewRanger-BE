@@ -4,11 +4,8 @@ import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
@@ -19,7 +16,6 @@ import com.devcourse.ReviewRanger.reply.repository.ReplyRepository;
 
 @Service
 @Transactional(readOnly = true)
-@Validated
 public class ReplyService {
 
 	private final ReplyRepository replyRepository;
@@ -29,7 +25,7 @@ public class ReplyService {
 	}
 
 	@Transactional
-	public void createReply(ReplyTarget replyTarget, @Valid List<CreateReplyRequest> createReplyRequests) {
+	public void createReply(ReplyTarget replyTarget, List<CreateReplyRequest> createReplyRequests) {
 		for (CreateReplyRequest createReplyRequest : createReplyRequests) {
 			Reply reply = createReplyRequest.toEntity();
 			reply.assignReviewedTarget(replyTarget);

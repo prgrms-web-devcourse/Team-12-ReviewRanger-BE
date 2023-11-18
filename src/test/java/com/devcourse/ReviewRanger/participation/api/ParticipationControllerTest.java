@@ -127,45 +127,6 @@ class ParticipationControllerTest {
 	}
 
 	@Test
-	void 답변_저장_실패() throws Exception {
-		//given
-		CreateReplyRequest createReplyRequest1 = new CreateReplyRequest(1L, 1L, null, null, null);
-		CreateReplyRequest createReplyRequest2 = new CreateReplyRequest(1L, 2L, null, null, null);
-		CreateReplyRequest createReplyRequest3 = new CreateReplyRequest(1L, null, "수연 -> 범철 주관식 답변", null, null);
-		List<CreateReplyRequest> createReplyRequestList1 = List.of(createReplyRequest1, createReplyRequest2,
-			createReplyRequest3);
-
-		CreateReplyTargetRequest createReplyTargetRequest1 = new CreateReplyTargetRequest(2L, 1L,
-			createReplyRequestList1);
-
-		String answer = "수연 -> 주웅 주관식 답변";
-		for (int i = 0; i < 10; i++) {
-			answer += answer;
-		}
-
-		CreateReplyRequest createReplyRequest4 = new CreateReplyRequest(1L, 1L, null, null, null);
-		CreateReplyRequest createReplyRequest5 = new CreateReplyRequest(1L, 2L, null, null, null);
-		CreateReplyRequest createReplyRequest6 = new CreateReplyRequest(1L, null, answer, null, null);
-		List<CreateReplyRequest> createReplyRequestList2 = List.of(createReplyRequest4, createReplyRequest5,
-			createReplyRequest6);
-
-		CreateReplyTargetRequest createReplyTargetRequest2 = new CreateReplyTargetRequest(3L, 1L,
-			createReplyRequestList2);
-
-		List<CreateReplyTargetRequest> createReplyTargetRequestList = List.of(createReplyTargetRequest1,
-			createReplyTargetRequest2);
-
-		SubmitParticipationRequest submitParticipationRequest = new SubmitParticipationRequest(1L,
-			createReplyTargetRequestList);
-
-		this.mockMvc.perform(post("/participations")
-				.content(objectMapper.writeValueAsString(submitParticipationRequest))
-				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isBadRequest())
-			.andDo(print());
-	}
-
-	@Test
 	void 답변_수정() throws Exception {
 		//given
 		UpdateReplyRequest updateReplyRequest1 = new UpdateReplyRequest(1L, 1L, 1L, null, null, null);

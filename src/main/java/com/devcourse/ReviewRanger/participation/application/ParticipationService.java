@@ -7,14 +7,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 import com.devcourse.ReviewRanger.ReplyTarget.application.ReplyTargetService;
 import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
@@ -37,7 +34,6 @@ import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
 @Transactional(readOnly = true)
-@Validated
 public class ParticipationService {
 
 	private final ParticipationRepository participationRepository;
@@ -153,7 +149,7 @@ public class ParticipationService {
 	}
 
 	@Transactional
-	public void submitReplies(@Valid SubmitParticipationRequest request) {
+	public void submitReplies(SubmitParticipationRequest request) {
 		Participation participation = getByIdOrThrow(request.participationId());
 
 		replyTargetService.createReviewTarget(participation.getId(), request.createReplyTargetRequests());
