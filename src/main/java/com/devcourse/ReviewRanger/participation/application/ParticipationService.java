@@ -75,7 +75,8 @@ public class ParticipationService {
 		Long responserId,
 		Pageable pageable
 	) {
-		Slice<Participation> participations  = participationRepository.findByResponserId(cursorId, responserId, pageable);
+		Slice<Participation> participations = participationRepository.findByResponserId(cursorId, responserId,
+			pageable);
 
 		List<GetParticipationResponse> getParticipationResponses = new ArrayList<>();
 		for (Participation participation : participations.getContent()) {
