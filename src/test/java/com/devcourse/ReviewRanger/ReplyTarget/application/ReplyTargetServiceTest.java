@@ -1,0 +1,94 @@
+package com.devcourse.ReviewRanger.ReplyTarget.application;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
+import com.devcourse.ReviewRanger.ReplyTarget.dto.response.ReplyTargetResponse;
+import com.devcourse.ReviewRanger.ReplyTarget.repository.ReplyTargetRepository;
+import com.devcourse.ReviewRanger.question.domain.QuestionOption;
+import com.devcourse.ReviewRanger.question.repository.QuestionOptionRepository;
+import com.devcourse.ReviewRanger.reply.domain.Reply;
+import com.devcourse.ReviewRanger.user.domain.User;
+
+@ExtendWith(MockitoExtension.class)
+class ReplyTargetServiceTest {
+
+	@InjectMocks
+	private ReplyTargetService replyTargetService;
+
+	@Mock
+	private ReplyTargetRepository replyTargetRepository;
+
+	@Mock
+	private QuestionOptionRepository questionOptionRepository;
+
+	private User user1;
+	private User user2;
+
+	@BeforeEach
+	public void setup() {
+		user1 = new User("수연", "tttttaa@naver.com", "asdf12345");
+		user2 = new User("범철", "tttttbb@naver.com", "asdf12345");
+	}
+
+	@Test
+	void 작성자별_답변_조회_성공() {
+		//given
+		Reply reply = new Reply(1L, null, "수연 -> 범철 주관식 답변", null, null);
+
+		ReplyTarget replyTarget = new ReplyTarget(user2, user1, 1L);
+		reply.assignReviewedTarget(replyTarget);
+
+		List<ReplyTarget> replyTargetList = List.of(replyTarget);
+
+		given(replyTargetRepository.findAllByResponserId(1L)).willReturn(replyTargetList);
+
+		//when
+		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByResponser(1L);
+
+		//then
+		assertThat(responses.get(0).responser().name()).isEqualTo("수연");
+		assertThat(responses.get(0).receiver().name()).isEqualTo("범철");
+		assertThat(responses.get(0).replies().get(0).answerText()).isEqualTo("수연 -> 범철 주관식 답변");
+		verify(replyTargetRepository, times(1)).findAllByResponserId(any(Long.class));
+	}
+
+	@Test
+	void 수신자별_답변_조회_성공() {
+		//given
+		Reply reply = new Reply(1L, null, "수연 -> 범철 주관식 답변", null, null);
+		Reply reply2 = new Reply(2L, 1L, null, null, null);
+		QuestionOption questionOption = new QuestionOption("파이리");
+
+		ReplyTarget replyTarget = new ReplyTarget(user2, user1, 1L);
+		reply.assignReviewedTarget(replyTarget);
+		reply2.assignReviewedTarget(replyTarget);
+
+		List<ReplyTarget> replyTargetList = List.of(replyTarget);
+
+		given(replyTargetRepository.findAllByReceiverId(2L)).willReturn(replyTargetList);
+		given(questionOptionRepository.findById(1L)).willReturn(Optional.of(questionOption));
+
+		//when
+		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByReceiver(2L);
+
+		//then
+		assertThat(responses.get(0).responser().name()).isEqualTo("수연");
+		assertThat(responses.get(0).receiver().name()).isEqualTo("범철");
+		assertThat(responses.get(0).replies().get(0).answerText()).isEqualTo("수연 -> 범철 주관식 답변");
+		assertThat(responses.get(0).replies().get(1).questionOption().optionName()).isEqualTo("파이리");
+
+		verify(replyTargetRepository, times(1)).findAllByReceiverId(any(Long.class));
+	}
+}
