@@ -5,7 +5,8 @@ import com.devcourse.ReviewRanger.user.dto.JoinRequest;
 
 public enum UserFixture {
 
-	SUYEON_FIXTURE("장수연", "dev1234@devcource.com", "abc12341234");
+	SUYEON_FIXTURE("장수연", "dev1234@devcource.com", "abc12341234"),
+	BEOMCHUL_FIXTURE("신범철", "dev12342@devcource.com", "abc12341234");
 
 	private final String name;
 	private final String email;

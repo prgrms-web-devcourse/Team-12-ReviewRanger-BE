@@ -15,11 +15,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
 import com.devcourse.ReviewRanger.ReplyTarget.dto.response.ReplyTargetResponse;
+import com.devcourse.ReviewRanger.ReplyTarget.fixture.ReplyFixture;
 import com.devcourse.ReviewRanger.ReplyTarget.repository.ReplyTargetRepository;
 import com.devcourse.ReviewRanger.question.domain.QuestionOption;
 import com.devcourse.ReviewRanger.question.repository.QuestionOptionRepository;
 import com.devcourse.ReviewRanger.reply.domain.Reply;
 import com.devcourse.ReviewRanger.user.domain.User;
+import com.devcourse.ReviewRanger.user.service.UserFixture;
 
 @ExtendWith(MockitoExtension.class)
 class ReplyTargetServiceTest {
@@ -38,17 +40,17 @@ class ReplyTargetServiceTest {
 
 	@BeforeEach
 	public void setup() {
-		user1 = new User("수연", "tttttaa@naver.com", "asdf12345");
-		user2 = new User("범철", "tttttbb@naver.com", "asdf12345");
+		user1 = UserFixture.SUYEON_FIXTURE.toEntity();
+		user2 = UserFixture.BEOMCHUL_FIXTURE.toEntity();
 	}
 
 	@Test
 	void 작성자별_답변_조회_성공() {
 		//given
-		Reply reply = new Reply(1L, null, "수연 -> 범철 주관식 답변", null, null);
+		Reply subjectReplyEntity = ReplyFixture.SUBJECT_REPLY.toEntity();
 
 		ReplyTarget replyTarget = new ReplyTarget(user2, user1, 1L);
-		reply.assignReviewedTarget(replyTarget);
+		subjectReplyEntity.assignReviewedTarget(replyTarget);
 
 		List<ReplyTarget> replyTargetList = List.of(replyTarget);
 
@@ -67,13 +69,14 @@ class ReplyTargetServiceTest {
 	@Test
 	void 수신자별_답변_조회_성공() {
 		//given
-		Reply reply = new Reply(1L, null, "수연 -> 범철 주관식 답변", null, null);
-		Reply reply2 = new Reply(2L, 1L, null, null, null);
+		Reply subjectReplyEntity = ReplyFixture.SUBJECT_REPLY.toEntity();
+		Reply objectReplyEntity = ReplyFixture.OBJECT_REPLY1.toEntity();
+
 		QuestionOption questionOption = new QuestionOption("파이리");
 
 		ReplyTarget replyTarget = new ReplyTarget(user2, user1, 1L);
-		reply.assignReviewedTarget(replyTarget);
-		reply2.assignReviewedTarget(replyTarget);
+		subjectReplyEntity.assignReviewedTarget(replyTarget);
+		objectReplyEntity.assignReviewedTarget(replyTarget);
 
 		List<ReplyTarget> replyTargetList = List.of(replyTarget);
 
