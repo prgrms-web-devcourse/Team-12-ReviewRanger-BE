@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +20,7 @@ import com.devcourse.ReviewRanger.reply.dto.request.CreateReplyRequest;
 import com.devcourse.ReviewRanger.reply.dto.request.UpdateReplyRequest;
 import com.devcourse.ReviewRanger.reply.repository.ReplyRepository;
 import com.devcourse.ReviewRanger.user.domain.User;
+import com.devcourse.ReviewRanger.user.service.UserFixture;
 
 @ExtendWith(MockitoExtension.class)
 class ReplyServiceTest {
@@ -31,18 +31,12 @@ class ReplyServiceTest {
 	@Mock
 	private ReplyRepository replyRepository;
 
-	private User user1;
-	private User user2;
-
-	@BeforeEach
-	public void setup() {
-		user1 = new User("수연", "tttttaa@naver.com", "asdf12345");
-		user2 = new User("범철", "tttttbb@naver.com", "asdf12345");
-	}
-
 	@Test
 	void 답변_저장_성공() {
 		//given
+		User user1 = UserFixture.SUYEON_FIXTURE.toEntity();
+		User user2 = UserFixture.BEOMCHUL_FIXTURE.toEntity();
+
 		CreateReplyRequest createReplyRequest1 = new CreateReplyRequest(1L, 1L, null, null, null);
 		CreateReplyRequest createReplyRequest2 = new CreateReplyRequest(1L, 2L, null, null, null);
 		CreateReplyRequest createReplyRequest3 = new CreateReplyRequest(2L, null, "수연 -> 범철 주관식 답변", null, null);

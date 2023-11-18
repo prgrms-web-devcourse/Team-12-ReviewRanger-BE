@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +21,7 @@ import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationR
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
 import com.devcourse.ReviewRanger.user.domain.User;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
+import com.devcourse.ReviewRanger.user.service.UserFixture;
 
 @ExtendWith(MockitoExtension.class)
 class ParticipationServiceTest {
@@ -41,18 +41,11 @@ class ParticipationServiceTest {
 	@Mock
 	private ReplyTargetRepository replyTargetRepository;
 
-	private User user1;
-	private User user2;
-
-	@BeforeEach
-	public void setup() {
-		user1 = new User("수연", "tttttaa@naver.com", "asdf12345");
-		user2 = new User("범철", "tttttbb@naver.com", "asdf12345");
-	}
-
 	@Test
 	void 답변_참여_성공() {
 		//given
+		User user1 = UserFixture.SUYEON_FIXTURE.toEntity();
+
 		SubmitParticipationRequest submitParticipationRequest = new SubmitParticipationRequest(1L,
 			Lists.emptyList());
 		Participation participation = new Participation(user1);

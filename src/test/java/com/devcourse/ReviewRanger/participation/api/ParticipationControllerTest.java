@@ -1,5 +1,6 @@
 package com.devcourse.ReviewRanger.participation.api;
 
+import static com.devcourse.ReviewRanger.user.service.UserFixture.*;
 import static org.assertj.core.api.BDDAssumptions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -64,11 +65,9 @@ class ParticipationControllerTest {
 	@MockBean
 	private ReviewService reviewService;
 
-	private User user;
-
 	@BeforeEach
 	public void setup() {
-		user = new User("스펜서", "ttttttt@naver.com", "asdf12345");
+		User user = SPENCER_FIXTURE.toEntity();
 
 		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
 			user, null, Collections.emptyList());
