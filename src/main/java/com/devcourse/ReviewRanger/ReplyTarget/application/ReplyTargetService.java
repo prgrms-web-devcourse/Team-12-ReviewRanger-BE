@@ -5,8 +5,11 @@ import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
 import com.devcourse.ReviewRanger.ReplyTarget.dto.request.CreateReplyTargetRequest;
@@ -24,6 +27,7 @@ import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
 @Transactional(readOnly = true)
+@Validated
 public class ReplyTargetService {
 
 	private final ReplyTargetRepository replyTargetRepository;
@@ -41,7 +45,7 @@ public class ReplyTargetService {
 
 	@Transactional
 	public void createReviewTarget(Long participationId,
-		List<CreateReplyTargetRequest> createReplyTargetRequests) {
+		@Valid List<CreateReplyTargetRequest> createReplyTargetRequests) {
 		for (CreateReplyTargetRequest createReplyTargetRequest : createReplyTargetRequests) {
 			User receiver = userRepository.findById(createReplyTargetRequest.receiverId())
 				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
