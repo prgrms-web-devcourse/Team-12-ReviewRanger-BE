@@ -27,10 +27,11 @@ public class ReplyService {
 	@Transactional
 	public void createReply(ReplyTarget replyTarget, List<CreateReplyRequest> createReplyRequests) {
 		for (CreateReplyRequest createReplyRequest : createReplyRequests) {
-			isRequiredQuestion(createReplyRequest.isRequiredQuestion(), createReplyRequest.answerText(),
-				createReplyRequest.questionOptionId(), createReplyRequest.rating(), createReplyRequest.hexastat());
-
 			Reply reply = createReplyRequest.toEntity();
+
+			if (createReplyRequest.isRequiredQuestion()) {
+				reply.validateReplyInputsOrThrow();
+			}
 			reply.assignReviewedTarget(replyTarget);
 			replyRepository.save(reply);
 		}
@@ -39,13 +40,11 @@ public class ReplyService {
 	@Transactional
 	public void updateReply(List<UpdateReplyRequest> updateReplyRequests) {
 		for (UpdateReplyRequest updateReplyRequest : updateReplyRequests) {
-			isRequiredQuestion(updateReplyRequest.isRequiredQuestion(),
-				updateReplyRequest.answerText(),
-				updateReplyRequest.questionOptionId(),
-				updateReplyRequest.rating(),
-				updateReplyRequest.hexastat());
-
 			Reply reply = getByIdOrThrow(updateReplyRequest.id());
+
+			if (updateReplyRequest.isRequiredQuestion()) {
+				reply.validateReplyInputsOrThrow();
+			}
 			reply.update(
 				updateReplyRequest.questionOptionId(),
 				updateReplyRequest.answerText(),
@@ -57,18 +56,5 @@ public class ReplyService {
 	public Reply getByIdOrThrow(Long id) {
 		return replyRepository.findById(id)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REPLY));
-	}
-
-	private void isRequiredQuestion(Boolean isRequiredQuestion, String answerText, Long questionOptionId, Double rating,
-		Integer hexastat) {
-		if (isRequiredQuestion) {
-			validateReplyInputsOrThrow(answerText, questionOptionId, rating, hexastat);
-		}
-	}
-
-	private void validateReplyInputsOrThrow(String answerText, Long questionOptionId, Double rating, Integer hexastat) {
-		if (answerText == null && questionOptionId == null && rating == null && hexastat == null) {
-			throw new RangerException(MISSING_REQUIRED_QUESTION_REPLY);
-		}
 	}
 }
