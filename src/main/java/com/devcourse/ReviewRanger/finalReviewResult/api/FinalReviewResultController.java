@@ -26,7 +26,7 @@ import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewRespons
 import com.devcourse.ReviewRanger.finalReviewResult.dto.FinalReviewResultListResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewAnswerResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewResultResponse;
-import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
