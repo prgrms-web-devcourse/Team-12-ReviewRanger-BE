@@ -37,9 +37,9 @@ class ReplyServiceTest {
 		User user1 = UserFixture.SUYEON_FIXTURE.toEntity();
 		User user2 = UserFixture.BEOMCHUL_FIXTURE.toEntity();
 
-		CreateReplyRequest createReplyRequest1 = new CreateReplyRequest(1L, 1L, null, null, null);
-		CreateReplyRequest createReplyRequest2 = new CreateReplyRequest(1L, 2L, null, null, null);
-		CreateReplyRequest createReplyRequest3 = new CreateReplyRequest(2L, null, "수연 -> 범철 주관식 답변", null, null);
+		CreateReplyRequest createReplyRequest1 = new CreateReplyRequest(1L, true, 1L, null, null, null);
+		CreateReplyRequest createReplyRequest2 = new CreateReplyRequest(1L, true, 2L, null, null, null);
+		CreateReplyRequest createReplyRequest3 = new CreateReplyRequest(2L, true, null, "수연 -> 범철 주관식 답변", null, null);
 		List<CreateReplyRequest> createReplyRequestList = List.of(createReplyRequest1, createReplyRequest2,
 			createReplyRequest3);
 
@@ -58,7 +58,8 @@ class ReplyServiceTest {
 		Reply reply = new Reply(2L, null, "수연 -> 범철 주관식 답변", null, null);
 		replyRepository.save(reply);
 
-		UpdateReplyRequest updateReplyRequest1 = new UpdateReplyRequest(1L, 2L, null, "수연 -> 범철 주관식 답변", null, null);
+		UpdateReplyRequest updateReplyRequest1 = new UpdateReplyRequest(1L, 2L, true, null, "수연 -> 범철 주관식 답변", null,
+			null);
 		List<UpdateReplyRequest> updateReplyRequestList = List.of(updateReplyRequest1);
 
 		given(replyRepository.findById(updateReplyRequest1.id())).willReturn(Optional.of(reply));
@@ -79,5 +80,25 @@ class ReplyServiceTest {
 		Assertions.assertThatThrownBy(() -> replyService.getByIdOrThrow(replyId))
 			.isInstanceOf(RangerException.class)
 			.hasMessage(NOT_FOUND_REPLY.getMessage());
+	}
+
+	@Test
+	void 답변_필수_질문_미답변_실패() {
+		//given
+		User user1 = UserFixture.SUYEON_FIXTURE.toEntity();
+		User user2 = UserFixture.BEOMCHUL_FIXTURE.toEntity();
+
+		CreateReplyRequest createReplyRequest1 = new CreateReplyRequest(1L, true, null, null, null, null);
+		CreateReplyRequest createReplyRequest2 = new CreateReplyRequest(1L, true, null, null, null, null);
+		CreateReplyRequest createReplyRequest3 = new CreateReplyRequest(2L, true, null, null, null, null);
+		List<CreateReplyRequest> createReplyRequestList = List.of(createReplyRequest1, createReplyRequest2,
+			createReplyRequest3);
+
+		ReplyTarget replyTarget = new ReplyTarget(user2, user1, 1L);
+
+		//when & Then
+		Assertions.assertThatThrownBy(() -> replyService.createReply(replyTarget, createReplyRequestList))
+			.isInstanceOf(RangerException.class)
+			.hasMessage(MISSING_REQUIRED_QUESTION_REPLY.getMessage());
 	}
 }

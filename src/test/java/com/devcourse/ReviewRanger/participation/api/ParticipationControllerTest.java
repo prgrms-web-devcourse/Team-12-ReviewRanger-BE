@@ -94,18 +94,18 @@ class ParticipationControllerTest {
 	@Test
 	void 답변_저장() throws Exception {
 		//given
-		CreateReplyRequest createReplyRequest1 = new CreateReplyRequest(1L, 1L, null, null, null);
-		CreateReplyRequest createReplyRequest2 = new CreateReplyRequest(1L, 2L, null, null, null);
-		CreateReplyRequest createReplyRequest3 = new CreateReplyRequest(2L, null, "수연 -> 범철 주관식 답변", null, null);
+		CreateReplyRequest createReplyRequest1 = new CreateReplyRequest(1L, true, 1L, null, null, null);
+		CreateReplyRequest createReplyRequest2 = new CreateReplyRequest(1L, true, 2L, null, null, null);
+		CreateReplyRequest createReplyRequest3 = new CreateReplyRequest(2L, true, null, "수연 -> 범철 주관식 답변", null, null);
 		List<CreateReplyRequest> createReplyRequestList1 = List.of(createReplyRequest1, createReplyRequest2,
 			createReplyRequest3);
 
 		CreateReplyTargetRequest createReplyTargetRequest1 = new CreateReplyTargetRequest(2L, 1L,
 			createReplyRequestList1);
 
-		CreateReplyRequest createReplyRequest4 = new CreateReplyRequest(1L, 1L, null, null, null);
-		CreateReplyRequest createReplyRequest5 = new CreateReplyRequest(1L, 2L, null, null, null);
-		CreateReplyRequest createReplyRequest6 = new CreateReplyRequest(2L, null, "수연 -> 주웅 주관식 답변", null, null);
+		CreateReplyRequest createReplyRequest4 = new CreateReplyRequest(1L, true, 1L, null, null, null);
+		CreateReplyRequest createReplyRequest5 = new CreateReplyRequest(1L, true, 2L, null, null, null);
+		CreateReplyRequest createReplyRequest6 = new CreateReplyRequest(2L, true, null, "수연 -> 주웅 주관식 답변", null, null);
 		List<CreateReplyRequest> createReplyRequestList2 = List.of(createReplyRequest4, createReplyRequest5,
 			createReplyRequest6);
 
@@ -128,18 +128,20 @@ class ParticipationControllerTest {
 	@Test
 	void 답변_수정() throws Exception {
 		//given
-		UpdateReplyRequest updateReplyRequest1 = new UpdateReplyRequest(1L, 1L, 1L, null, null, null);
-		UpdateReplyRequest updateReplyRequest2 = new UpdateReplyRequest(1L, 1L, 2L, null, null, null);
-		UpdateReplyRequest updateReplyRequest3 = new UpdateReplyRequest(1L, 2L, null, "수연 -> 범철 주관식 답변", null, null);
+		UpdateReplyRequest updateReplyRequest1 = new UpdateReplyRequest(1L, 1L, true, 1L, null, null, null);
+		UpdateReplyRequest updateReplyRequest2 = new UpdateReplyRequest(1L, 1L, true, 2L, null, null, null);
+		UpdateReplyRequest updateReplyRequest3 = new UpdateReplyRequest(1L, 2L, true, null, "수연 -> 범철 주관식 답변", null,
+			null);
 		List<UpdateReplyRequest> updateReplyRequestList = List.of(updateReplyRequest1, updateReplyRequest2,
 			updateReplyRequest3);
 
 		UpdateReplyTargetRequest updateReplyTargetRequest1 = new UpdateReplyTargetRequest(2L, 1L,
 			updateReplyRequestList);
 
-		UpdateReplyRequest updateReplyRequest4 = new UpdateReplyRequest(1L, 1L, 1L, null, null, null);
-		UpdateReplyRequest updateReplyRequest5 = new UpdateReplyRequest(1L, 1L, 2L, null, null, null);
-		UpdateReplyRequest updateReplyRequest6 = new UpdateReplyRequest(1L, 2L, null, "수연 -> 주웅 주관식 답변", null, null);
+		UpdateReplyRequest updateReplyRequest4 = new UpdateReplyRequest(1L, 1L, true, 1L, null, null, null);
+		UpdateReplyRequest updateReplyRequest5 = new UpdateReplyRequest(1L, 1L, true, 2L, null, null, null);
+		UpdateReplyRequest updateReplyRequest6 = new UpdateReplyRequest(1L, 2L, true, null, "수연 -> 주웅 주관식 답변", null,
+			null);
 		List<UpdateReplyRequest> createReplyRequestList2 = List.of(updateReplyRequest4, updateReplyRequest5,
 			updateReplyRequest6);
 
