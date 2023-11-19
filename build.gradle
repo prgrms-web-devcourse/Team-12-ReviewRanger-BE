@@ -61,6 +61,11 @@ dependencies {
     // query dsl
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+    // slack
+    implementation "com.slack.api:bolt:1.18.0"
+    implementation "com.slack.api:bolt-servlet:1.18.0"
+    implementation "com.slack.api:bolt-jetty:1.18.0"
 }
 
 tasks.named('test') {

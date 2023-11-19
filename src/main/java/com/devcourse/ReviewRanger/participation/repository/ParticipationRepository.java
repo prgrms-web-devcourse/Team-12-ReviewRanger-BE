@@ -15,4 +15,6 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
 	Participation findByReviewIdAndResponserId(Long reviewId, Long responserId);
 
 	List<Participation> findAllByReviewId(Long reviewId);
+
+	List<Participation> findAllByReviewIdAndIsAnswered(Long reviewId, Boolean isAnswered);
 }
