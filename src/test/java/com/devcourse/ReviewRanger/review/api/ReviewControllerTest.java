@@ -1,5 +1,6 @@
 package com.devcourse.ReviewRanger.review.api;
 
+import static com.devcourse.ReviewRanger.question.application.QuestionFixture.*;
 import static com.devcourse.ReviewRanger.review.ReviewFixture.*;
 import static com.devcourse.ReviewRanger.user.service.TestPrincipalDetailsService.*;
 import static java.time.LocalDateTime.*;
@@ -31,6 +32,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
@@ -42,9 +44,12 @@ import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.participation.dto.response.ParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
 import com.devcourse.ReviewRanger.question.dto.request.CreateQuestionRequest;
+import com.devcourse.ReviewRanger.question.dto.response.GetQuestionResponse;
 import com.devcourse.ReviewRanger.review.application.ReviewService;
+import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.domain.ReviewType;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
+import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
 import com.devcourse.ReviewRanger.user.dto.UserResponse;
@@ -185,16 +190,19 @@ class ReviewControllerTest {
 
 	@Test
 	void 리뷰_전체조회_성공() throws Exception {
+		// given
 		Long cursorId = 1L;
 		Integer size = 12;
-		Pageable pageable = PageRequest.of(0, size);
 		Long responserCount = 5L;
+
+		Pageable pageable = PageRequest.of(0, size);
 		Boolean hasNext = false;
 
 		GetReviewResponse getReviewResponse = new GetReviewResponse(
 			BASIC_REVIEW.toEntity(),
 			responserCount
 		);
+
 		SliceImpl<GetReviewResponse> getReviewResponses = new SliceImpl<>(
 			List.of(getReviewResponse),
 			pageable,
@@ -204,10 +212,12 @@ class ReviewControllerTest {
 		when(reviewService.getAllReviewsByRequesterOfCursorPaging(cursorId, null, pageable)).thenReturn(
 			getReviewResponses);
 
+		// when
+		// then
 		mockMvc.perform(get("/reviews")
-			.param("cursorId", "1")
-			.param("size", "12")
-			.with(user(userDetails)))
+				.param("cursorId", "1")
+				.param("size", "12")
+				.with(user(userDetails)))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.success").value(true))
 			.andExpect(jsonPath("$.data.content", hasSize(1)))
@@ -217,5 +227,42 @@ class ReviewControllerTest {
 			.andExpect(jsonPath("$.data.content[0].createdAt").value(nullValue()))
 			.andExpect(jsonPath("$.data.content[0].responserCount").value(responserCount))
 			.andDo(print());
+
+		verify(reviewService, times(1)).getAllReviewsByRequesterOfCursorPaging(
+			cursorId,
+			null,
+			pageable
+		);
+	}
+
+	@Test
+	void 리뷰_상세조회_성공() throws Exception {
+		// given
+		Long reviewId = 1L;
+
+		GetReviewDetailResponse response = new GetReviewDetailResponse(
+			BASIC_REVIEW.toEntity(),
+			List.of(BASIC_QUESTION.toGetQuestionResponse())
+		);
+
+		when(reviewService.getReviewDetailOrThrow(reviewId)).thenReturn(response);
+
+		// when
+		// then
+		mockMvc.perform(get("/reviews/{id}", 1))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.success").value(true))
+			.andExpect(jsonPath("$.data.id").value(nullValue()))
+			.andExpect(jsonPath("$.data.title").value("예시 리뷰"))
+			.andExpect(jsonPath("$.data.description").value("예시 리뷰 설명입니다."))
+			.andExpect(jsonPath("$.data.status").value("PROCEEDING"))
+			.andExpect(jsonPath("$.data.questions[0].id").value(nullValue()))
+			.andExpect(jsonPath("$.data.questions[0].title").value("질문 제목"))
+			.andExpect(jsonPath("$.data.questions[0].description").value("질문 설명"))
+			.andExpect(jsonPath("$.data.questions[0].isRequired").value(true))
+			.andExpect(jsonPath("$.data.questions[0].questionOptions").value(empty()))
+			.andDo(print());
+
+		verify(reviewService,times(1)).getReviewDetailOrThrow(reviewId);
 	}
 }
