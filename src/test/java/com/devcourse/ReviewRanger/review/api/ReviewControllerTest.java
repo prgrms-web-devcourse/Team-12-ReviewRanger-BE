@@ -265,4 +265,20 @@ class ReviewControllerTest {
 
 		verify(reviewService,times(1)).getReviewDetailOrThrow(reviewId);
 	}
+
+	@Test
+	void 리뷰_마감_성공() throws  Exception{
+		// given
+		Long reviewId = 1L;
+		doNothing().when(reviewService).closeReviewOrThrow(reviewId);
+
+		// when
+		// then
+		mockMvc.perform(post("/reviews/{id}/close",1L))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.success").value(true))
+			.andDo(print());
+		
+		verify(reviewService,times(1)).closeReviewOrThrow(reviewId);
+	}
 }

@@ -3,7 +3,6 @@ package com.devcourse.ReviewRanger.review.application;
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 import static com.devcourse.ReviewRanger.participation.domain.ReviewStatus.*;
 import static com.devcourse.ReviewRanger.review.ReviewFixture.*;
-import static com.devcourse.ReviewRanger.review.domain.ReviewType.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
