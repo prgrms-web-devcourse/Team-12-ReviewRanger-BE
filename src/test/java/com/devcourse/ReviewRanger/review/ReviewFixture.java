@@ -11,7 +11,7 @@ public enum ReviewFixture {
 
 	private final String title;
 	private final String description;
-	private final ReviewType type ;
+	private final ReviewType type;
 
 	ReviewFixture(String title, String description, ReviewType type) {
 		this.title = title;
