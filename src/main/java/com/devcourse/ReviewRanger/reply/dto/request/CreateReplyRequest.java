@@ -15,6 +15,11 @@ public record CreateReplyRequest(
 	@NotNull(message = "질문 Id는 Null값 일 수 없습니다.")
 	Long questionId,
 
+	@Schema(description = "질문 필수 여부")
+	@NotNull(message = "질문 필수 여부는 Null값 일 수 없습니다.")
+	@JsonProperty("isRequired")
+	Boolean isRequiredQuestion,
+
 	@Schema(description = "객관식, 드롭다운 용 답변 Id")
 	@JsonProperty("answerChoice")
 	Long questionOptionId,

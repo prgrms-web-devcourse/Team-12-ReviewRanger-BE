@@ -28,6 +28,10 @@ public class ReplyService {
 	public void createReply(ReplyTarget replyTarget, List<CreateReplyRequest> createReplyRequests) {
 		for (CreateReplyRequest createReplyRequest : createReplyRequests) {
 			Reply reply = createReplyRequest.toEntity();
+
+			if (createReplyRequest.isRequiredQuestion()) {
+				reply.validateReplyInputsOrThrow();
+			}
 			reply.assignReviewedTarget(replyTarget);
 			replyRepository.save(reply);
 		}
@@ -37,6 +41,10 @@ public class ReplyService {
 	public void updateReply(List<UpdateReplyRequest> updateReplyRequests) {
 		for (UpdateReplyRequest updateReplyRequest : updateReplyRequests) {
 			Reply reply = getByIdOrThrow(updateReplyRequest.id());
+
+			if (updateReplyRequest.isRequiredQuestion()) {
+				reply.validateReplyInputsOrThrow();
+			}
 			reply.update(
 				updateReplyRequest.questionOptionId(),
 				updateReplyRequest.answerText(),

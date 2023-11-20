@@ -1,5 +1,7 @@
 package com.devcourse.ReviewRanger.reply.domain;
 
+import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -9,6 +11,7 @@ import javax.persistence.Table;
 
 import com.devcourse.ReviewRanger.BaseEntity;
 import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
+import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -70,5 +73,11 @@ public class Reply extends BaseEntity {
 		this.answerText = answerText;
 		this.rating = rating;
 		this.hexastat = hexastat;
+	}
+
+	public void validateReplyInputsOrThrow() {
+		if (this.answerText == null && this.questionOptionId == null && this.rating == null && this.hexastat == null) {
+			throw new RangerException(MISSING_REQUIRED_QUESTION_REPLY);
+		}
 	}
 }
