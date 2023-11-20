@@ -15,6 +15,9 @@ public record GetQuestionResponse(
 	@Schema(description = "질문 제목")
 	String title,
 
+	@Schema(description = "질문 설명")
+	String description,
+
 	@Schema(description = "질문 타입")
 	QuestionType type,
 
@@ -28,6 +31,7 @@ public record GetQuestionResponse(
 		this(
 			question.getId(),
 			question.getTitle(),
+			question.getDescription(),
 			question.getType(),
 			question.getIsRequired(),
 			options
