@@ -1,6 +1,6 @@
 package com.devcourse.ReviewRanger.participation.api;
 
-import static com.devcourse.ReviewRanger.user.service.UserFixture.*;
+import static com.devcourse.ReviewRanger.user.UserFixture.*;
 import static org.assertj.core.api.BDDAssumptions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

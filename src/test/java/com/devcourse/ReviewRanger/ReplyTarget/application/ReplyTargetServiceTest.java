@@ -20,8 +20,8 @@ import com.devcourse.ReviewRanger.ReplyTarget.repository.ReplyTargetRepository;
 import com.devcourse.ReviewRanger.question.domain.QuestionOption;
 import com.devcourse.ReviewRanger.question.repository.QuestionOptionRepository;
 import com.devcourse.ReviewRanger.reply.domain.Reply;
+import com.devcourse.ReviewRanger.user.UserFixture;
 import com.devcourse.ReviewRanger.user.domain.User;
-import com.devcourse.ReviewRanger.user.service.UserFixture;
 
 @ExtendWith(MockitoExtension.class)
 class ReplyTargetServiceTest {

@@ -19,9 +19,9 @@ import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
+import com.devcourse.ReviewRanger.user.UserFixture;
 import com.devcourse.ReviewRanger.user.domain.User;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
-import com.devcourse.ReviewRanger.user.service.UserFixture;
 
 @ExtendWith(MockitoExtension.class)
 class ParticipationServiceTest {

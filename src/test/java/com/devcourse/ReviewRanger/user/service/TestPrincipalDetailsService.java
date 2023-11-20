@@ -1,14 +1,14 @@
 package com.devcourse.ReviewRanger.user.service;
 
-import static com.devcourse.ReviewRanger.user.service.UserFixture.*;
+import static com.devcourse.ReviewRanger.user.UserFixture.*;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.user.domain.User;
-import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
 
 @Profile("test")
 public class TestPrincipalDetailsService implements UserDetailsService {
