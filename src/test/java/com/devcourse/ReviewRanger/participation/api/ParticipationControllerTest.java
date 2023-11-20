@@ -78,9 +78,9 @@ class ParticipationControllerTest {
 		List<CreateQuestionOptionRequest> createQuestionOptionRequestList = List.of(createQuestionOptionRequest1,
 			createQuestionOptionRequest2);
 
-		CreateQuestionRequest createQuestionRequest1 = new CreateQuestionRequest("질문1", QuestionType.MULTIPLE_CHOICE,
+		CreateQuestionRequest createQuestionRequest1 = new CreateQuestionRequest("질문1", "질문 설명", QuestionType.MULTIPLE_CHOICE,
 			true, createQuestionOptionRequestList);
-		CreateQuestionRequest createQuestionRequest2 = new CreateQuestionRequest("질문2", QuestionType.SUBJECTIVE, true,
+		CreateQuestionRequest createQuestionRequest2 = new CreateQuestionRequest("질문2", "질문 설명",QuestionType.SUBJECTIVE, true,
 			Lists.emptyList());
 		List<CreateQuestionRequest> createQuestionRequestList = List.of(createQuestionRequest1, createQuestionRequest2);
 
