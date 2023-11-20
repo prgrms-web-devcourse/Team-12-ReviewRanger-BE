@@ -1,7 +1,9 @@
 package com.devcourse.ReviewRanger.review.api;
 
+import static com.devcourse.ReviewRanger.review.ReviewFixture.*;
 import static com.devcourse.ReviewRanger.user.service.TestPrincipalDetailsService.*;
 import static java.time.LocalDateTime.*;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -18,14 +20,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.config.SecurityConfig;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
+import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
 import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.participation.dto.response.ParticipationResponse;
@@ -34,10 +45,15 @@ import com.devcourse.ReviewRanger.question.dto.request.CreateQuestionRequest;
 import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.domain.ReviewType;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
+import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
 import com.devcourse.ReviewRanger.user.dto.UserResponse;
 import com.devcourse.ReviewRanger.user.service.TestPrincipalDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @WebMvcTest(ReviewController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -165,5 +181,41 @@ class ReviewControllerTest {
 			.andDo(print());
 
 		verify(reviewService, times(1)).createReview(null, createReviewRequest);
+	}
+
+	@Test
+	void 리뷰_전체조회_성공() throws Exception {
+		Long cursorId = 1L;
+		Integer size = 12;
+		Pageable pageable = PageRequest.of(0, size);
+		Long responserCount = 5L;
+		Boolean hasNext = false;
+
+		GetReviewResponse getReviewResponse = new GetReviewResponse(
+			BASIC_REVIEW.toEntity(),
+			responserCount
+		);
+		SliceImpl<GetReviewResponse> getReviewResponses = new SliceImpl<>(
+			List.of(getReviewResponse),
+			pageable,
+			hasNext
+		);
+
+		when(reviewService.getAllReviewsByRequesterOfCursorPaging(cursorId, null, pageable)).thenReturn(
+			getReviewResponses);
+
+		mockMvc.perform(get("/reviews")
+			.param("cursorId", "1")
+			.param("size", "12")
+			.with(user(userDetails)))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.success").value(true))
+			.andExpect(jsonPath("$.data.content", hasSize(1)))
+			.andExpect(jsonPath("$.data.content[0].reviewId").value(nullValue()))
+			.andExpect(jsonPath("$.data.content[0].title").value("예시 리뷰"))
+			.andExpect(jsonPath("$.data.content[0].status").value("PROCEEDING"))
+			.andExpect(jsonPath("$.data.content[0].createdAt").value(nullValue()))
+			.andExpect(jsonPath("$.data.content[0].responserCount").value(responserCount))
+			.andDo(print());
 	}
 }
