@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.user.dto;
+package com.devcourse.ReviewRanger.auth.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.common.redis.RedisUtil;
-import com.devcourse.ReviewRanger.user.application.CustomUserDetailsService;
+import com.devcourse.ReviewRanger.auth.application.CustomUserDetailsService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -67,7 +67,7 @@ public class JwtTokenProvider {
 		Claims claims = parseClaims(accessToken);
 
 		if (claims.get("auth") == null) {
-			throw new RangerException(NOT_AUTHORIZED_TOKEN);
+			throw new RangerException(NOT_AUTHORIZED_TOKEN); // TODO 핸들러 예외 처리 추가
 		}
 
 		Collection<? extends GrantedAuthority> authorities =

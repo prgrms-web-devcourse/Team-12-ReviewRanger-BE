@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.user.application;
+package com.devcourse.ReviewRanger.auth.application;
 
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 
@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
-import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Component

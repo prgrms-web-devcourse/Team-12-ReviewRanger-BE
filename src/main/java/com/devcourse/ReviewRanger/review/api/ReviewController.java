@@ -22,7 +22,7 @@ import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailFirstResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
-import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.user.dto.GetUserResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,11 +63,12 @@ public class ReviewController {
 	@GetMapping("/reviews")
 	public RangerResponse<Slice<GetReviewResponse>> getAllReviewsByRequesterOfCursorPaging(
 		@AuthenticationPrincipal UserPrincipal user,
-		@RequestParam(required = false ) Long cursorId,
-		@RequestParam(defaultValue = "12" ) Integer size
+		@RequestParam(required = false) Long cursorId,
+		@RequestParam(defaultValue = "12") Integer size
 	) {
 		Pageable pageable = PageRequest.of(0, size);
-		Slice<GetReviewResponse> responses = reviewService.getAllReviewsByRequesterOfCursorPaging(cursorId, user.getId(),pageable);
+		Slice<GetReviewResponse> responses = reviewService.getAllReviewsByRequesterOfCursorPaging(cursorId,
+			user.getId(), pageable);
 
 		return RangerResponse.ok(responses);
 	}
