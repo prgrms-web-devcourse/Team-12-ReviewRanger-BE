@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -20,7 +20,7 @@ import com.devcourse.ReviewRanger.common.exception.RangerException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
+@Component
 public class S3manager implements ImageManager {
 
 	private final AmazonS3 amazonS3;
@@ -37,16 +37,17 @@ public class S3manager implements ImageManager {
 		File uploadFile = convert(multipartFile)
 			.orElseThrow(() -> new RangerException(MISSING_IMAGE_CONVERT));
 
-		return upload(uploadFile, directory, fileName);
+		return uploadS3(uploadFile, directory, fileName);
 	}
 
 	@Override
 	public void delete(String fileName, String directory) {
 		String fileNameWithDir = directory + "/" + fileName;
-		amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileNameWithDir));
+		DeleteObjectRequest request = new DeleteObjectRequest(bucket, fileNameWithDir);
+		amazonS3.deleteObject(request);
 	}
 
-	private String upload(File uploadFile, String directory, String fileName) {
+	private String uploadS3(File uploadFile, String directory, String fileName) {
 		String fileNameWithDir = directory + "/" + fileName;
 		String uploadImageUrl = putS3(uploadFile, fileNameWithDir);
 

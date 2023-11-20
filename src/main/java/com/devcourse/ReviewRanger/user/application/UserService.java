@@ -9,7 +9,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +27,6 @@ import com.devcourse.ReviewRanger.user.dto.UserInfoResponse;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
-@Component
 @Transactional(readOnly = true)
 public class UserService {
 	private final static String DIRECTORY = "ranger-image";
