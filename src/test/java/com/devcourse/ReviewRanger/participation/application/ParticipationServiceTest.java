@@ -155,7 +155,6 @@ class ParticipationServiceTest {
 		List<ReceiverResponse> responses = participationService.getAllReceiver(1L, null);
 
 		//then
-		System.out.println(responses);
 		Assertions.assertThat(responses.get(0).receiverName()).isEqualTo("신범철");
 		Assertions.assertThat(responses.get(1).receiverName()).isEqualTo("김주웅");
 		Assertions.assertThat(responses.get(0).responserCount()).isEqualTo(1);
