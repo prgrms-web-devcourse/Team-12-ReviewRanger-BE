@@ -3,7 +3,6 @@ package com.devcourse.ReviewRanger.review.application;
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 import static com.devcourse.ReviewRanger.participation.domain.ReviewStatus.*;
 import static com.devcourse.ReviewRanger.review.ReviewFixture.*;
-import static com.devcourse.ReviewRanger.review.domain.ReviewType.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -23,6 +22,7 @@ import org.springframework.data.domain.SliceImpl;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
+import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.question.application.QuestionService;
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
@@ -109,5 +109,23 @@ public class ReviewServiceSelectTest {
 		assertEquals(5, getReviewResponse.getContent().get(1).responserCount());
 		assertEquals("예시 리뷰", getReviewResponse.getContent().get(1).title());
 		assertEquals(PROCEEDING, getReviewResponse.getContent().get(1).status());
+	}
+
+	@Test
+	void 리뷰_마감_성공(){
+		// gien
+		Long reviewId = 1L;
+		Review mockReview = BASIC_REVIEW.toEntity();
+
+		when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
+		doNothing().when(participationService).closeParticipationOrThrow(reviewId);
+
+		// when
+		reviewService.closeReviewOrThrow(reviewId);
+
+		// then
+		assertEquals(ReviewStatus.END, mockReview.getStatus());
+		verify(reviewRepository, times(1)).findById(reviewId);
+		verify(participationService, times(1)).closeParticipationOrThrow(reviewId);
 	}
 }
