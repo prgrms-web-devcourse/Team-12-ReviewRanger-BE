@@ -3,6 +3,7 @@ package com.devcourse.ReviewRanger.review.application;
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 import static com.devcourse.ReviewRanger.participation.domain.ReviewStatus.*;
 import static com.devcourse.ReviewRanger.review.ReviewFixture.*;
+import static com.devcourse.ReviewRanger.review.domain.ReviewType.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -15,11 +16,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
+import com.devcourse.ReviewRanger.participation.application.ParticipationService;
 import com.devcourse.ReviewRanger.question.application.QuestionService;
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
+import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +40,9 @@ public class ReviewServiceSelectTest {
 
 	@Mock
 	private QuestionService questionService;
+
+	@Mock
+	private ParticipationService participationService;
 
 	@Test
 	void 리뷰_상세조회_성공() {
@@ -67,5 +77,37 @@ public class ReviewServiceSelectTest {
 		Assertions.assertThatThrownBy(() -> reviewService.getReviewDetailOrThrow(wrongReviewId))
 			.isInstanceOf(RangerException.class)
 			.hasMessage(NOT_FOUND_REVIEW.getMessage());
+	}
+
+	@Test
+	void 리뷰_전체조회_성공(){
+		// given
+		Long cursorId = 1L;
+		Long requesterId = 1L;
+		Pageable pageable = PageRequest.of(0,12);
+
+		List<Review> reviews = List.of(BASIC_REVIEW.toEntity(),BASIC_REVIEW.toEntity());
+		boolean hasNext = true;
+		SliceImpl<Review> reviewsResult = new SliceImpl<>(reviews, pageable, hasNext);
+		Long responserCount = 5L;
+
+		when(reviewRepository.findByRequesterId(cursorId,requesterId, pageable)).thenReturn(reviewsResult);
+		when(participationService.getResponserCount(null)).thenReturn(responserCount);
+
+		// when
+		Slice<GetReviewResponse> getReviewResponse = reviewService.getAllReviewsByRequesterOfCursorPaging(
+			cursorId, requesterId, pageable);
+
+		// then
+		verify(reviewRepository,times(1)).findByRequesterId(cursorId,requesterId, pageable);
+		verify(participationService,times(2)).getResponserCount(null);
+
+		assertEquals(5, getReviewResponse.getContent().get(0).responserCount());
+		assertEquals("예시 리뷰", getReviewResponse.getContent().get(0).title());
+		assertEquals(PROCEEDING, getReviewResponse.getContent().get(0).status());
+
+		assertEquals(5, getReviewResponse.getContent().get(1).responserCount());
+		assertEquals("예시 리뷰", getReviewResponse.getContent().get(1).title());
+		assertEquals(PROCEEDING, getReviewResponse.getContent().get(1).status());
 	}
 }
