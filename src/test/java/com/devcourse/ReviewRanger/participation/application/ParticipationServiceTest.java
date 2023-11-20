@@ -1,6 +1,10 @@
 package com.devcourse.ReviewRanger.participation.application;
 
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
+import static com.devcourse.ReviewRanger.participation.domain.ReviewStatus.*;
+import static com.devcourse.ReviewRanger.review.ReviewFixture.*;
+import static com.devcourse.ReviewRanger.user.UserFixture.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.List;
@@ -13,6 +17,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import com.devcourse.ReviewRanger.ReplyTarget.application.ReplyTargetService;
 import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
@@ -20,6 +28,7 @@ import com.devcourse.ReviewRanger.ReplyTarget.repository.ReplyTargetRepository;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
+import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
@@ -54,7 +63,7 @@ class ParticipationServiceTest {
 	@Test
 	void 답변_참여_성공() {
 		//given
-		User user1 = UserFixture.SUYEON_FIXTURE.toEntity();
+		User user1 = SUYEON_FIXTURE.toEntity();
 
 		SubmitParticipationRequest submitParticipationRequest = new SubmitParticipationRequest(1L,
 			Lists.emptyList());
@@ -91,7 +100,7 @@ class ParticipationServiceTest {
 		review.setId(1L);
 		given(reviewRepository.findById(1L)).willReturn(Optional.of(review));
 
-		User suyeon = UserFixture.SUYEON_FIXTURE.toEntity();
+		User suyeon = SUYEON_FIXTURE.toEntity();
 		User beomchul = UserFixture.BEOMCHUL_FIXTURE.toEntity();
 		User juwoong = UserFixture.JUWOONG_FIXTURE.toEntity();
 
@@ -118,7 +127,7 @@ class ParticipationServiceTest {
 	@Test
 	void 전체_수신자_조회() {
 		//given
-		User suyeon = UserFixture.SUYEON_FIXTURE.toEntity();
+		User suyeon = SUYEON_FIXTURE.toEntity();
 		User beomchul = UserFixture.BEOMCHUL_FIXTURE.toEntity();
 		User juwoong = UserFixture.JUWOONG_FIXTURE.toEntity();
 
@@ -151,5 +160,36 @@ class ParticipationServiceTest {
 		Assertions.assertThat(responses.get(1).receiverName()).isEqualTo("김주웅");
 		Assertions.assertThat(responses.get(0).responserCount()).isEqualTo(1);
 		verify(replyTargetRepository, times(1)).findAllByParticipationIdToDynamic(1L, null);
+	}
+
+	@Test
+	void 참여_전체조회_성공(){
+		// given
+		Long cursorId = 1L;
+		Long responserId = 1L;
+		Pageable pageable = PageRequest.of(0,12);
+		boolean hasNext = true;
+
+		Participation participation1 = new Participation(SUYEON_FIXTURE.toEntity());
+
+		List<Participation> participations = List.of(participation1);
+		SliceImpl<Participation> participationResult = new SliceImpl<>(participations, pageable, hasNext);
+
+		when(participationRepository.findByResponserId(cursorId, responserId, pageable)).thenReturn(participationResult);
+		when(reviewRepository.findById(null)).thenReturn(Optional.of(BASIC_REVIEW.toEntity()));
+
+		Slice<GetParticipationResponse> responses = participationService.getAllParticipationsByResponserOfCursorPaging(
+			cursorId,
+			responserId,
+			pageable
+		);
+
+		// when
+		// then
+		verify(participationRepository,times(1)).findByResponserId(cursorId, responserId, pageable);
+		verify(reviewRepository,times(1)).findById(null);
+
+		assertEquals("예시 리뷰", responses.getContent().get(0).title());
+		assertEquals(PROCEEDING, responses.getContent().get(0).status());
 	}
 }
