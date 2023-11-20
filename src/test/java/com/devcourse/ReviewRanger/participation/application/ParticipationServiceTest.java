@@ -27,6 +27,7 @@ import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
 import com.devcourse.ReviewRanger.ReplyTarget.repository.ReplyTargetRepository;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
+import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ParticipationResponse;
@@ -190,5 +191,24 @@ class ParticipationServiceTest {
 
 		assertEquals("예시 리뷰", responses.getContent().get(0).title());
 		assertEquals(PROCEEDING, responses.getContent().get(0).status());
+	}
+
+	@Test
+	void 참여_마감_성공(){
+		// given
+		Long reviewId = 1L;
+		List<Participation> mockParticipations = List.of(new Participation(SUYEON_FIXTURE.toEntity()));
+
+		when(participationRepository.findByReviewId(reviewId)).thenReturn(mockParticipations);
+
+		// when
+		participationService.closeParticipationOrThrow(reviewId);
+
+		// then
+		for (Participation participation : mockParticipations) {
+			assertEquals(ReviewStatus.END, participation.getReviewStatus());
+		}
+
+		verify(participationRepository, times(1)).findByReviewId(reviewId);
 	}
 }
