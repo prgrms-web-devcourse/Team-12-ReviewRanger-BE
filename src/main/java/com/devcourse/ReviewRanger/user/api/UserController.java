@@ -1,5 +1,6 @@
 package com.devcourse.ReviewRanger.user.api;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -8,9 +9,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.user.application.UserService;
@@ -113,6 +117,20 @@ public class UserController {
 		@RequestBody @Valid UpdateNameRequest updateNameRequest
 	) {
 		userService.updateName(user.getId(), updateNameRequest.name());
+		return RangerResponse.noData();
+	}
+
+	@Tag(name = "user")
+	@Operation(summary = "[토큰] 사용자 프로필 변경", description = "[토큰] 사용자가 프로필 사진을 변경하는 API", responses = {
+		@ApiResponse(responseCode = "200", description = "프로필 사진 변경 성공"),
+	})
+	@PutMapping("/members/profile-image")
+	public RangerResponse<Void> updateImage(
+		@AuthenticationPrincipal UserPrincipal user,
+		@RequestParam("image") MultipartFile multipartFile
+	) throws IOException {
+		userService.updateImage(user.getId(), multipartFile);
+
 		return RangerResponse.noData();
 	}
 

@@ -2,16 +2,20 @@ package com.devcourse.ReviewRanger.user.application;
 
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.devcourse.ReviewRanger.common.exception.RangerException;
+import com.devcourse.ReviewRanger.common.image.infrastructure.S3manager;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 import com.devcourse.ReviewRanger.common.redis.RedisUtil;
 import com.devcourse.ReviewRanger.user.domain.User;
@@ -24,8 +28,10 @@ import com.devcourse.ReviewRanger.user.dto.UserInfoResponse;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
+@Component
 @Transactional(readOnly = true)
 public class UserService {
+	private final static String DIRECTORY = "ranger-image";
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -33,15 +39,17 @@ public class UserService {
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RedisUtil redisUtil;
+	private final S3manager s3Manager;
 
 	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
 		AuthenticationManagerBuilder authenticationManagerBuilder, JwtTokenProvider jwtTokenProvider,
-		RedisUtil redisUtil) {
+		RedisUtil redisUtil, S3manager s3Manager) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.authenticationManagerBuilder = authenticationManagerBuilder;
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.redisUtil = redisUtil;
+		this.s3Manager = s3Manager;
 	}
 
 	@Transactional
@@ -88,6 +96,17 @@ public class UserService {
 
 		User user = getUserOrThrow(id);
 		user.updateName(editName);
+	}
+
+	@Transactional
+	public void updateImage(Long id, MultipartFile multipartFile) throws IOException {
+		User user = getUserOrThrow(id);
+		String fileName = user.getId() + multipartFile.getOriginalFilename();
+
+		s3Manager.delete(fileName, DIRECTORY);
+		String uploadImageUrl = s3Manager.upload(multipartFile, DIRECTORY, fileName);
+
+		user.updateImage(uploadImageUrl);
 	}
 
 	@Transactional
