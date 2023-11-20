@@ -3,6 +3,7 @@ package com.devcourse.ReviewRanger.finalReviewResult.api;
 import static org.springframework.http.HttpStatus.*;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.application.FinalReviewResultService;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.CheckFinalResultStatus;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewRequest;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.FinalReviewResultListResponse;
@@ -102,12 +104,12 @@ public class FinalReviewResultController {
 	})
 	@GetMapping("/{reviewId}/status")
 	@ResponseStatus(OK)
-	public RangerResponse<Void> checkFinalResultStatus(
+	public RangerResponse<Set<Long>> checkFinalResultStatus(
 		@PathVariable Long reviewId
 	) {
-		Boolean checkStatus = finalReviewResultService.checkFinalResultStatus(reviewId);
+		CheckFinalResultStatus checkStatus = finalReviewResultService.checkFinalResultStatus(reviewId);
 
-		return RangerResponse.ok(checkStatus);
+		return RangerResponse.ok(checkStatus.checkStatus(), checkStatus.userId());
 	}
 
 	@Tag(name = "final-result")

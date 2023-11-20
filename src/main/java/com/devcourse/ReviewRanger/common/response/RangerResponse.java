@@ -26,6 +26,10 @@ public class RangerResponse<T> {
 		return new RangerResponse<>(true, data);
 	}
 
+	public static <T> RangerResponse<T> ok(Boolean success, T data) {
+		return new RangerResponse<>(success, data);
+	}
+
 	public static RangerResponse<Void> noData() {
 		return new RangerResponse<>(true, null);
 	}
