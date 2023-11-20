@@ -39,6 +39,9 @@ jobs:
           spring.datasource.password: ${{ secrets.DB_PASSWORD }}
           jasypt.encryptor.password: ${{ secrets.JASYPT_KEY }}
           openai.api.key: ${{ secrets.OPEN_AI_KEY }}
+          cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          cloud.aws.s3.bucket: ${{ secrets.AWS_BUCKET }}
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
