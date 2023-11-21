@@ -20,9 +20,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.devcourse.ReviewRanger.auth.application.CustomUserDetailsService;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.common.redis.RedisUtil;
-import com.devcourse.ReviewRanger.auth.application.CustomUserDetailsService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -35,8 +35,8 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtTokenProvider {
 	private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
-	// private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000L;
-	private static final long EXPIRATION_TIME = 60 * 1000L;
+	private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000L;
+	//private static final long EXPIRATION_TIME = 60 * 1000L;
 	private static final String AUTHORITY = "auth";
 
 	private final Key key;
