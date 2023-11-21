@@ -42,6 +42,9 @@ public class User extends BaseEntity {
 	@Column(nullable = false, length = 10)
 	private Role role;
 
+	@Column(name = "image_url")
+	private String imageUrl;
+
 	protected User() {
 	}
 
@@ -58,5 +61,9 @@ public class User extends BaseEntity {
 
 	public void updatePassword(String editEncodedPassword) {
 		this.password = editEncodedPassword;
+	}
+
+	public void updateImage(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 }
