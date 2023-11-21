@@ -1,5 +1,6 @@
 package com.devcourse.ReviewRanger.participation.domain;
 
+import static com.devcourse.ReviewRanger.participation.domain.ReviewStatus.*;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.*;
 
 import java.time.LocalDateTime;
@@ -62,5 +63,9 @@ public class Participation extends BaseEntity {
 	public void answeredReview() {
 		this.submitAt = LocalDateTime.now();
 		this.isAnswered = true;
+	}
+
+	public void closeReview() {
+		this.reviewStatus = END;
 	}
 }
