@@ -35,7 +35,8 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtTokenProvider {
 	private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
-	private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000L;
+	// private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000L;
+	private static final long EXPIRATION_TIME = 60 * 1000L;
 	private static final String AUTHORITY = "auth";
 
 	private final Key key;
