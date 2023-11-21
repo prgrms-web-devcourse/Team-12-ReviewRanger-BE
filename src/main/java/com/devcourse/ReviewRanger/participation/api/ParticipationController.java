@@ -21,7 +21,7 @@ import com.devcourse.ReviewRanger.participation.application.ParticipationService
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
-import com.devcourse.ReviewRanger.user.domain.UserPrincipal;
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

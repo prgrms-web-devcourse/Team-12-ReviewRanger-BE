@@ -29,6 +29,10 @@ public class Question extends BaseEntity {
 	@Size(max = 150, message = "150자 이하로 입력하세요.")
 	private String title;
 
+	@Column(length = 500)
+	@Size(max = 500, message = "150자 이하로 입력하세요.")
+	private String description;
+
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private QuestionType type;
@@ -42,15 +46,17 @@ public class Question extends BaseEntity {
 	protected Question() {
 	}
 
-	public Question(String title, QuestionType type, Boolean isRequired, List<QuestionOption> questionOptions) {
+	public Question(String title, String description,  QuestionType type, Boolean isRequired, List<QuestionOption> questionOptions) {
 		this.title = title;
+		this.description = description;
 		this.type = type;
 		this.isRequired = isRequired;
 		this.questionOptions = questionOptions;
 	}
 
-	public Question(String title, QuestionType type, Boolean isRequired) {
+	public Question(String title, String description, QuestionType type, Boolean isRequired) {
 		this.title = title;
+		this.description = description;
 		this.type = type;
 		this.isRequired = isRequired;
 	}

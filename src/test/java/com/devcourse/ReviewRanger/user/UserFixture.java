@@ -1,7 +1,7 @@
-package com.devcourse.ReviewRanger.user.service;
+package com.devcourse.ReviewRanger.user;
 
 import com.devcourse.ReviewRanger.user.domain.User;
-import com.devcourse.ReviewRanger.user.dto.JoinRequest;
+import com.devcourse.ReviewRanger.auth.dto.JoinRequest;
 
 public enum UserFixture {
 
