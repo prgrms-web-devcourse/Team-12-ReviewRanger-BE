@@ -1,6 +1,5 @@
 package com.devcourse.ReviewRanger.user.api;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -128,7 +127,7 @@ public class UserController {
 	public RangerResponse<Void> updateImage(
 		@AuthenticationPrincipal UserPrincipal user,
 		@RequestParam("image") MultipartFile multipartFile
-	) throws IOException {
+	) {
 		userService.updateImage(user.getId(), multipartFile);
 
 		return RangerResponse.noData();

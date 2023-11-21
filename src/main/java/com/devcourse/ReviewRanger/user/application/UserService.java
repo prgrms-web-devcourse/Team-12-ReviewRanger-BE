@@ -2,7 +2,6 @@ package com.devcourse.ReviewRanger.user.application;
 
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -97,7 +96,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public void updateImage(Long id, MultipartFile multipartFile) throws IOException {
+	public void updateImage(Long id, MultipartFile multipartFile) {
 		User user = getUserOrThrow(id);
 		String fileName = user.getId() + multipartFile.getOriginalFilename();
 

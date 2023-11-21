@@ -33,7 +33,7 @@ public class S3manager implements ImageManager {
 	}
 
 	@Override
-	public String upload(MultipartFile multipartFile, String directory, String fileName) throws IOException {
+	public String upload(MultipartFile multipartFile, String directory, String fileName) {
 		File uploadFile = convert(multipartFile)
 			.orElseThrow(() -> new RangerException(MISSING_IMAGE_CONVERT));
 
@@ -73,16 +73,26 @@ public class S3manager implements ImageManager {
 		}
 	}
 
-	private Optional<File> convert(MultipartFile file) throws IOException {
+	private Optional<File> convert(MultipartFile file) {
 		File convertFile = new File(file.getOriginalFilename());
+		boolean existFile = false;
 
-		if (convertFile.createNewFile()) {
+		try {
+			existFile = convertFile.createNewFile();
+		} catch (IOException e) {
+			throw new RangerException(MISSING_IMAGE_CONVERT);
+		}
+
+		if (existFile) {
 			try (FileOutputStream fos = new FileOutputStream(convertFile)) {
 				fos.write(file.getBytes());
-			}
 
-			return Optional.of(convertFile);
+				return Optional.of(convertFile);
+			} catch (IOException e) {
+				throw new RangerException(MISSING_IMAGE_CONVERT);
+			}
 		}
+
 		return Optional.empty();
 	}
 }
