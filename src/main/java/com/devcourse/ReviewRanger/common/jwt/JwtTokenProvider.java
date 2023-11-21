@@ -35,7 +35,7 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtTokenProvider {
 	private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
-	private static final long EXPIRATION_TIME = 30 * 60 * 1000L;
+	private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000L;
 	private static final String AUTHORITY = "auth";
 
 	private final Key key;
@@ -93,7 +93,7 @@ public class JwtTokenProvider {
 		} catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
 			log.warn("JWT Exception Occurs : {}", NOT_CORRECT_JWT_SIGN);
 		} catch (ExpiredJwtException e) {
-			log.warn("JWT Exception Occurs : {}", EXPIRED_JWT_TOKEN);
+			log.warn("JWT Exception Occurs : {}", EXPIRED_JWT_TOKEN); // TODO: 토큰이 만료됐을 떄 401 응답 전송
 		} catch (UnsupportedJwtException e) {
 			log.warn("JWT Exception Occurs : {}", NOT_SUPPORTED_JWT_TOKEN);
 		} catch (IllegalArgumentException e) {
