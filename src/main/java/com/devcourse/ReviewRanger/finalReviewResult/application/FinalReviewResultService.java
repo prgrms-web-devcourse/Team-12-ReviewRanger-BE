@@ -41,6 +41,7 @@ import com.devcourse.ReviewRanger.finalReviewResult.repository.SubjectTypeReposi
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
 import com.devcourse.ReviewRanger.question.repository.QuestionRepository;
+import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
@@ -176,7 +177,8 @@ public class FinalReviewResultService {
 
 	@Transactional
 	public void sendFinalResultToUsers(Long reviewId) {
-		validateReviewId(reviewId);
+		Review review = getReviewOrThrow(reviewId);
+		review.toClose();
 
 		List<Participation> participations = participationRepository.findAllByReviewId(reviewId);
 
@@ -187,6 +189,7 @@ public class FinalReviewResultService {
 		Set<Long> userIds = new HashSet<>();
 
 		for (Participation participation : participations) {
+			participation.closeReview();
 			Long participationId = participation.getId();
 			List<ReplyTarget> replyTargets = replyTargetRepository.findAllByParticipationId(participationId);
 
@@ -297,6 +300,11 @@ public class FinalReviewResultService {
 	private FinalReviewResult getFinalReviewResultOrThrow(Long finalResultId) {
 		return finalReviewResultRepository.findById(finalResultId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_FINAL_REVIEW_RESULT));
+	}
+
+	private Review getReviewOrThrow(Long reviewId) {
+		return reviewRepository.findById(reviewId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 	}
 
 	private void validateQuestionId(Long questionId) {

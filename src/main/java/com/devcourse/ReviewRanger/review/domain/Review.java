@@ -67,4 +67,8 @@ public class Review extends BaseEntity {
 	public void changeStatus(ReviewStatus status) {
 		this.status = status;
 	}
+
+	public void toClose() {
+		this.status = END;
+	}
 }
