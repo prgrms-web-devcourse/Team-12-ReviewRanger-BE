@@ -70,5 +70,6 @@ public class Review extends BaseEntity {
 
 	public void toClose() {
 		this.status = END;
+		this.closedAt = LocalDateTime.now();
 	}
 }
