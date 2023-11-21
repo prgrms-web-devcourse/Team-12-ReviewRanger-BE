@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
 			.allowedOriginPatterns(
 				"http://localhost:3001",
 				"http://localhost:5173/",
-				"http://devserver-review-ranger.s3-website.ap-northeast-2.amazonaws.com/"
+				"http://team12-bucket.s3-website.ap-northeast-2.amazonaws.com/"
 			)
 			.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
 			.allowedHeaders("Authorization", "Content-Type")

@@ -13,6 +13,9 @@ public record CreateQuestionRequest(
 	@Schema(description = "질문 제목")
 	String title,
 
+	@Schema(description = "질문 설명")
+	String description,
+
 	@Schema(description = "질문 타입")
 	QuestionType type,
 
@@ -24,6 +27,6 @@ public record CreateQuestionRequest(
 	List<CreateQuestionOptionRequest> createQuestionOptionRequests
 ) {
 	public Question toEntity() {
-		return new Question(this.title, this.type, this.isRequired);
+		return new Question(this.title, this.description, this.type, this.isRequired);
 	}
 }

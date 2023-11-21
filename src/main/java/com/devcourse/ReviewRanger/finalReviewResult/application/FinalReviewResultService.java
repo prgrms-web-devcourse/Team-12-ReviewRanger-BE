@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,7 @@ import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResultAnsw
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResultAnswerRating;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResultAnswerSubject;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.Hexstat;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.CheckFinalResultStatus;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReplyRequest;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewRequest;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewResponse;
@@ -90,7 +90,8 @@ public class FinalReviewResultService {
 			.map(FinalReviewResultListResponse::new).toList();
 	}
 
-	public Slice<FinalReviewResultListResponse> getAllFinalReviewResultsOfCursorPaging(Long cursorId, Long userId, Pageable pageable) {
+	public Slice<FinalReviewResultListResponse> getAllFinalReviewResultsOfCursorPaging(Long cursorId, Long userId,
+		Pageable pageable) {
 		validateUserId(userId);
 
 		return finalReviewResultRepository.findAllFinalReviewResults(cursorId, userId, pageable);
@@ -152,13 +153,25 @@ public class FinalReviewResultService {
 		return new CreateFinalReviewResponse(userId);
 	}
 
-	public Boolean checkFinalResultStatus(Long reviewId) {
+	public CheckFinalResultStatus checkFinalResultStatus(Long reviewId) {
 		validateReviewId(reviewId);
 
-		int participantNums = participationRepository.findAllByReviewId(reviewId).size();
-		int notSentFinalResultNums = finalReviewResultRepository.findAllByReviewIdAndStatus(reviewId, NOT_SENT).size();
+		Set<Long> haveUnsentReviewUserIds = new HashSet<>();
 
-		return participantNums == notSentFinalResultNums;
+		List<FinalReviewResult> finalReviewResults
+			= finalReviewResultRepository.findAllByReviewIdAndStatus(reviewId, NOT_SENT);
+
+		for (FinalReviewResult finalReviewResult : finalReviewResults) {
+			haveUnsentReviewUserIds.add(finalReviewResult.getUserId());
+		}
+
+		int participantNums = participationRepository.findAllByReviewId(reviewId).size();
+		int notSentFinalResultNums = finalReviewResults.size();
+
+		boolean checkStatus = (participantNums == notSentFinalResultNums);
+		return checkStatus ?
+			new CheckFinalResultStatus(checkStatus, null) :
+			new CheckFinalResultStatus(checkStatus, haveUnsentReviewUserIds);
 	}
 
 	@Transactional
