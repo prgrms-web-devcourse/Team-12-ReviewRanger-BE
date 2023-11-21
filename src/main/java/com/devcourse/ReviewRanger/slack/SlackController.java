@@ -16,7 +16,7 @@ public class SlackController {
 	}
 
 	@PostMapping("/alert")
-	public void alertMessage(@RequestParam("title") String title) {
+	public void alertMessage(@RequestParam("text") String title) {
 		slackService.alertSlackMessage(title);
 	}
 }
