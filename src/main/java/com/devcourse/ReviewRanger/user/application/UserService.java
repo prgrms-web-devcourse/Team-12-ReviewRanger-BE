@@ -12,8 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.common.image.infrastructure.S3manager;
-import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
-import com.devcourse.ReviewRanger.common.redis.RedisUtil;
 import com.devcourse.ReviewRanger.user.domain.User;
 import com.devcourse.ReviewRanger.user.dto.GetUserResponse;
 import com.devcourse.ReviewRanger.user.dto.UserInfoResponse;
@@ -26,10 +24,12 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final S3manager s3Manager;
 
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, S3manager s3Manager) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.s3Manager = s3Manager;
 	}
 
 	@Transactional
