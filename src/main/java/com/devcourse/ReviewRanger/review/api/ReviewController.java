@@ -78,7 +78,7 @@ public class ReviewController {
 		@ApiResponse(responseCode = "200", description = "리뷰를 상세 조회 성공"),
 		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우")
 	})
-	@GetMapping("/reviews/{id}")
+	@GetMapping("/reviews/{id}/temp")
 	public RangerResponse<GetReviewDetailResponse> getReviewDetail(
 		@PathVariable("id") Long reviewId
 	) {
@@ -92,7 +92,7 @@ public class ReviewController {
 		@ApiResponse(responseCode = "200", description = "리뷰를 첫 상세 조회 성공"),
 		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우")
 	})
-	@GetMapping("/reviews/{id}/first")
+	@GetMapping("/reviews/{id}")
 	public RangerResponse<GetReviewDetailFirstResponse> getReviewDetailFirst(
 		@PathVariable("id") Long reviewId,
 		@AuthenticationPrincipal UserPrincipal user
