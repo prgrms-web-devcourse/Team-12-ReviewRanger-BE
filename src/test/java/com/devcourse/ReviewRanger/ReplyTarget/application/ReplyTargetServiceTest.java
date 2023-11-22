@@ -54,16 +54,16 @@ class ReplyTargetServiceTest {
 
 		List<ReplyTarget> replyTargetList = List.of(replyTarget);
 
-		given(replyTargetRepository.findAllByResponserId(1L)).willReturn(replyTargetList);
+		given(replyTargetRepository.findAllByReviewIdAndResponserId(1L, 1L)).willReturn(replyTargetList);
 
 		//when
-		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByResponser(1L);
+		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByResponser(1L, 1L);
 
 		//then
-		assertThat(responses.get(0).responser().name()).isEqualTo("수연");
-		assertThat(responses.get(0).receiver().name()).isEqualTo("범철");
-		assertThat(responses.get(0).replies().get(0).answerText()).isEqualTo("수연 -> 범철 주관식 답변");
-		verify(replyTargetRepository, times(1)).findAllByResponserId(any(Long.class));
+		assertThat(responses.get(0).responser().name()).isEqualTo("장수연");
+		assertThat(responses.get(0).receiver().name()).isEqualTo("신범철");
+		assertThat(responses.get(0).replies().get(0).answerText()).isEqualTo("주관식 답변");
+		verify(replyTargetRepository, times(1)).findAllByReviewIdAndResponserId(any(Long.class), any(Long.class));
 	}
 
 	@Test
@@ -80,18 +80,18 @@ class ReplyTargetServiceTest {
 
 		List<ReplyTarget> replyTargetList = List.of(replyTarget);
 
-		given(replyTargetRepository.findAllByReceiverId(2L)).willReturn(replyTargetList);
+		given(replyTargetRepository.findAllByReviewIdAndReceiverId(1L, 2L)).willReturn(replyTargetList);
 		given(questionOptionRepository.findById(1L)).willReturn(Optional.of(questionOption));
 
 		//when
-		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByReceiver(2L);
+		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByReceiver(1L, 2L);
 
 		//then
-		assertThat(responses.get(0).responser().name()).isEqualTo("수연");
-		assertThat(responses.get(0).receiver().name()).isEqualTo("범철");
-		assertThat(responses.get(0).replies().get(0).answerText()).isEqualTo("수연 -> 범철 주관식 답변");
+		assertThat(responses.get(0).responser().name()).isEqualTo("장수연");
+		assertThat(responses.get(0).receiver().name()).isEqualTo("신범철");
+		assertThat(responses.get(0).replies().get(0).answerText()).isEqualTo("주관식 답변");
 		assertThat(responses.get(0).replies().get(1).questionOption().optionName()).isEqualTo("파이리");
 
-		verify(replyTargetRepository, times(1)).findAllByReceiverId(any(Long.class));
+		verify(replyTargetRepository, times(1)).findAllByReviewIdAndReceiverId(any(Long.class), any(Long.class));
 	}
 }
