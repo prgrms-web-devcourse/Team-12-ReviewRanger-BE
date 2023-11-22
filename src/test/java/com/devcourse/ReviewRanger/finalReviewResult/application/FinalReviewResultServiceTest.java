@@ -145,8 +145,6 @@ class FinalReviewResultServiceTest {
 	void 최종_리뷰_전송_성공() {
 		// given
 		Long reviewId = 1L;
-		List<Long> participationIds = List.of(1L, 2L, 3L);
-		List<Long> userIds = List.of(1L, 2L, 3L);
 
 		Review fakeReview = BASIC_REVIEW.toEntity();
 		User fakeUser = SUYEON_FIXTURE.toEntity();
@@ -168,5 +166,10 @@ class FinalReviewResultServiceTest {
 		// then
 		verify(reviewRepository, times(1)).findById(any());
 		assertEquals(fakeFinalReviewResult.getStatus(), SENT);
+	}
+
+	@Test
+	void 최종_리뷰_결과_상세조회_성공() {
+
 	}
 }
