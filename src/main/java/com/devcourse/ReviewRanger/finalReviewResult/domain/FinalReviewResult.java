@@ -58,6 +58,18 @@ public class FinalReviewResult extends BaseEntity {
 	protected FinalReviewResult() {
 	}
 
+	public FinalReviewResult(Long userId, String userName, Long reviewId, String title, String description,
+		Status status,
+		List<FinalQuestion> questions) {
+		this.userId = userId;
+		this.userName = userName;
+		this.reviewId = reviewId;
+		this.title = title;
+		this.description = description;
+		this.status = status;
+		this.questions = questions;
+	}
+
 	public FinalReviewResult(Long userId, String userName, Long reviewId, String title, String description) {
 		this.userId = userId;
 		this.userName = userName;

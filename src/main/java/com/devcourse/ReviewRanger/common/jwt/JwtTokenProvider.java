@@ -26,6 +26,7 @@ import com.devcourse.ReviewRanger.common.redis.RedisUtil;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -36,7 +37,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtTokenProvider {
 	private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
 	private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000L;
-	//private static final long EXPIRATION_TIME = 60 * 1000L;
+	// private static final long EXPIRATION_TIME = 60 * 1000L;
 	private static final String AUTHORITY = "auth";
 
 	private final Key key;
@@ -68,7 +69,8 @@ public class JwtTokenProvider {
 		Claims claims = parseClaims(accessToken);
 
 		if (claims.get("auth") == null) {
-			throw new RangerException(NOT_AUTHORIZED_TOKEN); // TODO 핸들러 예외 처리 추가
+			log.warn("JWT Exception Occurs : {}", LOGOUT_JWT_TOKEN);
+			throw new RangerException(NOT_AUTHORIZED_TOKEN);
 		}
 
 		Collection<? extends GrantedAuthority> authorities =
@@ -87,20 +89,24 @@ public class JwtTokenProvider {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 
 			if (redisUtil.hasKeyBlackList(token)) {
-				throw new RangerException(LOGOUT_JWT_TOKEN);
+				log.warn("JWT Exception Occurs : {}", LOGOUT_JWT_TOKEN);
+				throw new JwtException(LOGOUT_JWT_TOKEN.getMessage());
 			}
 
 			return true;
 		} catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
 			log.warn("JWT Exception Occurs : {}", NOT_CORRECT_JWT_SIGN);
+			throw new JwtException(NOT_CORRECT_JWT_SIGN.getMessage());
 		} catch (ExpiredJwtException e) {
-			log.warn("JWT Exception Occurs : {}", EXPIRED_JWT_TOKEN); // TODO: 토큰이 만료됐을 떄 401 응답 전송
+			log.warn("JWT Exception Occurs : {}", EXPIRED_JWT_TOKEN);
+			throw new JwtException(EXPIRED_JWT_TOKEN.getMessage());
 		} catch (UnsupportedJwtException e) {
 			log.warn("JWT Exception Occurs : {}", NOT_SUPPORTED_JWT_TOKEN);
+			throw new JwtException(NOT_SUPPORTED_JWT_TOKEN.getMessage());
 		} catch (IllegalArgumentException e) {
 			log.warn("JWT Exception Occurs : {}", NOT_CORRECT_JWT);
+			// throw new JwtException(NOT_SUPPORTED_JWT_TOKEN.getMessage()); TODO: Postman에서 로그인할 때 오류남 따라서 임시 조치
 		}
-
 		return false;
 	}
 

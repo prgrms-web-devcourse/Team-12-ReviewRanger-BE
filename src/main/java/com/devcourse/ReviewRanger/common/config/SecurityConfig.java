@@ -15,19 +15,22 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.devcourse.ReviewRanger.common.jwt.ExceptionHandlerFilter;
 import com.devcourse.ReviewRanger.common.jwt.JwtFilter;
-import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
 
-	private final JwtTokenProvider jwtTokenProvider;
+	private final ExceptionHandlerFilter exceptionHandlerFilter;
+	private final JwtFilter jwtFilter;
+
 	private final String[] permitUrls = {"/login", "/sign-up", "/members/check-id", "/members/check-email",
 		"/swagger-ui", "/swagger-ui/**"};
 
-	public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
-		this.jwtTokenProvider = jwtTokenProvider;
+	public SecurityConfig(ExceptionHandlerFilter exceptionHandlerFilter, JwtFilter jwtFilter) {
+		this.exceptionHandlerFilter = exceptionHandlerFilter;
+		this.jwtFilter = jwtFilter;
 	}
 
 	@Bean
@@ -60,7 +63,9 @@ public class SecurityConfig {
 			.authorizeRequests()
 			.antMatchers(permitUrls).permitAll()
 			.and()
-			.addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(exceptionHandlerFilter, JwtFilter.class);
+
 		return http.build();
 	}
 }

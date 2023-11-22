@@ -1,9 +1,13 @@
 package com.devcourse.ReviewRanger.finalReviewResult.application;
 
+import static com.devcourse.ReviewRanger.ReplyTarget.ReplyTargetFixture.*;
 import static com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestionType.*;
+import static com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResult.Status.*;
+import static com.devcourse.ReviewRanger.participation.ParticipationFixture.*;
 import static com.devcourse.ReviewRanger.question.application.QuestionFixture.*;
 import static com.devcourse.ReviewRanger.review.ReviewFixture.*;
 import static com.devcourse.ReviewRanger.user.UserFixture.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -20,6 +24,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
+import com.devcourse.ReviewRanger.ReplyTarget.repository.ReplyTargetRepository;
+import com.devcourse.ReviewRanger.finalReviewResult.FinalReviewResultFixture;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestion;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestionType;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResult;
@@ -27,6 +34,8 @@ import com.devcourse.ReviewRanger.finalReviewResult.domain.Hexstat;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReplyRequest;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewRequest;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.FinalReviewResultRepository;
+import com.devcourse.ReviewRanger.participation.domain.Participation;
+import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
 import com.devcourse.ReviewRanger.question.domain.Question;
 import com.devcourse.ReviewRanger.question.repository.QuestionRepository;
 import com.devcourse.ReviewRanger.review.domain.Review;
@@ -51,6 +60,12 @@ class FinalReviewResultServiceTest {
 
 	@Mock
 	private ReviewRepository reviewRepository;
+
+	@Mock
+	private ParticipationRepository participationRepository;
+
+	@Mock
+	private ReplyTargetRepository replyTargetRepository;
 
 	@Test
 	@DisplayName("최종 리뷰 결과 생성 성공 테스트")
@@ -111,12 +126,12 @@ class FinalReviewResultServiceTest {
 			fakeFinalReviewResult.addQuestions(finalQuestion);
 		}
 
-		// when
 		when(userRepository.findById(any())).thenReturn(Optional.of(fakeUser));
 		when(reviewRepository.findById(any())).thenReturn(Optional.of(fakeReview));
 		when(questionRepository.findById(any())).thenReturn(Optional.of(fakeQuestion));
 		when(finalReviewResultRepository.save(any(FinalReviewResult.class))).thenReturn(fakeFinalReviewResult);
 
+		// when
 		finalReviewResultService.createFinalReviewResult(request);
 
 		// then
@@ -124,5 +139,37 @@ class FinalReviewResultServiceTest {
 		verify(reviewRepository, times(1)).findById(any());
 		verify(questionRepository, times(5)).findById(any());
 		verify(finalReviewResultRepository, times(5)).save(any(FinalReviewResult.class));
+	}
+
+	@Test
+	void 최종_리뷰_전송_성공() {
+		// given
+		Long reviewId = 1L;
+
+		Review fakeReview = BASIC_REVIEW.toEntity();
+		User fakeUser = SUYEON_FIXTURE.toEntity();
+		Participation fakeParticipation = PARTICIPATION_FIXTURE.toEntity();
+		List<Participation> participationList = List.of(fakeParticipation);
+		List<ReplyTarget> replyTargets = List.of(BASIC_FIXTURE.toEntity());
+		FinalReviewResult fakeFinalReviewResult = FinalReviewResultFixture.BASIC_FIXTURE.toEntity();
+
+		when(reviewRepository.findById(any())).thenReturn(Optional.of(fakeReview));
+		when(participationRepository.findAllByReviewId(any())).thenReturn(participationList);
+		when(replyTargetRepository.findAllByParticipationId(any())).thenReturn(replyTargets);
+		when(userRepository.findById(any())).thenReturn(Optional.of(fakeUser));
+		when(finalReviewResultRepository.findByReviewIdAndUserIdAndStatus(any(), any(), any(
+			FinalReviewResult.Status.class))).thenReturn(Optional.of(fakeFinalReviewResult));
+
+		// when
+		finalReviewResultService.sendFinalResultToUsers(reviewId);
+
+		// then
+		verify(reviewRepository, times(1)).findById(any());
+		assertEquals(fakeFinalReviewResult.getStatus(), SENT);
+	}
+
+	@Test
+	void 최종_리뷰_결과_상세조회_성공() {
+
 	}
 }
