@@ -1,8 +1,12 @@
 package com.devcourse.ReviewRanger.participation.api;
 
+import static com.devcourse.ReviewRanger.review.ReviewFixture.*;
 import static com.devcourse.ReviewRanger.user.UserFixture.*;
+import static com.devcourse.ReviewRanger.user.service.TestPrincipalDetailsService.*;
 import static org.assertj.core.api.BDDAssumptions.*;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -17,10 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.devcourse.ReviewRanger.ReplyTarget.dto.request.CreateReplyTargetRequest;
@@ -28,8 +37,10 @@ import com.devcourse.ReviewRanger.ReplyTarget.dto.request.UpdateReplyTargetReque
 import com.devcourse.ReviewRanger.common.config.SecurityConfig;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
+import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationRequest;
+import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
 import com.devcourse.ReviewRanger.question.domain.QuestionType;
 import com.devcourse.ReviewRanger.question.dto.request.CreateQuestionOptionRequest;
 import com.devcourse.ReviewRanger.question.dto.request.CreateQuestionRequest;
@@ -39,7 +50,9 @@ import com.devcourse.ReviewRanger.reply.dto.request.UpdateReplyRequest;
 import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.domain.ReviewType;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
+import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.user.domain.User;
+import com.devcourse.ReviewRanger.user.service.TestPrincipalDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(ParticipationController.class)
@@ -65,6 +78,9 @@ class ParticipationControllerTest {
 	@MockBean
 	private ReviewService reviewService;
 
+	private TestPrincipalDetailsService testUserDetailsService;
+	private UserDetails userDetails;
+
 	@BeforeEach
 	public void setup() {
 		User user = SPENCER_FIXTURE.toEntity();
@@ -78,9 +94,11 @@ class ParticipationControllerTest {
 		List<CreateQuestionOptionRequest> createQuestionOptionRequestList = List.of(createQuestionOptionRequest1,
 			createQuestionOptionRequest2);
 
-		CreateQuestionRequest createQuestionRequest1 = new CreateQuestionRequest("질문1", "질문 설명", QuestionType.MULTIPLE_CHOICE,
+		CreateQuestionRequest createQuestionRequest1 = new CreateQuestionRequest("질문1", "질문 설명",
+			QuestionType.MULTIPLE_CHOICE,
 			true, createQuestionOptionRequestList);
-		CreateQuestionRequest createQuestionRequest2 = new CreateQuestionRequest("질문2", "질문 설명",QuestionType.SUBJECTIVE, true,
+		CreateQuestionRequest createQuestionRequest2 = new CreateQuestionRequest("질문2", "질문 설명",
+			QuestionType.SUBJECTIVE, true,
 			Lists.emptyList());
 		List<CreateQuestionRequest> createQuestionRequestList = List.of(createQuestionRequest1, createQuestionRequest2);
 
@@ -89,6 +107,9 @@ class ParticipationControllerTest {
 
 		given(reviewService.createReview(4L, createReviewRequest));
 		verify(reviewService, times(1)).createReview(4L, createReviewRequest);
+
+		testUserDetailsService = new TestPrincipalDetailsService();
+		userDetails = testUserDetailsService.loadUserByUsername(USER_EMAIL);
 	}
 
 	@Test
@@ -161,4 +182,49 @@ class ParticipationControllerTest {
 			.andDo(print());
 	}
 
+	@Test
+	void 잠여_전체조회_성공() throws Exception {
+		// given
+		Long cursorId = 1L;
+		Integer size = 12;
+
+		String title = "REVIEW_TITLE";
+
+		Pageable pageable = PageRequest.of(0, size);
+		Boolean hasNext = false;
+
+		Participation participation = new Participation(SUYEON_FIXTURE.toEntity());
+		GetParticipationResponse getParticipationResponse = new GetParticipationResponse(participation, title);
+
+		SliceImpl<GetParticipationResponse> getReviewResponses = new SliceImpl<>(
+			List.of(getParticipationResponse),
+			pageable,
+			hasNext
+		);
+
+		when(participationService.getAllParticipationsByResponserOfCursorPaging(cursorId, null, pageable))
+			.thenReturn(getReviewResponses);
+
+		// when
+		// then
+		mockMvc.perform(get("/participations")
+				.param("cursorId", "1")
+				.param("size", "12")
+				.with(user(userDetails)))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.success").value(true))
+			.andExpect(jsonPath("$.data.content", hasSize(1)))
+			.andExpect(jsonPath("$.data.content[0].participationId").value(nullValue()))
+			.andExpect(jsonPath("$.data.content[0].reviewId").value(nullValue()))
+			.andExpect(jsonPath("$.data.content[0].title").value("REVIEW_TITLE"))
+			.andExpect(jsonPath("$.data.content[0].createAt").value(nullValue()))
+			.andExpect(jsonPath("$.data.content[0].submitAt").value(nullValue()))
+			.andExpect(jsonPath("$.data.content[0].status").value("PROCEEDING"))
+			.andDo(print());
+
+		verify(participationService, times(1)).getAllParticipationsByResponserOfCursorPaging(
+			cursorId,
+			null,
+			pageable);
+	}
 }
