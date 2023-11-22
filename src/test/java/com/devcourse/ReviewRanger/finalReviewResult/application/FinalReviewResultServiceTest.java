@@ -1,5 +1,6 @@
 package com.devcourse.ReviewRanger.finalReviewResult.application;
 
+import static com.devcourse.ReviewRanger.FinalQuestionFixture.*;
 import static com.devcourse.ReviewRanger.ReplyTarget.ReplyTargetFixture.*;
 import static com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestionType.*;
 import static com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResult.Status.*;
@@ -26,14 +27,26 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
 import com.devcourse.ReviewRanger.ReplyTarget.repository.ReplyTargetRepository;
+import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.finalReviewResult.FinalReviewResultFixture;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestion;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestionType;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResult;
+import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResultAnswerDropdown;
+import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResultAnswerHexStat;
+import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResultAnswerObjects;
+import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResultAnswerRating;
+import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResultAnswerSubject;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.Hexstat;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReplyRequest;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewRequest;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewAnswerResponse;
+import com.devcourse.ReviewRanger.finalReviewResult.repository.DropdownTypeRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.FinalReviewResultRepository;
+import com.devcourse.ReviewRanger.finalReviewResult.repository.HexstatTypeRepository;
+import com.devcourse.ReviewRanger.finalReviewResult.repository.ObjectTypeRepository;
+import com.devcourse.ReviewRanger.finalReviewResult.repository.RatingTypeRepository;
+import com.devcourse.ReviewRanger.finalReviewResult.repository.SubjectTypeRepository;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
 import com.devcourse.ReviewRanger.question.domain.Question;
@@ -66,6 +79,21 @@ class FinalReviewResultServiceTest {
 
 	@Mock
 	private ReplyTargetRepository replyTargetRepository;
+
+	@Mock
+	private SubjectTypeRepository subjectTypeRepository;
+
+	@Mock
+	private ObjectTypeRepository objectTypeRepository;
+
+	@Mock
+	private RatingTypeRepository ratingTypeRepository;
+
+	@Mock
+	private DropdownTypeRepository dropdownTypeRepository;
+
+	@Mock
+	private HexstatTypeRepository hexstatTypeRepository;
 
 	@Test
 	@DisplayName("최종 리뷰 결과 생성 성공 테스트")
@@ -168,5 +196,78 @@ class FinalReviewResultServiceTest {
 		// then
 		verify(reviewRepository, times(1)).findById(any());
 		assertEquals(fakeFinalReviewResult.getStatus(), SENT);
+	}
+
+	@Test
+	void 최종_리뷰_결과_상세조회_성공() {
+		// given
+		Long userId = 1L;
+		Long finalReviewId = 1L;
+		FinalReviewResult fakeFinalReviewResult = FinalReviewResultFixture.BASIC_FIXTURE.toEntity();
+
+		when(finalReviewResultRepository.findById(finalReviewId)).thenReturn(Optional.of(fakeFinalReviewResult));
+
+		// when
+		finalReviewResultService.getFinalReviewResultInfo(userId, finalReviewId);
+
+		// then
+		verify(finalReviewResultRepository, times(1)).findById(any());
+	}
+
+	@Test
+	void 최종_리뷰_결과_상세조회_실패() {
+		// given
+		Long userId = 2L;
+		Long finalReviewId = 1L;
+		FinalReviewResult fakeFinalReviewResult = FinalReviewResultFixture.BASIC_FIXTURE.toEntity();
+
+		when(finalReviewResultRepository.findById(finalReviewId)).thenReturn(Optional.of(fakeFinalReviewResult));
+
+		// when & then
+		assertThrows(RangerException.class,
+			() -> finalReviewResultService.getFinalReviewResultInfo(userId, finalReviewId)
+		);
+	}
+
+	@Test
+	void 최종_리뷰_결과_답변_상세조회_성공() {
+		// given
+		Long finalReviewId = 1L;
+		List<FinalQuestion> fakeFinalQuestions = List.of(
+			ONCE_QUESTION.toEntity(),
+			TWICE_QUESTION.toEntity(),
+			THREE_QUESTION.toEntity(),
+			FOUR_QUESTION.toEntity(),
+			FIVE_QUESTION.toEntity(),
+			SIX_QUESTION.toEntity()
+		);
+		FinalReviewResult fakeFinalReviewResult = FinalReviewResultFixture.BASIC_FIXTURE.toEntity(fakeFinalQuestions);
+
+		FinalReviewResultAnswerSubject subjectAnswer = new FinalReviewResultAnswerSubject(1L);
+		FinalReviewResultAnswerObjects objectAnswer = new FinalReviewResultAnswerObjects(2L);
+		FinalReviewResultAnswerRating ratingAnswer = new FinalReviewResultAnswerRating(3L);
+		FinalReviewResultAnswerDropdown dropdownAnswer = new FinalReviewResultAnswerDropdown(4L);
+		FinalReviewResultAnswerHexStat hexstatAnswer = new FinalReviewResultAnswerHexStat(5L);
+
+		List<FinalReviewResultAnswerSubject> subjectAnswers = List.of(subjectAnswer);
+		List<FinalReviewResultAnswerObjects> objectAnswers = List.of(objectAnswer);
+		List<FinalReviewResultAnswerRating> ratingAnswers = List.of(ratingAnswer);
+		List<FinalReviewResultAnswerDropdown> dropdownAnswers = List.of(dropdownAnswer);
+		List<FinalReviewResultAnswerHexStat> hexstatAnswers = List.of(hexstatAnswer);
+
+		when(finalReviewResultRepository.findById(finalReviewId)).thenReturn(Optional.of(fakeFinalReviewResult));
+		when(subjectTypeRepository.findAllByQuestionId(any())).thenReturn(subjectAnswers);
+		when(objectTypeRepository.findAllByQuestionId(any())).thenReturn(objectAnswers);
+		when(ratingTypeRepository.findAllByQuestionId(any())).thenReturn(ratingAnswers);
+		when(dropdownTypeRepository.findAllByQuestionId(any())).thenReturn(dropdownAnswers);
+		when(hexstatTypeRepository.findAllByQuestionId(any())).thenReturn(hexstatAnswers);
+
+		// when
+		List<GetFinalReviewAnswerResponse> getFinalReviewAnswerResponses = finalReviewResultService.getFinalReviewAnswerList(
+			finalReviewId);
+
+		// then
+		verify(finalReviewResultRepository, times(1)).findById(finalReviewId);
+		assertEquals(getFinalReviewAnswerResponses.size(), 6);
 	}
 }
