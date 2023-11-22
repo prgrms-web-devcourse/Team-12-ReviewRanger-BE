@@ -52,6 +52,13 @@ public class ReplyTarget extends BaseEntity {
 		this.participationId = participationId;
 	}
 
+	public ReplyTarget(User receiver, User responser, Long participationId, List<Reply> replies) {
+		this.receiver = receiver;
+		this.responser = responser;
+		this.participationId = participationId;
+		this.replies = replies;
+	}
+
 	public void setParticipationId(Long participationId) {
 		this.participationId = participationId;
 	}
