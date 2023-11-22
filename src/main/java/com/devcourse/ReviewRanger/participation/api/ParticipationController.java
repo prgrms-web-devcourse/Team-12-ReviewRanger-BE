@@ -64,7 +64,7 @@ public class ParticipationController {
 		@ApiResponse(responseCode = "400", description = "필수 질문에 대한 답변이 없는 경우"),
 	})
 	@ResponseStatus(CREATED)
-	@PostMapping(value = "/participations")
+	@PostMapping(value = "/participation")
 	public RangerResponse<Void> submitParticipation(@RequestBody @Valid SubmitParticipationRequest request) {
 		participationService.submitReplies(request);
 
@@ -77,7 +77,7 @@ public class ParticipationController {
 		@ApiResponse(responseCode = "404", description = "답변이 존재하지 않는 경우"),
 		@ApiResponse(responseCode = "400", description = "필수 질문에 대한 답변이 없는 경우")
 	})
-	@PutMapping(value = "/participations")
+	@PutMapping(value = "/participation")
 	public RangerResponse<Void> updateParticipation(@RequestBody @Valid UpdateParticipationRequest request) {
 		participationService.updateResponse(request);
 
