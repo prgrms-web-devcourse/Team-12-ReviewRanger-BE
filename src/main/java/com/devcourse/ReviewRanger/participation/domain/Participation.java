@@ -46,6 +46,15 @@ public class Participation extends BaseEntity {
 	protected Participation() {
 	}
 
+	public Participation(Long reviewId, User responser, Boolean isAnswered, ReviewStatus reviewStatus,
+		LocalDateTime submitAt) {
+		this.reviewId = reviewId;
+		this.responser = responser;
+		this.isAnswered = isAnswered;
+		this.reviewStatus = reviewStatus;
+		this.submitAt = submitAt;
+	}
+
 	public Participation(User responser) {
 		this.responser = responser;
 		this.isAnswered = false;
