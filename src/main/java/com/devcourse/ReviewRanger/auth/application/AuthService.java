@@ -43,12 +43,12 @@ public class AuthService {
 		String encodedPassword = passwordEncoder.encode(request.password());
 		User newUser = request.toEntity(encodedPassword);
 
-		if (!isNotExistName(request.name())) {
-			throw new RangerException(EXIST_SAME_NAME);
-		}
-
 		if (!isNotExistEmail(request.email())) {
 			throw new RangerException(EXIST_SAME_EMAIL);
+		}
+
+		if (!isNotExistName(request.name())) {
+			throw new RangerException(EXIST_SAME_NAME);
 		}
 
 		return (userRepository.save(newUser).getId()) > 0;
