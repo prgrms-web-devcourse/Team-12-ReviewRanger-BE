@@ -10,7 +10,7 @@ JAR_PATH=$REPOSITORY/build/libs/$JAR_NAME
 echo $JAR_NAME
 echo $JAR_PATH
 
-CURRENT_PID=$(pgrep -f $PROJECT_NAME)
+CURRENT_PID=$(pgrep -f $JAR_NAME)
 
 if [ -z $CURRENT_PID ]
 then
