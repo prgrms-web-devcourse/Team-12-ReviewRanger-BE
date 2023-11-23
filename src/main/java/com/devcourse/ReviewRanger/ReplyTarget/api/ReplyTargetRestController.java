@@ -54,7 +54,7 @@ public class ReplyTargetRestController {
 	}
 
 	@Tag(name = "reply-target")
-	@Operation(summary = "테스트", description = "테스트 API", responses = {
+	@Operation(summary = "테스트1", description = "테스트 API", responses = {
 		@ApiResponse(responseCode = "200", description = "테스트 성공"),
 	})
 	@GetMapping("/reviews/{reviewId}/test/test")
