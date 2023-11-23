@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
 import com.devcourse.ReviewRanger.participation.dto.request.SubmitParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.request.UpdateParticipationRequest;
 import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationResponse;
-import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,7 +41,7 @@ public class ParticipationController {
 	@Operation(summary = "[토큰] 응답자의 초대받은 리뷰 전체조회", description = "[토큰] 응답자의 초대받은 리뷰 전체조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
-	@GetMapping("/participations")
+	@GetMapping("/participation")
 	public RangerResponse<Slice<GetParticipationResponse>> getAllParticipationsByResponserOfCursorPaging(
 		@AuthenticationPrincipal UserPrincipal user,
 		@RequestParam(required = false) Long cursorId,
