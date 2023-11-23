@@ -40,17 +40,18 @@ public class ReplyTargetService {
 	}
 
 	@Transactional
-	public void createReviewTarget(Long participationId,
+	public void createReviewTarget(Long participationId, Long reviewId,
 		List<CreateReplyTargetRequest> createReplyTargetRequests) {
 		for (CreateReplyTargetRequest createReplyTargetRequest : createReplyTargetRequests) {
 			User receiver = userRepository.findById(createReplyTargetRequest.receiverId())
 				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 
-			User responer = userRepository.findById(createReplyTargetRequest.responserId())
+			User responser = userRepository.findById(createReplyTargetRequest.responserId())
 				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 
-			ReplyTarget replyTarget = createReplyTargetRequest.toEntity(receiver, responer);
+			ReplyTarget replyTarget = createReplyTargetRequest.toEntity(receiver, responser);
 			replyTarget.setParticipationId(participationId);
+			replyTarget.setReviewId(reviewId);
 
 			ReplyTarget savedReplyTarget = replyTargetRepository.save(replyTarget);
 
@@ -65,15 +66,15 @@ public class ReplyTargetService {
 		}
 	}
 
-	public List<ReplyTargetResponse> getAllRepliesByResponser(Long responserId) {
-		List<ReplyTarget> replyTargets = replyTargetRepository.findAllByResponserId(responserId);
+	public List<ReplyTargetResponse> getAllRepliesByResponser(Long reviewId, Long responserId) {
+		List<ReplyTarget> replyTargets = replyTargetRepository.findAllByReviewIdAndResponserId(reviewId, responserId);
 		List<ReplyTargetResponse> responses = getAllRepliesByReviewedTargets(replyTargets);
 
 		return responses;
 	}
 
-	public List<ReplyTargetResponse> getAllRepliesByReceiver(Long receiverId) {
-		List<ReplyTarget> replyTargets = replyTargetRepository.findAllByReceiverId(receiverId);
+	public List<ReplyTargetResponse> getAllRepliesByReceiver(Long reviewId, Long receiverId) {
+		List<ReplyTarget> replyTargets = replyTargetRepository.findAllByReviewIdAndReceiverId(reviewId, receiverId);
 		List<ReplyTargetResponse> responses = getAllRepliesByReviewedTargets(replyTargets);
 
 		return responses;

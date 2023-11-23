@@ -9,7 +9,7 @@ import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
 public interface ReplyTargetRepository extends JpaRepository<ReplyTarget, Long>, ReplyTargetCustomRepository {
 	List<ReplyTarget> findAllByParticipationId(Long participationId);
 
-	List<ReplyTarget> findAllByReceiverId(Long receiverId);
+	List<ReplyTarget> findAllByReviewIdAndReceiverId(Long reviewId, Long receiverId);
 
-	List<ReplyTarget> findAllByResponserId(Long responerId);
+	List<ReplyTarget> findAllByReviewIdAndResponserId(Long reviewId, Long responerId);
 }

@@ -152,7 +152,8 @@ public class ParticipationService {
 	public void submitReplies(SubmitParticipationRequest request) {
 		Participation participation = getByIdOrThrow(request.participationId());
 
-		replyTargetService.createReviewTarget(participation.getId(), request.createReplyTargetRequests());
+		replyTargetService.createReviewTarget(participation.getId(), participation.getReviewId(),
+			request.createReplyTargetRequests());
 
 		participation.answeredReview();
 	}

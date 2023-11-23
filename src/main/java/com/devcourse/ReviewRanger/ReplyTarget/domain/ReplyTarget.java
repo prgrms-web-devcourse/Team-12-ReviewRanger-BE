@@ -36,6 +36,9 @@ public class ReplyTarget extends BaseEntity {
 	@Column(name = "participation_id", nullable = false)
 	private Long participationId;
 
+	@Column(name = "review_id", nullable = false)
+	private Long reviewId;
+
 	@OneToMany(mappedBy = "replyTarget", orphanRemoval = true)
 	private List<Reply> replies = new ArrayList<>();
 
@@ -61,5 +64,9 @@ public class ReplyTarget extends BaseEntity {
 
 	public void setParticipationId(Long participationId) {
 		this.participationId = participationId;
+	}
+
+	public void setReviewId(Long reviewId) {
+		this.reviewId = reviewId;
 	}
 }

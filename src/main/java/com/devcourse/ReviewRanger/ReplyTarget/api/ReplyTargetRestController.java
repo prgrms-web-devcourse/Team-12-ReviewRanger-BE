@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.ReplyTarget.application.ReplyTargetService;
@@ -17,7 +16,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "reply-target", description = "리뷰 타겟 API")
 @RestController
-@RequestMapping("/reply-targets")
 public class ReplyTargetRestController {
 
 	private final ReplyTargetService replyTargetService;
@@ -32,10 +30,11 @@ public class ReplyTargetRestController {
 		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
 
 	})
-	@GetMapping("/{id}/responser")
-	public RangerResponse<List<ReplyTargetResponse>> getRepliesByResponser(@PathVariable Long id) {
+	@GetMapping("/reviews/{reviewId}/responser/{responserId}")
+	public RangerResponse<List<ReplyTargetResponse>> getRepliesByResponser(@PathVariable Long reviewId,
+		@PathVariable Long responserId) {
 		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByResponser(
-			id);
+			reviewId, responserId);
 
 		return RangerResponse.ok(responses);
 	}
@@ -46,9 +45,10 @@ public class ReplyTargetRestController {
 		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
 
 	})
-	@GetMapping("/{id}/receiver")
-	public RangerResponse<List<ReplyTargetResponse>> getRepliesByReceiver(@PathVariable Long id) {
-		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByReceiver(id);
+	@GetMapping("/reviews/{reviewId}/receiver/{receiverId}")
+	public RangerResponse<List<ReplyTargetResponse>> getRepliesByReceiver(@PathVariable Long reviewId,
+		@PathVariable Long receiverId) {
+		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByReceiver(reviewId, receiverId);
 
 		return RangerResponse.ok(responses);
 	}

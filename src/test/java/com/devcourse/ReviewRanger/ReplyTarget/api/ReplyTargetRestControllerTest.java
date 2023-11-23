@@ -98,9 +98,9 @@ class ReplyTargetRestControllerTest {
 	@Test
 	void 작성자_답변_조회_성공() throws Exception {
 
-		given(replyTargetService.getAllRepliesByResponser(1L)).willReturn(List.of(response));
+		given(replyTargetService.getAllRepliesByResponser(1L, 1L)).willReturn(List.of(response));
 
-		mockMvc.perform(get("/reply-targets/{id}/responser", 1L)
+		mockMvc.perform(get("/reviews/{reviewId}/responser/{responserId}", 1L, 1L)
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(print());
@@ -109,9 +109,9 @@ class ReplyTargetRestControllerTest {
 	@Test
 	void 수신자_답변_조회_성공() throws Exception {
 
-		given(replyTargetService.getAllRepliesByReceiver(2L)).willReturn(List.of(response));
+		given(replyTargetService.getAllRepliesByReceiver(1L, 2L)).willReturn(List.of(response));
 
-		mockMvc.perform(get("/reply-targets/{id}/receiver", 2L)
+		mockMvc.perform(get("/reviews/{reviewId}/receiver/{receiverId}", 1L, 2L)
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(print());
