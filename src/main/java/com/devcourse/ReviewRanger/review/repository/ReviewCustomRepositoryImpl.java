@@ -28,11 +28,12 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
 
 		BooleanBuilder where = new BooleanBuilder();
 		Optional.ofNullable(requesterId).ifPresent(key -> where.and(review.requesterId.eq(key)));
-		Optional.ofNullable(cursorId).ifPresent(key -> where.and(review.id.gt(cursorId)));
+		Optional.ofNullable(cursorId).ifPresent(key -> where.and(review.id.lt(cursorId)));
 
 		List<Review> reviews = jpaQueryFactory
 			.selectFrom(review)
 			.where(where)
+			.orderBy(review.id.desc())
 			.limit(pageSize + 1)
 			.fetch();
 
