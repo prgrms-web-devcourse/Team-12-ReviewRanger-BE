@@ -22,4 +22,4 @@ else
 fi
 
 echo "> 배포 - $JAR_PATH"
-nohup java -jar $JAR_PATH &
+nohup java -jar "$JAR_PATH" > /dev/null 2>&1 &
