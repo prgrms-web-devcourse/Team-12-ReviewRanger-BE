@@ -2,14 +2,17 @@ package com.devcourse.ReviewRanger.openAI.dto.request;
 
 import java.util.List;
 
-import com.devcourse.ReviewRanger.openAI.dto.common.Message;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record OpenAIRequest(
 	String model,
 
-	int n,
+	@JsonProperty("max_tokens")
+	Integer maxTokens,
 
-	double temperature,
+	Double temperature,
+
+	Boolean stream,
 
 	List<Message> messages
 ) {
