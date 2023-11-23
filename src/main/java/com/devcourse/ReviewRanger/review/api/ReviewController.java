@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.devcourse.ReviewRanger.ReplyTarget.application.ReplyTargetService;
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
 import com.devcourse.ReviewRanger.participation.dto.response.ParticipationResponse;
@@ -22,7 +24,6 @@ import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailFirstResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
-import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.user.dto.GetUserResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,10 +36,13 @@ public class ReviewController {
 
 	private final ReviewService reviewService;
 	private final ParticipationService participationService;
+	private final ReplyTargetService replyTargetService;
 
-	public ReviewController(ReviewService reviewService, ParticipationService participationService) {
+	public ReviewController(ReviewService reviewService, ParticipationService participationService,
+		ReplyTargetService replyTargetService) {
 		this.reviewService = reviewService;
 		this.participationService = participationService;
+		this.replyTargetService = replyTargetService;
 	}
 
 	@Tag(name = "review")
@@ -129,8 +133,8 @@ public class ReviewController {
 	}
 
 	@Tag(name = "review")
-	@Operation(summary = "[토큰] 리뷰에 참여하는 모든 응답자 조회", description = "[토큰] 설문에 참여한 모든 응답자 조회 API", responses = {
-		@ApiResponse(responseCode = "200", description = "설문에 참여한 모든 응답자 조회 성공"),
+	@Operation(summary = "리뷰에 참여하는 모든 응답자 조회", description = "리뷰에 참여하는 모든 응답자 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "리뷰에 참여하는 모든 응답자 조회 성공"),
 		@ApiResponse(responseCode = "404", description = "리뷰 존재하지 않는 경우"),
 		@ApiResponse(responseCode = "404", description = "사용자 존재하지 않는 경우")
 	})
@@ -146,7 +150,7 @@ public class ReviewController {
 	}
 
 	@Tag(name = "review")
-	@Operation(summary = "[토큰] 리뷰를 받은 모든 수신자 조회", description = "[토큰] 리뷰를 받은 모든 수신자 조회 API", responses = {
+	@Operation(summary = "리뷰를 받은 모든 수신자 조회", description = "리뷰를 받은 모든 수신자 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "리뷰를 받은 모든 수신자 조회 성공")
 	})
 	@GetMapping("/reviews/{id}/receiver")
