@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.devcourse.ReviewRanger.auth.dto.JoinRequest;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
+import com.devcourse.ReviewRanger.common.redis.RedisUtil;
 import com.devcourse.ReviewRanger.user.domain.User;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
@@ -26,6 +27,9 @@ public class AuthServiceTest {
 
 	@Mock
 	private PasswordEncoder passwordEncoder;
+
+	@Mock
+	private RedisUtil redisUtil;
 
 	@Test
 	void 회원가입_성공_테스트() {
@@ -73,5 +77,18 @@ public class AuthServiceTest {
 		assertThrows(RangerException.class,
 			() -> authService.join(joinRequest)
 		);
+	}
+
+	@Test
+	void 로그아웃_성공_테스트() {
+		// given
+		String mockToken = "Bearer mockToken";
+		doNothing().when(redisUtil).setBlackList(anyString(), anyString(), anyInt());
+
+		// when
+		authService.logout(mockToken);
+
+		// then
+		verify(redisUtil, times(1)).setBlackList(anyString(), anyString(), anyInt());
 	}
 }
