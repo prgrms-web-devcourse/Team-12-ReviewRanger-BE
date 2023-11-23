@@ -11,6 +11,6 @@ public record ReceiverResponse(
 	String receiverName,
 
 	@Schema(description = "응답자 수")
-	Integer responserCount
+	Long responserCount
 ) {
 }
