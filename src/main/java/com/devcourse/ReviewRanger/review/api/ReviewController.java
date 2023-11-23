@@ -74,30 +74,16 @@ public class ReviewController {
 	}
 
 	@Tag(name = "review")
-	@Operation(summary = "리뷰 상세 조회", description = "리뷰 상세 조회 API", responses = {
-		@ApiResponse(responseCode = "200", description = "리뷰를 상세 조회 성공"),
-		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우")
-	})
-	@GetMapping("/reviews/{id}/temp")
-	public RangerResponse<GetReviewDetailResponse> getReviewDetail(
-		@PathVariable("id") Long reviewId
-	) {
-		GetReviewDetailResponse response = reviewService.getReviewDetailOrThrow(reviewId);
-
-		return RangerResponse.ok(response);
-	}
-
-	@Tag(name = "review")
-	@Operation(summary = "[토큰] 리뷰 첫 상세 조회", description = "[토큰] 리뷰 첫 상세 조회 API", responses = {
+	@Operation(summary = "[토큰] 리뷰 상세 조회", description = "[토큰] 리뷰 첫 상세 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "리뷰를 첫 상세 조회 성공"),
 		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우")
 	})
 	@GetMapping("/reviews/{id}")
-	public RangerResponse<GetReviewDetailFirstResponse> getReviewDetailFirst(
+	public RangerResponse<GetReviewDetailFirstResponse> getReviewDetail(
 		@PathVariable("id") Long reviewId,
 		@AuthenticationPrincipal UserPrincipal user
 	) {
-		GetReviewDetailFirstResponse response = reviewService.getReviewDetailFirstOrThrow(reviewId, user.getId());
+		GetReviewDetailFirstResponse response = reviewService.getReviewDetailOrThrow(reviewId, user.getId());
 
 		return RangerResponse.ok(response);
 	}

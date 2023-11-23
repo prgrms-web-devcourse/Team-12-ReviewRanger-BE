@@ -245,7 +245,7 @@ class ReviewControllerTest {
 			List.of(BASIC_QUESTION.toGetQuestionResponse())
 		);
 
-		when(reviewService.getReviewDetailOrThrow(reviewId)).thenReturn(response);
+		when(reviewService.getReviewDetailOldOrThrow(reviewId)).thenReturn(response);
 
 		// when
 		// then
@@ -263,7 +263,7 @@ class ReviewControllerTest {
 			.andExpect(jsonPath("$.data.questions[0].questionOptions").value(empty()))
 			.andDo(print());
 
-		verify(reviewService,times(1)).getReviewDetailOrThrow(reviewId);
+		verify(reviewService,times(1)).getReviewDetailOldOrThrow(reviewId);
 	}
 
 	@Test

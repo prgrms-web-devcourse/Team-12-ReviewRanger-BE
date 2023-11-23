@@ -73,7 +73,7 @@ public class ReviewService {
 		return new SliceImpl<>(reviewResponses, requesterReviews.getPageable(), requesterReviews.hasNext());
 	}
 
-	public GetReviewDetailResponse getReviewDetailOrThrow(Long reviewId) {
+	public GetReviewDetailResponse getReviewDetailOldOrThrow(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 		List<GetQuestionResponse> questionResponses = questionService.getAllQuestionsByReview(reviewId);
@@ -81,7 +81,7 @@ public class ReviewService {
 		return new GetReviewDetailResponse(review, questionResponses);
 	}
 
-	public GetReviewDetailFirstResponse getReviewDetailFirstOrThrow(Long reviewId, Long responserId) {
+	public GetReviewDetailFirstResponse getReviewDetailOrThrow(Long reviewId, Long responserId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 		List<GetQuestionResponse> questionResponses = questionService.getAllQuestionsByReview(reviewId);
