@@ -3,9 +3,7 @@ package com.devcourse.ReviewRanger.participation.application;
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.ReplyTarget.application.ReplyTargetService;
-import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
 import com.devcourse.ReviewRanger.ReplyTarget.repository.ReplyTargetRepository;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
@@ -123,29 +120,8 @@ public class ParticipationService {
 	}
 
 	public List<ReceiverResponse> getAllReceiver(Long reviewId, String searchName) {
-		List<ReceiverResponse> responses = new ArrayList<>();
-		Map<User, Integer> receiverToResponserCountsMap = new LinkedHashMap<>();
-
-		List<Participation> participations = participationRepository.findByReviewId(reviewId);
-
-		for (Participation participation : participations) {
-			List<ReplyTarget> replyTargets = replyTargetRepository.findAllByParticipationIdToDynamic(
-				participation.getId(), searchName);
-
-			for (ReplyTarget replyTarget : replyTargets) {
-				receiverToResponserCountsMap.put(replyTarget.getReceiver(),
-					receiverToResponserCountsMap.getOrDefault(replyTarget.getReceiver(), 0) + 1);
-			}
-		}
-
-		for (Map.Entry<User, Integer> receiver : receiverToResponserCountsMap.entrySet()) {
-			ReceiverResponse response = new ReceiverResponse(receiver.getKey().getId(), receiver.getKey().getName(),
-				receiver.getValue());
-
-			responses.add(response);
-		}
-
-		return responses;
+		return replyTargetRepository.findAllByParticipationIdToDynamic(
+			reviewId, searchName);
 	}
 
 	@Transactional
