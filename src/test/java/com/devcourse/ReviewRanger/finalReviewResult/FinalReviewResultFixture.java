@@ -55,4 +55,8 @@ public enum FinalReviewResultFixture {
 	public FinalReviewResult toEntity() {
 		return new FinalReviewResult(userId, userName, reviewId, title, description, status, questions);
 	}
+
+	public FinalReviewResult toEntity(List<FinalQuestion> questions) {
+		return new FinalReviewResult(userId, userName, reviewId, title, description, status, questions);
+	}
 }
