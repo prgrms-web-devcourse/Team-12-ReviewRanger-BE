@@ -27,7 +27,7 @@ public record ReviewResponse(
 	ReviewType type,
 
 	@Schema(description = "리뷰 마감일")
-	LocalDateTime closeAt,
+	LocalDateTime closedAt,
 
 	@Schema(description = "리뷰 상태")
 	ReviewStatus reviewStatus,
