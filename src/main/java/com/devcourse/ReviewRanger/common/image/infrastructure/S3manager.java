@@ -5,6 +5,8 @@ import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class S3manager implements ImageManager {
+	private static final List<String> imageExtensions = Arrays.asList("jpg", "jpeg", "png");
 
 	private final AmazonS3 amazonS3;
 
@@ -34,6 +37,7 @@ public class S3manager implements ImageManager {
 
 	@Override
 	public String upload(MultipartFile multipartFile, String directory, String fileName) {
+		validateImage(multipartFile);
 		File uploadFile = convert(multipartFile)
 			.orElseThrow(() -> new RangerException(MISSING_IMAGE_CONVERT));
 
@@ -45,6 +49,24 @@ public class S3manager implements ImageManager {
 		String fileNameWithDir = directory + "/" + fileName;
 		DeleteObjectRequest request = new DeleteObjectRequest(bucket, fileNameWithDir);
 		amazonS3.deleteObject(request);
+	}
+
+	private void validateImage(MultipartFile file) {
+		if (file.isEmpty()) {
+			log.warn("이미지가 없습니다. {}", file.getOriginalFilename());
+			throw new RangerException(EMPTY_IMAGE);
+		}
+
+		String filename = file.getOriginalFilename();
+		String extension = filename.substring(filename.lastIndexOf(".") + 1);
+
+		boolean isExtension = imageExtensions.contains(extension.toLowerCase());
+
+		if (!isExtension) {
+			log.warn("이미지 확장가 검증 오류 : {}", filename);
+			throw new RangerException(INVALID_IMAGE_EXTENSION);
+		}
+
 	}
 
 	private String uploadS3(File uploadFile, String directory, String fileName) {
@@ -66,11 +88,8 @@ public class S3manager implements ImageManager {
 	}
 
 	private void removeNewFile(File targetFile) {
-		if (targetFile.delete()) {
-			log.info("파일이 삭제되었습니다.");
-		} else {
-			log.info("파일이 삭제되지 못했습니다.");
-		}
+		String message = targetFile.delete() ? "파일이 삭제되었습니다." : "파일이 삭제되지 못했습니다.";
+		log.info(message);
 	}
 
 	private Optional<File> convert(MultipartFile file) {
