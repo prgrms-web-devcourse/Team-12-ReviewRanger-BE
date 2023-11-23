@@ -42,7 +42,7 @@ openai:
   api:
     url: https://api.openai.com/v1/chat/completions
     key: ${OPEN_AI_KEY}
-    n: 1
+    max_token: 1300
     temperature: 0.7
 
 slack:
