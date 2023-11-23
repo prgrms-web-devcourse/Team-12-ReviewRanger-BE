@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.devcourse.ReviewRanger.ReplyTarget.dto.request.CreateReplyTargetRequest;
 import com.devcourse.ReviewRanger.ReplyTarget.dto.request.UpdateReplyTargetRequest;
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.config.SecurityConfig;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
@@ -75,9 +76,6 @@ class ParticipationControllerTest {
 	@MockBean
 	private ReviewService reviewService;
 
-	private TestPrincipalDetailsService testUserDetailsService;
-	private UserDetails userDetails;
-
 	@BeforeEach
 	public void setup() {
 		User user = SPENCER_FIXTURE.toEntity();
@@ -104,9 +102,6 @@ class ParticipationControllerTest {
 
 		given(reviewService.createReview(4L, createReviewRequest));
 		verify(reviewService, times(1)).createReview(4L, createReviewRequest);
-
-		testUserDetailsService = new TestPrincipalDetailsService();
-		userDetails = testUserDetailsService.loadUserByUsername(USER_EMAIL);
 	}
 
 	@Test
@@ -201,6 +196,7 @@ class ParticipationControllerTest {
 
 		when(participationService.getAllParticipationsByResponserOfCursorPaging(cursorId, null, pageable))
 			.thenReturn(getReviewResponses);
+		UserDetails userDetails= new UserPrincipal(SUYEON_FIXTURE.toEntity());
 
 		// when
 		// then

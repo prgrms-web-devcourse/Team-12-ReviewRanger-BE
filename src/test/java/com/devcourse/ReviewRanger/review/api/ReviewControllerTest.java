@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -66,15 +65,6 @@ class ReviewControllerTest {
 
 	@MockBean
 	private ParticipationService participationService;
-
-	private TestPrincipalDetailsService testUserDetailsService;
-	private UserDetails userDetails;
-
-	@BeforeEach
-	public void setUp() {
-		testUserDetailsService = new TestPrincipalDetailsService();
-		userDetails = testUserDetailsService.loadUserByUsername(USER_EMAIL);
-	}
 
 	@Test
 	void 수신자_전체_조회() throws Exception {
@@ -161,7 +151,7 @@ class ReviewControllerTest {
 		);
 
 		when(reviewService.createReview(null, createReviewRequest)).thenReturn(true);
-
+		UserDetails userDetails= new UserPrincipal(SUYEON_FIXTURE.toEntity());
 		// when
 		// then
 		mockMvc.perform(post("/reviews")
@@ -198,6 +188,7 @@ class ReviewControllerTest {
 
 		when(reviewService.getAllReviewsByRequesterOfCursorPaging(cursorId, null, pageable)).thenReturn(
 			getReviewResponses);
+		UserDetails userDetails= new UserPrincipal(SUYEON_FIXTURE.toEntity());
 
 		// when
 		// then
