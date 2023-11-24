@@ -45,7 +45,6 @@ import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
 import com.devcourse.ReviewRanger.user.dto.UserResponse;
-import com.devcourse.ReviewRanger.user.application.TestPrincipalDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(ReviewController.class)
@@ -156,7 +155,7 @@ class ReviewControllerTest {
 		);
 
 		when(reviewService.createReview(null, createReviewRequest)).thenReturn(true);
-		UserDetails userDetails= new UserPrincipal(SUYEON_FIXTURE.toEntity());
+		UserDetails userDetails = new UserPrincipal(SUYEON_FIXTURE.toEntity());
 		// when
 		// then
 		mockMvc.perform(post("/reviews")
@@ -193,7 +192,7 @@ class ReviewControllerTest {
 
 		when(reviewService.getAllReviewsByRequesterOfCursorPaging(cursorId, null, pageable)).thenReturn(
 			getReviewResponses);
-		UserDetails userDetails= new UserPrincipal(SUYEON_FIXTURE.toEntity());
+		UserDetails userDetails = new UserPrincipal(SUYEON_FIXTURE.toEntity());
 
 		// when
 		// then
@@ -222,7 +221,7 @@ class ReviewControllerTest {
 	void 리뷰_상세조회_성공() throws Exception {
 		// given
 		Long reviewId = 1L;
-		Long responserId =null;
+		Long responserId = null;
 
 		GetReviewDetailResponse response = new GetReviewDetailResponse(
 			BASIC_REVIEW.toEntity(),
@@ -230,12 +229,12 @@ class ReviewControllerTest {
 			List.of(SUYEON_FIXTURE.toGetUserResponse())
 		);
 
-		when(reviewService.getReviewDetailOrThrow(reviewId,responserId)).thenReturn(response);
-		UserDetails userDetails= new UserPrincipal(SUYEON_FIXTURE.toEntity());
+		when(reviewService.getReviewDetailOrThrow(reviewId, responserId)).thenReturn(response);
+		UserDetails userDetails = new UserPrincipal(SUYEON_FIXTURE.toEntity());
 		// when
 		// then
 		mockMvc.perform(get("/reviews/{id}", 1)
-			.with(user(userDetails)))
+				.with(user(userDetails)))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.success").value(true))
 			.andExpect(jsonPath("$.data.id").value(nullValue()))
@@ -249,7 +248,7 @@ class ReviewControllerTest {
 			.andExpect(jsonPath("$.data.questions[0].questionOptions").value(empty()))
 			.andDo(print());
 
-		verify(reviewService, times(1)).getReviewDetailOrThrow(reviewId);
+		verify(reviewService, times(1)).getReviewDetailOrThrow(reviewId, responserId);
 	}
 
 	@Test
