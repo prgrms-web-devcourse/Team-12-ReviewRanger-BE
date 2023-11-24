@@ -101,49 +101,61 @@ public class FinalReviewResultService {
 	@Transactional
 	public CreateFinalReviewResponse createFinalReviewResult(CreateFinalReviewRequest createFinalReviewRequest) {
 		Long userId = createFinalReviewRequest.userId();
+		Long reviewId = createFinalReviewRequest.reviewId();
 		validateUserId(userId);
-		validateReviewId(createFinalReviewRequest.reviewId());
+		validateReviewId(reviewId);
 
-		FinalReviewResult finalReviewResult = createFinalReviewRequest.toEntity();
+		FinalReviewResult finalReviewResult = finalReviewResultRepository
+			.findByReviewIdAndUserIdAndStatus(reviewId, userId, NOT_SENT)
+			.orElseGet(createFinalReviewRequest::toEntity);
+		List<Long> questionIdsOfFinalReview = finalReviewResult.questionIds();
+
 		List<CreateFinalReplyRequest> replies = createFinalReviewRequest.replies();
 
 		for (CreateFinalReplyRequest reply : replies) {
 			Long questionId = reply.questionId();
-			validateQuestionId(questionId);
 
+			if (questionIdsOfFinalReview.contains(questionId)) {
+				continue;
+			}
+
+			validateQuestionId(questionId);
 			FinalQuestion finalQuestion = reply.toEntity();
 			finalReviewResult.addQuestions(finalQuestion);
 			finalReviewResultRepository.save(finalReviewResult);
 
-			// answer를 가져와서 question type에 따라 해당하는 테이블에 데이터를 저장하자 => addAnswer 호출
 			List<Object> answers = reply.answers();
 			FinalQuestionType finalQuestionType = reply.questionType();
 
 			for (Object answer : answers) {
 				switch (finalQuestionType) {
 					case SUBJECTIVE -> {
-						FinalReviewResultAnswerSubject subjectAnswer = new FinalReviewResultAnswerSubject(questionId);
+						FinalReviewResultAnswerSubject subjectAnswer = new FinalReviewResultAnswerSubject(userId,
+							questionId);
 						subjectAnswer.addAnswer(answer);
 						subjectTypeRepository.save(subjectAnswer);
 					}
 					case SINGLE_CHOICE, MULTIPLE_CHOICE -> {
-						FinalReviewResultAnswerObjects objectAnswer = new FinalReviewResultAnswerObjects(questionId);
+						FinalReviewResultAnswerObjects objectAnswer = new FinalReviewResultAnswerObjects(userId,
+							questionId);
 						objectAnswer.addAnswer(answer);
 						objectTypeRepository.save(objectAnswer);
 					}
 					case RATING -> {
-						FinalReviewResultAnswerRating ratingAnswer = new FinalReviewResultAnswerRating(questionId);
+						FinalReviewResultAnswerRating ratingAnswer = new FinalReviewResultAnswerRating(userId,
+							questionId);
 						ratingAnswer.addAnswer(answer);
 						ratingTypeRepository.save(ratingAnswer);
 					}
 					case DROPDOWN -> {
-						FinalReviewResultAnswerDropdown dropdownAnswer = new FinalReviewResultAnswerDropdown(
+						FinalReviewResultAnswerDropdown dropdownAnswer = new FinalReviewResultAnswerDropdown(userId,
 							questionId);
 						dropdownAnswer.addAnswer(answer);
 						dropdownTypeRepository.save(dropdownAnswer);
 					}
 					case HEXASTAT -> {
-						FinalReviewResultAnswerHexStat hexStatAnswer = new FinalReviewResultAnswerHexStat(questionId);
+						FinalReviewResultAnswerHexStat hexStatAnswer = new FinalReviewResultAnswerHexStat(userId,
+							questionId);
 						hexStatAnswer.addAnswer(answer);
 						hexstatTypeRepository.save(hexStatAnswer);
 					}
@@ -170,9 +182,7 @@ public class FinalReviewResultService {
 		int notSentFinalResultNums = finalReviewResults.size();
 
 		boolean checkStatus = (participantNums == notSentFinalResultNums);
-		return checkStatus ?
-			new CheckFinalResultStatus(checkStatus, null) :
-			new CheckFinalResultStatus(checkStatus, haveUnsentReviewUserIds);
+		return new CheckFinalResultStatus(checkStatus, haveUnsentReviewUserIds);
 	}
 
 	@Transactional
@@ -219,6 +229,7 @@ public class FinalReviewResultService {
 		} else {
 			throw new RangerException(NOT_OWNER_OF_FINAL_REVIEW_RESULT);
 		}
+
 	}
 
 	public List<GetFinalReviewAnswerResponse> getFinalReviewAnswerList(Long finalReviewId) {
@@ -238,7 +249,7 @@ public class FinalReviewResultService {
 			switch (finalQuestionType) {
 				case SUBJECTIVE -> {
 					List<FinalReviewResultAnswerSubject> subjectAnswers
-						= subjectTypeRepository.findAllByQuestionId(questionId);
+						= subjectTypeRepository.findAllByQuestionId(questionId); // TODO: 현재 조회하는 userID로 식별 필요
 
 					for (FinalReviewResultAnswerSubject answer : subjectAnswers) {
 						answerIdList.add(answer.getId());
@@ -309,7 +320,7 @@ public class FinalReviewResultService {
 
 	private void validateQuestionId(Long questionId) {
 		questionRepository.findById(questionId)
-			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+			.orElseThrow(() -> new RangerException(NOT_FOUND_QUESTION));
 	}
 
 	private void validateReviewId(Long reviewId) {
