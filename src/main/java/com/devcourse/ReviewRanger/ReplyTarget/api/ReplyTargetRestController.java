@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "reply-target", description = "리뷰 타겟 API")
+@Tag(name = "reply-target", description = "리뷰 대상 API")
 @RestController
 public class ReplyTargetRestController {
 
@@ -57,7 +57,7 @@ public class ReplyTargetRestController {
 	@Operation(summary = "테스트1", description = "테스트 API", responses = {
 		@ApiResponse(responseCode = "200", description = "테스트 성공"),
 	})
-	@GetMapping("/reviews/{reviewId}/test/test/test/test")
+	@GetMapping("/reviews/{reviewId}/test")
 	public RangerResponse<Void> getRepliesByReceiver(@PathVariable Long reviewId) {
 		System.out.println(reviewId);
 

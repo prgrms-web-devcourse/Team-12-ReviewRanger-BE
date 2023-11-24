@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.devcourse.ReviewRanger.question.dto.response.GetQuestionOptionResponse;
 import com.devcourse.ReviewRanger.reply.domain.Reply;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -16,15 +17,18 @@ public record ReplyResponse(
 	Long questionId,
 
 	@Schema(description = "객관식, 드롭다운, 육각스탯 용 옵션")
+	@JsonProperty("answerChoice")
 	GetQuestionOptionResponse questionOption,
 
 	@Schema(description = "주관식 답변")
 	String answerText,
 
 	@Schema(description = "별점 답변")
+	@JsonProperty("answerRating")
 	Double rating,
 
 	@Schema(description = "육각스탯 답변")
+	@JsonProperty("answerHexa")
 	Integer hexastat,
 
 	@Schema(description = "리뷰 타겟")

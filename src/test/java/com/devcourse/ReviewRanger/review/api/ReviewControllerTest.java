@@ -2,7 +2,7 @@ package com.devcourse.ReviewRanger.review.api;
 
 import static com.devcourse.ReviewRanger.question.application.QuestionFixture.*;
 import static com.devcourse.ReviewRanger.review.ReviewFixture.*;
-import static com.devcourse.ReviewRanger.user.application.TestPrincipalDetailsService.*;
+import static com.devcourse.ReviewRanger.user.UserFixture.*;
 import static java.time.LocalDateTime.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.*;
@@ -29,6 +29,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.devcourse.ReviewRanger.ReplyTarget.application.ReplyTargetService;
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.config.SecurityConfig;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
@@ -66,10 +68,13 @@ class ReviewControllerTest {
 	@MockBean
 	private ParticipationService participationService;
 
+	@MockBean
+	private ReplyTargetService replyTargetService;
+
 	@Test
 	void 수신자_전체_조회() throws Exception {
-		ReceiverResponse 범철 = new ReceiverResponse(2L, "범철", 1);
-		ReceiverResponse 주웅 = new ReceiverResponse(3L, "주웅", 1);
+		ReceiverResponse 범철 = new ReceiverResponse(2L, "범철", 1L);
+		ReceiverResponse 주웅 = new ReceiverResponse(3L, "주웅", 1L);
 
 		List<ReceiverResponse> responses = List.of(범철, 주웅);
 
@@ -217,17 +222,20 @@ class ReviewControllerTest {
 	void 리뷰_상세조회_성공() throws Exception {
 		// given
 		Long reviewId = 1L;
+		Long responserId =null;
 
 		GetReviewDetailResponse response = new GetReviewDetailResponse(
 			BASIC_REVIEW.toEntity(),
-			List.of(BASIC_QUESTION.toGetQuestionResponse())
+			List.of(BASIC_QUESTION.toGetQuestionResponse()),
+			List.of(SUYEON_FIXTURE.toGetUserResponse())
 		);
 
-		when(reviewService.getReviewDetailOrThrow(reviewId)).thenReturn(response);
-
+		when(reviewService.getReviewDetailOrThrow(reviewId,responserId)).thenReturn(response);
+		UserDetails userDetails= new UserPrincipal(SUYEON_FIXTURE.toEntity());
 		// when
 		// then
-		mockMvc.perform(get("/reviews/{id}", 1))
+		mockMvc.perform(get("/reviews/{id}", 1)
+			.with(user(userDetails)))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.success").value(true))
 			.andExpect(jsonPath("$.data.id").value(nullValue()))

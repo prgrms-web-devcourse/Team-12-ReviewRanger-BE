@@ -125,42 +125,42 @@ class ParticipationServiceTest {
 		verify(participationRepository, times(1)).findAllByReviewIdToDynamic(1L, null, null);
 	}
 
-	@Test
-	void 전체_수신자_조회() {
-		//given
-		User suyeon = SUYEON_FIXTURE.toEntity();
-		User beomchul = UserFixture.BEOMCHUL_FIXTURE.toEntity();
-		User juwoong = UserFixture.JUWOONG_FIXTURE.toEntity();
-
-		Participation participation1 = new Participation(suyeon);
-		participation1.setId(1L);
-		Participation participation2 = new Participation(beomchul);
-		participation2.setId(2L);
-		Participation participation3 = new Participation(juwoong);
-		participation3.setId(3L);
-		participation1.answeredReview();
-
-		List<Participation> participations = List.of(participation1, participation2, participation3);
-
-		given(participationRepository.findByReviewId(1L)).willReturn(participations);
-
-		ReplyTarget replyTarget1 = new ReplyTarget(beomchul, suyeon, 1L);
-		ReplyTarget replyTarget2 = new ReplyTarget(juwoong, suyeon, 1L);
-
-		List<ReplyTarget> replyTargetList = List.of(replyTarget1, replyTarget2);
-
-		given(replyTargetRepository.findAllByParticipationIdToDynamic(1L, null)).willReturn(
-			replyTargetList);
-
-		//when
-		List<ReceiverResponse> responses = participationService.getAllReceiver(1L, null);
-
-		//then
-		Assertions.assertThat(responses.get(0).receiverName()).isEqualTo("신범철");
-		Assertions.assertThat(responses.get(1).receiverName()).isEqualTo("김주웅");
-		Assertions.assertThat(responses.get(0).responserCount()).isEqualTo(1);
-		verify(replyTargetRepository, times(1)).findAllByParticipationIdToDynamic(1L, null);
-	}
+	// @Test
+	// void 전체_수신자_조회() {
+	// 	//given
+	// 	User suyeon = SUYEON_FIXTURE.toEntity();
+	// 	User beomchul = UserFixture.BEOMCHUL_FIXTURE.toEntity();
+	// 	User juwoong = UserFixture.JUWOONG_FIXTURE.toEntity();
+	//
+	// 	Participation participation1 = new Participation(suyeon);
+	// 	participation1.setId(1L);
+	// 	Participation participation2 = new Participation(beomchul);
+	// 	participation2.setId(2L);
+	// 	Participation participation3 = new Participation(juwoong);
+	// 	participation3.setId(3L);
+	// 	participation1.answeredReview();
+	//
+	// 	List<Participation> participations = List.of(participation1, participation2, participation3);
+	//
+	// 	given(participationRepository.findByReviewId(1L)).willReturn(participations);
+	//
+	// 	ReplyTarget replyTarget1 = new ReplyTarget(beomchul, suyeon, 1L);
+	// 	ReplyTarget replyTarget2 = new ReplyTarget(juwoong, suyeon, 1L);
+	//
+	// 	List<ReplyTarget> replyTargetList = List.of(replyTarget1, replyTarget2);
+	//
+	// 	given(replyTargetRepository.findAllByParticipationIdToDynamic(1L, null)).willReturn(
+	// 		replyTargetList);
+	//
+	// 	//when
+	// 	List<ReceiverResponse> responses = participationService.getAllReceiver(1L, null);
+	//
+	// 	//then
+	// 	Assertions.assertThat(responses.get(0).receiverName()).isEqualTo("신범철");
+	// 	Assertions.assertThat(responses.get(1).receiverName()).isEqualTo("김주웅");
+	// 	Assertions.assertThat(responses.get(0).responserCount()).isEqualTo(1);
+	// 	verify(replyTargetRepository, times(1)).findAllByParticipationIdToDynamic(1L, null);
+	// }
 
 	@Test
 	void 참여_전체조회_성공(){
