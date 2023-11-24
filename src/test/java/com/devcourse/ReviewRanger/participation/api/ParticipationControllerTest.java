@@ -1,8 +1,6 @@
 package com.devcourse.ReviewRanger.participation.api;
 
-import static com.devcourse.ReviewRanger.review.ReviewFixture.*;
 import static com.devcourse.ReviewRanger.user.UserFixture.*;
-import static com.devcourse.ReviewRanger.user.service.TestPrincipalDetailsService.*;
 import static org.assertj.core.api.BDDAssumptions.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -23,7 +21,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
@@ -34,6 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.devcourse.ReviewRanger.ReplyTarget.dto.request.CreateReplyTargetRequest;
 import com.devcourse.ReviewRanger.ReplyTarget.dto.request.UpdateReplyTargetRequest;
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.config.SecurityConfig;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
@@ -50,9 +48,7 @@ import com.devcourse.ReviewRanger.reply.dto.request.UpdateReplyRequest;
 import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.domain.ReviewType;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
-import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.user.domain.User;
-import com.devcourse.ReviewRanger.user.service.TestPrincipalDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(ParticipationController.class)
@@ -77,9 +73,6 @@ class ParticipationControllerTest {
 
 	@MockBean
 	private ReviewService reviewService;
-
-	private TestPrincipalDetailsService testUserDetailsService;
-	private UserDetails userDetails;
 
 	@BeforeEach
 	public void setup() {
@@ -107,9 +100,6 @@ class ParticipationControllerTest {
 
 		given(reviewService.createReview(4L, createReviewRequest));
 		verify(reviewService, times(1)).createReview(4L, createReviewRequest);
-
-		testUserDetailsService = new TestPrincipalDetailsService();
-		userDetails = testUserDetailsService.loadUserByUsername(USER_EMAIL);
 	}
 
 	@Test
@@ -204,6 +194,7 @@ class ParticipationControllerTest {
 
 		when(participationService.getAllParticipationsByResponserOfCursorPaging(cursorId, null, pageable))
 			.thenReturn(getReviewResponses);
+		UserDetails userDetails= new UserPrincipal(SUYEON_FIXTURE.toEntity());
 
 		// when
 		// then

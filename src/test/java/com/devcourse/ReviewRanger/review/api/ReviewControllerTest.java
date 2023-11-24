@@ -3,7 +3,9 @@ package com.devcourse.ReviewRanger.review.api;
 import static com.devcourse.ReviewRanger.question.application.QuestionFixture.*;
 import static com.devcourse.ReviewRanger.review.ReviewFixture.*;
 import static com.devcourse.ReviewRanger.user.UserFixture.*;
+
 import static com.devcourse.ReviewRanger.user.service.TestPrincipalDetailsService.*;
+
 import static java.time.LocalDateTime.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.*;
@@ -16,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -45,7 +46,6 @@ import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
 import com.devcourse.ReviewRanger.user.dto.UserResponse;
-import com.devcourse.ReviewRanger.user.service.TestPrincipalDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(ReviewController.class)
@@ -67,15 +67,6 @@ class ReviewControllerTest {
 
 	@MockBean
 	private ParticipationService participationService;
-
-	private TestPrincipalDetailsService testUserDetailsService;
-	private UserDetails userDetails;
-
-	@BeforeEach
-	public void setUp() {
-		testUserDetailsService = new TestPrincipalDetailsService();
-		userDetails = testUserDetailsService.loadUserByUsername(USER_EMAIL);
-	}
 
 	@Test
 	void 수신자_전체_조회() throws Exception {
@@ -162,7 +153,7 @@ class ReviewControllerTest {
 		);
 
 		when(reviewService.createReview(null, createReviewRequest)).thenReturn(true);
-
+		UserDetails userDetails= new UserPrincipal(SUYEON_FIXTURE.toEntity());
 		// when
 		// then
 		mockMvc.perform(post("/reviews")
@@ -199,6 +190,7 @@ class ReviewControllerTest {
 
 		when(reviewService.getAllReviewsByRequesterOfCursorPaging(cursorId, null, pageable)).thenReturn(
 			getReviewResponses);
+		UserDetails userDetails= new UserPrincipal(SUYEON_FIXTURE.toEntity());
 
 		// when
 		// then

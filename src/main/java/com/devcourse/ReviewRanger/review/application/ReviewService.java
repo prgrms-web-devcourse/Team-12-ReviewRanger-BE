@@ -94,7 +94,7 @@ public class ReviewService {
 	public void closeReviewOrThrow(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
-		review.changeStatus(ReviewStatus.END);
+		review.changeStatus(ReviewStatus.DEADLINE);
 
 		participationService.closeParticipationOrThrow(reviewId);
 	}

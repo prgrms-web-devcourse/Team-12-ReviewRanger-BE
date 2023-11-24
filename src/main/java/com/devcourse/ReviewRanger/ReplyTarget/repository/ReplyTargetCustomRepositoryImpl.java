@@ -6,8 +6,9 @@ import java.util.List;
 
 import org.springframework.util.StringUtils;
 
-import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
+import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 public class ReplyTargetCustomRepositoryImpl implements ReplyTargetCustomRepository {
@@ -19,18 +20,27 @@ public class ReplyTargetCustomRepositoryImpl implements ReplyTargetCustomReposit
 	}
 
 	@Override
-	public List<ReplyTarget> findAllByParticipationIdToDynamic(Long participationId, String searchName) {
+	public List<ReceiverResponse> findAllByParticipationIdToDynamic(Long reviewId, String searchName) {
 		BooleanBuilder builder = new BooleanBuilder();
-		if (participationId != null) {
-			builder.and(replyTarget.participationId.eq(participationId));
+		if (reviewId != null) {
+			builder.and(replyTarget.reviewId.eq(reviewId));
 		}
 
 		if (StringUtils.hasText(searchName)) {
 			builder.and(replyTarget.receiver.name.contains(searchName));
 		}
 
-		List<ReplyTarget> replyTargets = jpaQueryFactory.selectFrom(replyTarget)
+		List<ReceiverResponse> replyTargets = jpaQueryFactory.select(
+				Projections.constructor(
+					ReceiverResponse.class,
+					replyTarget.receiver.id.as("receiverId"),
+					replyTarget.receiver.name.as("receiverName"),
+					replyTarget.id.count().as("responserCount")
+				)
+			)
+			.from(replyTarget)
 			.where(builder)
+			.groupBy(replyTarget.receiver.id)
 			.orderBy(replyTarget.receiver.name.asc())
 			.fetch();
 
