@@ -32,6 +32,7 @@ import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewRespons
 import com.devcourse.ReviewRanger.finalReviewResult.dto.FinalReviewResultListResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewAnswerResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewResultResponse;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.UpdateAnswerOfSubject;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.DropdownTypeRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.FinalReviewResultRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.HexstatTypeRepository;
@@ -164,6 +165,21 @@ public class FinalReviewResultService {
 		}
 
 		return new CreateFinalReviewResponse(userId);
+	}
+
+	@Transactional
+	public void updateAnswerOfSubject(UpdateAnswerOfSubject updateAnswerOfSubject) {
+		validateReviewId(updateAnswerOfSubject.reviewId());
+
+		Long questionId = updateAnswerOfSubject.questionId();
+		Long userId = updateAnswerOfSubject.userId();
+
+		FinalReviewResultAnswerSubject subjectAnswer =
+			subjectTypeRepository.findByQuestionIdAndUserId(questionId, userId)
+				.orElseThrow(() -> new RangerException(NOT_FOUND_FINAL_REVIEW_ANSWER_OF_SUBJECT));
+
+		String updateSubject = updateAnswerOfSubject.answer();
+		subjectAnswer.update(updateSubject);
 	}
 
 	public CheckFinalResultStatus checkFinalResultStatus(Long reviewId) {

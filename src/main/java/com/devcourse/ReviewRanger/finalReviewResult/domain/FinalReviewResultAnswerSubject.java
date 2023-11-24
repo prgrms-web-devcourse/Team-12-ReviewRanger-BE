@@ -24,4 +24,8 @@ public class FinalReviewResultAnswerSubject extends FinalReviewResultAnswer {
 	public void addAnswer(Object answer) {
 		this.subjects = String.valueOf(answer);
 	}
+
+	public void update(String updateSubject) {
+		this.subjects = updateSubject;
+	}
 }
