@@ -71,11 +71,12 @@ public class ParticipationCustomRepositoryImpl implements ParticipationCustomRep
 
 		BooleanBuilder where = new BooleanBuilder();
 		Optional.ofNullable(responserId).ifPresent(key -> where.and(participation.responser.id.eq(key)));
-		Optional.ofNullable(cursorId).ifPresent(key -> where.and(participation.id.gt(cursorId)));
+		Optional.ofNullable(cursorId).ifPresent(key -> where.and(participation.id.lt(cursorId)));
 
 		List<Participation> participations = jpaQueryFactory
 			.selectFrom(participation)
 			.where(where)
+			.orderBy(participation.id.desc())
 			.limit(pageSize + 1)
 			.fetch();
 

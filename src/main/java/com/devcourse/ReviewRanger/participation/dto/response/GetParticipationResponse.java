@@ -19,7 +19,7 @@ public record GetParticipationResponse(
 	String title,
 
 	@Schema(description = "초대받은 리뷰 생성일자")
-	LocalDateTime createAt,
+	LocalDateTime createdAt,
 
 	@Schema(description = "초대받은 리뷰 제출일자")
 	LocalDateTime submitAt,

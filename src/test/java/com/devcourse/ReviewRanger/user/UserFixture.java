@@ -2,6 +2,8 @@ package com.devcourse.ReviewRanger.user;
 
 import com.devcourse.ReviewRanger.user.domain.User;
 import com.devcourse.ReviewRanger.auth.dto.JoinRequest;
+import com.devcourse.ReviewRanger.user.dto.GetUserResponse;
+import com.devcourse.ReviewRanger.user.dto.UserResponse;
 
 public enum UserFixture {
 
@@ -26,5 +28,10 @@ public enum UserFixture {
 
 	public JoinRequest toJoinRequest() {
 		return new JoinRequest(name, email, password);
+	}
+
+	public GetUserResponse toGetUserResponse(){
+		Long tempUserId =1L;
+		return new GetUserResponse(tempUserId,name);
 	}
 }

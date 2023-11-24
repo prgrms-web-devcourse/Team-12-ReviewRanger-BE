@@ -18,7 +18,6 @@ import com.devcourse.ReviewRanger.question.application.QuestionService;
 import com.devcourse.ReviewRanger.question.dto.response.GetQuestionResponse;
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
-import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailFirstResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
@@ -73,22 +72,14 @@ public class ReviewService {
 		return new SliceImpl<>(reviewResponses, requesterReviews.getPageable(), requesterReviews.hasNext());
 	}
 
-	public GetReviewDetailResponse getReviewDetailOrThrow(Long reviewId) {
-		Review review = reviewRepository.findById(reviewId)
-			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
-		List<GetQuestionResponse> questionResponses = questionService.getAllQuestionsByReview(reviewId);
-
-		return new GetReviewDetailResponse(review, questionResponses);
-	}
-
-	public GetReviewDetailFirstResponse getReviewDetailFirstOrThrow(Long reviewId, Long responserId) {
+	public GetReviewDetailResponse getReviewDetailOrThrow(Long reviewId, Long responserId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 		List<GetQuestionResponse> questionResponses = questionService.getAllQuestionsByReview(reviewId);
 
 		List<GetUserResponse> receiverResponses = getAllReceivers(reviewId, responserId);
 
-		return new GetReviewDetailFirstResponse(review, questionResponses, receiverResponses);
+		return new GetReviewDetailResponse(review, questionResponses, receiverResponses);
 	}
 
 	public List<GetUserResponse> getAllReceivers(Long reviewId, Long responserId) {
