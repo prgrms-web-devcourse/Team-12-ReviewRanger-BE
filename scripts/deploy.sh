@@ -18,6 +18,6 @@ else
   sleep 5
 fi
 
-echo "왜 실행이 안되는거지.."
-echo "> 배포 - $JAR_PATH"
-nohup java -jar $JAR_PATH > /dev/null 2> /dev/null < /dev/null &
+echo "> 배포 - $JAR_NAME"
+cd REPOSITORY/build/libs/
+nohup java -jar $JAR_NAME > /dev/null 2> /dev/null < /dev/null &
