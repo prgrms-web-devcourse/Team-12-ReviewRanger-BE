@@ -170,6 +170,78 @@ class FinalReviewResultServiceTest {
 	}
 
 	@Test
+	@DisplayName("최종 리뷰 결과 중복 생성 방지 테스트")
+	void 최종_리뷰_중복생성_방지() {
+		// given
+		Long userId = 1L;
+		Long reviewId = 1L;
+		List<Long> questionIds = List.of(1L, 2L, 3L, 4L, 5L);
+
+		List<CreateFinalReplyRequest> replies = new ArrayList<>();
+		Map<FinalQuestionType, List<Object>> questionTypesAndAnswers
+			= Map.of(
+			SUBJECTIVE, List.of("주관식 답변입니다."),
+			SINGLE_CHOICE, List.of("파이리", "꼬부기", "치코리타"),
+			RATING, List.of(1.0, 2.0, 3.0, 4.0),
+			DROPDOWN, List.of("드롭다운 답변1", "드롭다운 답변2", "드롭다운 답변2"),
+			HEXASTAT, List.of(
+				new Hexstat("바보", 2.0),
+				new Hexstat("말미잘", 3.0),
+				new Hexstat("해삼", 4.0),
+				new Hexstat("똥꼴래", 5.0),
+				new Hexstat("파스타", 6.0),
+				new Hexstat("신비력", 1.0)
+			)
+		);
+		Set<FinalQuestionType> questionTypes = questionTypesAndAnswers.keySet();
+
+		int i = 0;
+		for (FinalQuestionType questionType : questionTypes) {
+			Long questionId = questionIds.get(i);
+			String questionTitle = "질문 제목" + questionId;
+			CreateFinalReplyRequest createFinalReplyRequest = new CreateFinalReplyRequest(
+				questionId,
+				questionTitle,
+				questionType,
+				questionTypesAndAnswers.get(questionType)
+			);
+			replies.add(createFinalReplyRequest);
+			i++;
+		}
+
+		CreateFinalReviewRequest request = new CreateFinalReviewRequest(
+			userId,
+			"장수연",
+			reviewId,
+			"1차 피어리뷰 입니다.",
+			"마감 기한은 내일까지 입니다.",
+			replies
+		);
+
+		User fakeUser = SUYEON_FIXTURE.toEntity();
+		Review fakeReview = BASIC_REVIEW.toEntity();
+		FinalReviewResult fakeFinalReviewResult = request.toEntity();
+
+		for (CreateFinalReplyRequest reply : replies) {
+			FinalQuestion finalQuestion = reply.toEntity();
+			fakeFinalReviewResult.addQuestions(finalQuestion);
+		}
+
+		when(userRepository.findById(any())).thenReturn(Optional.of(fakeUser));
+		when(reviewRepository.findById(any())).thenReturn(Optional.of(fakeReview));
+		when(finalReviewResultRepository.findByReviewIdAndUserIdAndStatus(userId, reviewId, NOT_SENT)).
+			thenReturn(Optional.of(fakeFinalReviewResult));
+
+		// when
+		finalReviewResultService.createFinalReviewResult(request);
+
+		// then
+		verify(userRepository, times(1)).findById(any());
+		verify(reviewRepository, times(1)).findById(any());
+		verify(finalReviewResultRepository, times(0)).save(any(FinalReviewResult.class));
+	}
+
+	@Test
 	void 최종_리뷰_전송_성공() {
 		// given
 		Long reviewId = 1L;
