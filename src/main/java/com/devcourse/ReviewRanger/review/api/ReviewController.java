@@ -19,7 +19,6 @@ import com.devcourse.ReviewRanger.participation.dto.response.ParticipationRespon
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
 import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
-import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailFirstResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
@@ -79,11 +78,11 @@ public class ReviewController {
 		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우")
 	})
 	@GetMapping("/reviews/{id}")
-	public RangerResponse<GetReviewDetailFirstResponse> getReviewDetail(
+	public RangerResponse<GetReviewDetailResponse> getReviewDetail(
 		@PathVariable("id") Long reviewId,
 		@AuthenticationPrincipal UserPrincipal user
 	) {
-		GetReviewDetailFirstResponse response = reviewService.getReviewDetailOrThrow(reviewId, user.getId());
+		GetReviewDetailResponse response = reviewService.getReviewDetailOrThrow(reviewId, user.getId());
 
 		return RangerResponse.ok(response);
 	}
