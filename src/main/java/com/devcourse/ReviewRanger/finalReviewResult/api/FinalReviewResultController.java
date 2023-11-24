@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,7 @@ import com.devcourse.ReviewRanger.finalReviewResult.dto.FinalReviewResultListRes
 import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewAnswerResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewResultResponse;
 import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.UpdateAnswerOfSubject;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -95,6 +97,21 @@ public class FinalReviewResultController {
 			= finalReviewResultService.createFinalReviewResult(finalReviewRequest);
 
 		return RangerResponse.ok(finalReviewResponse);
+	}
+
+	@Tag(name = "final-result")
+	@Operation(summary = "주관식 답변 업데이트", description = "전송 전 최종 리뷰 결과의 주관식 답변 업데이트 API", responses = {
+		@ApiResponse(responseCode = "200", description = "주관식 답변 업데이트 성공"),
+		@ApiResponse(responseCode = "404", description = "유효하지 않은 식별 값인 경우"),
+	})
+	@PatchMapping
+	@ResponseStatus(OK)
+	public RangerResponse<Void> updateFinalReviewAnswerOfSubject(
+		@RequestBody @Valid UpdateAnswerOfSubject updateAnswerOfSubject
+	) {
+		finalReviewResultService.updateAnswerOfSubject(updateAnswerOfSubject);
+
+		return RangerResponse.noData();
 	}
 
 	@Tag(name = "final-result")

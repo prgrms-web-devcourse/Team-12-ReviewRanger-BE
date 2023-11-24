@@ -41,6 +41,7 @@ import com.devcourse.ReviewRanger.finalReviewResult.domain.Hexstat;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReplyRequest;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewRequest;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewAnswerResponse;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.UpdateAnswerOfSubject;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.DropdownTypeRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.FinalReviewResultRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.HexstatTypeRepository;
@@ -239,6 +240,24 @@ class FinalReviewResultServiceTest {
 		verify(userRepository, times(1)).findById(any());
 		verify(reviewRepository, times(1)).findById(any());
 		verify(finalReviewResultRepository, times(0)).save(any(FinalReviewResult.class));
+	}
+
+	@Test
+	void 주관식_결과_업데이트_성공() {
+		// given
+		FinalReviewResultAnswerSubject answerSubject = new FinalReviewResultAnswerSubject(1L, 1L);
+		String updateAnswer = "주관식 답변을 정제한 내용입니다. 이것을 다시 저장할게요!!";
+		UpdateAnswerOfSubject updateAnswerOfSubject = new UpdateAnswerOfSubject(1L, 1L, 1L, updateAnswer);
+		Review mockReview = mock(Review.class);
+
+		when(reviewRepository.findById(anyLong())).thenReturn(Optional.ofNullable(mockReview));
+		when(subjectTypeRepository.findByQuestionIdAndUserId(1L, 1L)).thenReturn(Optional.of(answerSubject));
+
+		// when
+		finalReviewResultService.updateAnswerOfSubject(updateAnswerOfSubject);
+
+		// then
+		assertEquals(answerSubject.getSubjects(), updateAnswer);
 	}
 
 	@Test
