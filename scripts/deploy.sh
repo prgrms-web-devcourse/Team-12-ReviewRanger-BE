@@ -19,5 +19,5 @@ else
 fi
 
 echo "> 배포 - $JAR_NAME"
-cd REPOSITORY/build/libs/
+cd $REPOSITORY/build/libs/
 nohup java -jar $JAR_NAME > /dev/null 2> /dev/null < /dev/null &
