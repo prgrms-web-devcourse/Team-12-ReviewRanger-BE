@@ -50,11 +50,11 @@ public class ReviewServiceSelectTest {
 		Review fakeReview = BASIC_REVIEW.toEntity();
 
 		Long reviewId =1L;
+		Long responserId =1L;
 		when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(fakeReview));
 		when(questionService.getAllQuestionsByReview(reviewId)).thenReturn(List.of());
-
 		// when
-		GetReviewDetailResponse getReviewDetailResponse = reviewService.getReviewDetailOrThrow(reviewId);
+		GetReviewDetailResponse getReviewDetailResponse = reviewService.getReviewDetailOrThrow(reviewId,responserId);
 
 		// then
 		verify(reviewRepository, times(1)).findById(reviewId);
@@ -71,10 +71,11 @@ public class ReviewServiceSelectTest {
 		// given
 		Review fakeReview = BASIC_REVIEW.toEntity();
 		Long wrongReviewId =1L;
+		Long responserId =1L;
 
 		// when
 		// then
-		Assertions.assertThatThrownBy(() -> reviewService.getReviewDetailOrThrow(wrongReviewId))
+		Assertions.assertThatThrownBy(() -> reviewService.getReviewDetailOrThrow(wrongReviewId, responserId))
 			.isInstanceOf(RangerException.class)
 			.hasMessage(NOT_FOUND_REVIEW.getMessage());
 	}

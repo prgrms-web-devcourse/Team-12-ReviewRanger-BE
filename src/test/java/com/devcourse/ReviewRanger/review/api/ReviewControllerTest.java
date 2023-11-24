@@ -2,6 +2,7 @@ package com.devcourse.ReviewRanger.review.api;
 
 import static com.devcourse.ReviewRanger.question.application.QuestionFixture.*;
 import static com.devcourse.ReviewRanger.review.ReviewFixture.*;
+import static com.devcourse.ReviewRanger.user.UserFixture.*;
 import static com.devcourse.ReviewRanger.user.service.TestPrincipalDetailsService.*;
 import static java.time.LocalDateTime.*;
 import static org.hamcrest.Matchers.*;
@@ -23,30 +24,21 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.config.SecurityConfig;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
-import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
 import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.participation.dto.response.ParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
 import com.devcourse.ReviewRanger.question.dto.request.CreateQuestionRequest;
-import com.devcourse.ReviewRanger.question.dto.response.GetQuestionResponse;
 import com.devcourse.ReviewRanger.review.application.ReviewService;
-import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.domain.ReviewType;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
@@ -55,10 +47,6 @@ import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
 import com.devcourse.ReviewRanger.user.dto.UserResponse;
 import com.devcourse.ReviewRanger.user.service.TestPrincipalDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 @WebMvcTest(ReviewController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -239,17 +227,20 @@ class ReviewControllerTest {
 	void 리뷰_상세조회_성공() throws Exception {
 		// given
 		Long reviewId = 1L;
+		Long responserId =null;
 
 		GetReviewDetailResponse response = new GetReviewDetailResponse(
 			BASIC_REVIEW.toEntity(),
-			List.of(BASIC_QUESTION.toGetQuestionResponse())
+			List.of(BASIC_QUESTION.toGetQuestionResponse()),
+			List.of(SUYEON_FIXTURE.toGetUserResponse())
 		);
 
-		when(reviewService.getReviewDetailOldOrThrow(reviewId)).thenReturn(response);
+		when(reviewService.getReviewDetailOrThrow(reviewId,responserId)).thenReturn(response);
 
 		// when
 		// then
-		mockMvc.perform(get("/reviews/{id}", 1))
+		mockMvc.perform(get("/reviews/{id}", 1)
+			.with(user(userDetails)))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.success").value(true))
 			.andExpect(jsonPath("$.data.id").value(nullValue()))
@@ -263,7 +254,7 @@ class ReviewControllerTest {
 			.andExpect(jsonPath("$.data.questions[0].questionOptions").value(empty()))
 			.andDo(print());
 
-		verify(reviewService,times(1)).getReviewDetailOldOrThrow(reviewId);
+		verify(reviewService,times(1)).getReviewDetailOrThrow(reviewId, responserId);
 	}
 
 	@Test
