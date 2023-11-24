@@ -63,7 +63,7 @@ public class S3manager implements ImageManager {
 		boolean isExtension = imageExtensions.contains(extension.toLowerCase());
 
 		if (!isExtension) {
-			log.warn("이미지 확장가 검증 오류 : {}", filename);
+			log.warn("이미지 확장자 검증 오류 : {}", filename);
 			throw new RangerException(INVALID_IMAGE_EXTENSION);
 		}
 
