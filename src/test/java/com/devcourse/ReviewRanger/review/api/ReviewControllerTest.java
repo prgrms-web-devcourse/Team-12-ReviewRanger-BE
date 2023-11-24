@@ -3,7 +3,6 @@ package com.devcourse.ReviewRanger.review.api;
 import static com.devcourse.ReviewRanger.question.application.QuestionFixture.*;
 import static com.devcourse.ReviewRanger.review.ReviewFixture.*;
 import static com.devcourse.ReviewRanger.user.UserFixture.*;
-
 import static java.time.LocalDateTime.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.*;
@@ -46,6 +45,7 @@ import com.devcourse.ReviewRanger.review.dto.response.GetReviewDetailResponse;
 import com.devcourse.ReviewRanger.review.dto.response.GetReviewResponse;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
 import com.devcourse.ReviewRanger.user.dto.UserResponse;
+import com.devcourse.ReviewRanger.user.application.TestPrincipalDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(ReviewController.class)
@@ -249,22 +249,22 @@ class ReviewControllerTest {
 			.andExpect(jsonPath("$.data.questions[0].questionOptions").value(empty()))
 			.andDo(print());
 
-		verify(reviewService,times(1)).getReviewDetailOrThrow(reviewId, responserId);
+		verify(reviewService, times(1)).getReviewDetailOrThrow(reviewId);
 	}
 
 	@Test
-	void 리뷰_마감_성공() throws  Exception{
+	void 리뷰_마감_성공() throws Exception {
 		// given
 		Long reviewId = 1L;
 		doNothing().when(reviewService).closeReviewOrThrow(reviewId);
 
 		// when
 		// then
-		mockMvc.perform(post("/reviews/{id}/close",1L))
+		mockMvc.perform(post("/reviews/{id}/close", 1L))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.success").value(true))
 			.andDo(print());
-		
-		verify(reviewService,times(1)).closeReviewOrThrow(reviewId);
+
+		verify(reviewService, times(1)).closeReviewOrThrow(reviewId);
 	}
 }

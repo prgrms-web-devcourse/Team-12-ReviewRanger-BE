@@ -1,6 +1,7 @@
 package com.devcourse.ReviewRanger.participation.api;
 
 import static com.devcourse.ReviewRanger.user.UserFixture.*;
+import static com.devcourse.ReviewRanger.user.application.TestPrincipalDetailsService.*;
 import static org.assertj.core.api.BDDAssumptions.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -49,6 +50,7 @@ import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.domain.ReviewType;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
 import com.devcourse.ReviewRanger.user.domain.User;
+import com.devcourse.ReviewRanger.user.application.TestPrincipalDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(ParticipationController.class)
