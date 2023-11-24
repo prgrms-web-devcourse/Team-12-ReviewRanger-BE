@@ -16,13 +16,17 @@ public abstract class FinalReviewResultAnswer {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name = "user_id")
+	private Long userId;
+
 	@Column(name = "question_id")
 	private Long questionId;
 
 	protected FinalReviewResultAnswer() {
 	}
 
-	protected FinalReviewResultAnswer(Long questionId) {
+	protected FinalReviewResultAnswer(Long userId, Long questionId) {
+		this.userId = userId;
 		this.questionId = questionId;
 	}
 

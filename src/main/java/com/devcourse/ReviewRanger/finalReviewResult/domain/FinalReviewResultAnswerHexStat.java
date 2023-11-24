@@ -23,8 +23,8 @@ public class FinalReviewResultAnswerHexStat extends FinalReviewResultAnswer {
 		super();
 	}
 
-	public FinalReviewResultAnswerHexStat(Long questionId) {
-		super(questionId);
+	public FinalReviewResultAnswerHexStat(Long userId, Long questionId) {
+		super(userId, questionId);
 	}
 
 	@Override

@@ -241,11 +241,11 @@ class FinalReviewResultServiceTest {
 		);
 		FinalReviewResult fakeFinalReviewResult = FinalReviewResultFixture.BASIC_FIXTURE.toEntity(fakeFinalQuestions);
 
-		FinalReviewResultAnswerSubject subjectAnswer = new FinalReviewResultAnswerSubject(1L);
-		FinalReviewResultAnswerObjects objectAnswer = new FinalReviewResultAnswerObjects(2L);
-		FinalReviewResultAnswerRating ratingAnswer = new FinalReviewResultAnswerRating(3L);
-		FinalReviewResultAnswerDropdown dropdownAnswer = new FinalReviewResultAnswerDropdown(4L);
-		FinalReviewResultAnswerHexStat hexstatAnswer = new FinalReviewResultAnswerHexStat(5L);
+		FinalReviewResultAnswerSubject subjectAnswer = new FinalReviewResultAnswerSubject(1L, 1L);
+		FinalReviewResultAnswerObjects objectAnswer = new FinalReviewResultAnswerObjects(1L, 2L);
+		FinalReviewResultAnswerRating ratingAnswer = new FinalReviewResultAnswerRating(1L, 3L);
+		FinalReviewResultAnswerDropdown dropdownAnswer = new FinalReviewResultAnswerDropdown(1L, 4L);
+		FinalReviewResultAnswerHexStat hexstatAnswer = new FinalReviewResultAnswerHexStat(1L, 5L);
 
 		List<FinalReviewResultAnswerSubject> subjectAnswers = List.of(subjectAnswer);
 		List<FinalReviewResultAnswerObjects> objectAnswers = List.of(objectAnswer);

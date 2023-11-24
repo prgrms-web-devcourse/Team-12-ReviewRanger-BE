@@ -16,8 +16,8 @@ public class FinalReviewResultAnswerDropdown extends FinalReviewResultAnswer {
 		super();
 	}
 
-	public FinalReviewResultAnswerDropdown(Long questionId) {
-		super(questionId);
+	public FinalReviewResultAnswerDropdown(Long userId, Long questionId) {
+		super(userId, questionId);
 	}
 
 	@Override
