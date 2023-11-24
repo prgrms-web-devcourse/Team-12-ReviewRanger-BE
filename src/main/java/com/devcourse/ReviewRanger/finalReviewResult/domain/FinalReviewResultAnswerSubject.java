@@ -16,8 +16,8 @@ public class FinalReviewResultAnswerSubject extends FinalReviewResultAnswer {
 		super();
 	}
 
-	public FinalReviewResultAnswerSubject(Long questionId) {
-		super(questionId);
+	public FinalReviewResultAnswerSubject(Long userId, Long questionId) {
+		super(userId, questionId);
 	}
 
 	@Override

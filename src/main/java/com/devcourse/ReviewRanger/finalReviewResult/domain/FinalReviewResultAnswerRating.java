@@ -18,8 +18,8 @@ public class FinalReviewResultAnswerRating extends FinalReviewResultAnswer {
 		super();
 	}
 
-	public FinalReviewResultAnswerRating(Long questionId) {
-		super(questionId);
+	public FinalReviewResultAnswerRating(Long userId, Long questionId) {
+		super(userId, questionId);
 	}
 
 	@Override

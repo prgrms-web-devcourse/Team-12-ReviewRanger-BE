@@ -86,4 +86,12 @@ public class FinalReviewResult extends BaseEntity {
 	public void addQuestions(FinalQuestion question) {
 		this.questions.add(question);
 	}
+
+	public List<Long> questionIds() {
+		List<Long> questionIds = new ArrayList<>();
+		for (FinalQuestion finalQuestion : questions) {
+			questionIds.add(finalQuestion.getQuestionId());
+		}
+		return questionIds;
+	}
 }
