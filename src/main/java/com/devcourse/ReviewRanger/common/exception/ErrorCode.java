@@ -12,6 +12,8 @@ public enum ErrorCode {
 	//400 error
 	MISSING_REQUIRED_QUESTION_REPLY(BAD_REQUEST, "필수 질문의 답변이 존재하지 않습니다."),
 	MISSING_IMAGE_CONVERT(BAD_REQUEST, "MultipartFile -> File 전환에 실패했습니다."),
+	EMPTY_IMAGE(BAD_REQUEST, "이미지가 없습니다."),
+	INVALID_IMAGE_EXTENSION(BAD_REQUEST, "이미지 확장자가 올바르지 않습니다."),
 
 	// 401 error
 	NOT_CORRECT_JWT(UNAUTHORIZED, "잘못된 JWT 토큰입니다."),

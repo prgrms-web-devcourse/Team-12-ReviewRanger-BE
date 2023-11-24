@@ -3,6 +3,7 @@ package com.devcourse.ReviewRanger.user.application;
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ public class UserService {
 	@Transactional
 	public void updateImage(Long id, MultipartFile multipartFile) {
 		User user = getUserOrThrow(id);
-		String fileName = user.getId() + multipartFile.getOriginalFilename();
+		String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
 
 		s3Manager.delete(fileName, DIRECTORY);
 		String uploadImageUrl = s3Manager.upload(multipartFile, DIRECTORY, fileName);
