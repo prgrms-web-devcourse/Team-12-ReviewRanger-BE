@@ -101,12 +101,12 @@ public class ParticipationService {
 		List<Participation> participations = getAllByReviewId(reviewId);
 
 		participations.stream()
-			.peek(participation -> {
+			.forEach(participation -> {
 				if (!participation.getIsAnswered()) {
 					throw new RangerException(NOT_FINISHED_PARTICIPANTS);
 				}
-			})
-			.forEach(participation -> participation.changeStatus(ReviewStatus.DEADLINE));
+				participation.changeStatus(ReviewStatus.DEADLINE);
+			});
 	}
 
 	public List<ParticipationResponse> getAllParticipationOrThrow(Long reviewId, String name, String sort) {
