@@ -19,7 +19,6 @@ public class GlobalExceptionHandler {
 	private static final String LOG_FORMAT = "Class : {}, ErrorMessage : {}";
 
 	public record ErrorResponse(
-		String errorCode,
 		String message
 	) {
 	}
@@ -30,7 +29,7 @@ public class GlobalExceptionHandler {
 		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), errorCode);
 
 		return ResponseEntity.status(errorCode.getHttpStatus())
-			.body(new ErrorResponse(errorCode.name(), errorCode.getMessage()));
+			.body(new ErrorResponse(errorCode.getMessage()));
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -39,7 +38,7 @@ public class GlobalExceptionHandler {
 		log.warn(VALID_LOG_FORMAT, e.getClass().getSimpleName(), "@Valid", errorMessage);
 
 		return ResponseEntity.status(BAD_REQUEST)
-			.body(new ErrorResponse(BAD_REQUEST.name(), errorMessage));
+			.body(new ErrorResponse(errorMessage));
 	}
 
 	@ExceptionHandler(DataAccessException.class)
@@ -48,7 +47,7 @@ public class GlobalExceptionHandler {
 		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
 
 		return ResponseEntity.status(BAD_REQUEST)
-			.body(new ErrorResponse(BAD_REQUEST.name(), errorMessage));
+			.body(new ErrorResponse(errorMessage));
 	}
 
 	@ExceptionHandler(JsonProcessingException.class)
@@ -57,7 +56,7 @@ public class GlobalExceptionHandler {
 		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
 
 		return ResponseEntity.status(BAD_REQUEST)
-			.body(new ErrorResponse(BAD_REQUEST.name(), errorMessage));
+			.body(new ErrorResponse(errorMessage));
 	}
 
 	@ExceptionHandler(RuntimeException.class)
@@ -65,6 +64,6 @@ public class GlobalExceptionHandler {
 		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), e.getMessage());
 
 		return ResponseEntity.status(INTERNAL_SERVER_ERROR)
-			.body(new ErrorResponse(INTERNAL_SERVER_ERROR.name(), e.getMessage()));
+			.body(new ErrorResponse(e.getMessage()));
 	}
 }
