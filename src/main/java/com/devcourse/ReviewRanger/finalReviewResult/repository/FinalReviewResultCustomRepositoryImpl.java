@@ -43,7 +43,7 @@ public class FinalReviewResultCustomRepositoryImpl implements FinalReviewResultC
 					.and(eqCursorId(cursorId))
 					.and(finalReviewResult.status.eq(SENT))
 			)
-			.orderBy(finalReviewResult.id.asc())
+			.orderBy(finalReviewResult.id.desc())
 			.limit(pageSize + 1)
 			.fetch();
 
@@ -57,6 +57,6 @@ public class FinalReviewResultCustomRepositoryImpl implements FinalReviewResultC
 	}
 
 	private BooleanExpression eqCursorId(Long cursorId) {
-		return (cursorId == null) ? null : finalReviewResult.id.gt(cursorId);
+		return (cursorId == null) ? null : finalReviewResult.id.lt(cursorId);
 	}
 }
