@@ -99,7 +99,14 @@ public class ParticipationService {
 	@Transactional
 	public void closeParticipationOrThrow(Long reviewId) {
 		List<Participation> participations = getAllByReviewId(reviewId);
-		participations.stream().forEach(participation -> participation.changeStatus(ReviewStatus.DEADLINE));
+
+		participations.stream()
+			.forEach(participation -> {
+				if (!participation.getIsAnswered()) {
+					throw new RangerException(NOT_FINISHED_PARTICIPANTS);
+				}
+				participation.changeStatus(ReviewStatus.DEADLINE);
+			});
 	}
 
 	public List<ParticipationResponse> getAllParticipationOrThrow(Long reviewId, String name, String sort) {

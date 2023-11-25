@@ -125,7 +125,7 @@ public class ReviewServiceSelectTest {
 		reviewService.closeReviewOrThrow(reviewId);
 
 		// then
-		assertEquals(ReviewStatus.END, mockReview.getStatus());
+		assertEquals(DEADLINE, mockReview.getStatus());
 		verify(reviewRepository, times(1)).findById(reviewId);
 		verify(participationService, times(1)).closeParticipationOrThrow(reviewId);
 	}

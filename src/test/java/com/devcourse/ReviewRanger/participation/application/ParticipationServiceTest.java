@@ -184,7 +184,9 @@ class ParticipationServiceTest {
 	void 참여_마감_성공() {
 		// given
 		Long reviewId = 1L;
-		List<Participation> mockParticipations = List.of(new Participation(SUYEON_FIXTURE.toEntity()));
+		Participation participation = new Participation(SUYEON_FIXTURE.toEntity());
+		participation.answeredReview();
+		List<Participation> mockParticipations = List.of(participation);
 
 		when(participationRepository.findByReviewId(reviewId)).thenReturn(mockParticipations);
 
@@ -192,10 +194,26 @@ class ParticipationServiceTest {
 		participationService.closeParticipationOrThrow(reviewId);
 
 		// then
-		for (Participation participation : mockParticipations) {
-			assertEquals(ReviewStatus.END, participation.getReviewStatus());
+		for (Participation mockParticipation : mockParticipations) {
+			assertEquals(DEADLINE, participation.getReviewStatus());
 		}
 
 		verify(participationRepository, times(1)).findByReviewId(reviewId);
+	}
+
+	@Test
+	void 리뷰미응답에_따른_참여_마감_실패(){
+		// given
+		Long reviewId = 1L;
+		Participation participation = new Participation(SUYEON_FIXTURE.toEntity());
+		List<Participation> mockParticipations = List.of(participation);
+
+		when(participationRepository.findByReviewId(reviewId)).thenReturn(mockParticipations);
+
+		// when
+		// then
+		Assertions.assertThatThrownBy(() -> participationService.closeParticipationOrThrow(reviewId))
+			.isInstanceOf(RangerException.class)
+			.hasMessage(NOT_FINISHED_PARTICIPANTS.getMessage());
 	}
 }
