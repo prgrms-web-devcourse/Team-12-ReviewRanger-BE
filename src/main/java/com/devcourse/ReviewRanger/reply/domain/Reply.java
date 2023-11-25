@@ -76,8 +76,33 @@ public class Reply extends BaseEntity {
 	}
 
 	public void validateReplyInputsOrThrow() {
-		if (this.answerText == null && this.questionOptionId == null && this.rating == null && this.hexastat == null) {
+		if (isEmptyAnswer()) {
 			throw new RangerException(MISSING_REQUIRED_QUESTION_REPLY);
 		}
+	}
+
+	public boolean isNotOptionQuestionReply() {
+		return this.questionOptionId == null || this.questionOptionId == 0;
+	}
+
+	private boolean isEmptyAnswer() {
+		return isEmpty(this.answerText) || isEmpty(this.questionOptionId) || isEmpty(this.rating) || isEmpty(
+			this.hexastat);
+	}
+
+	private boolean isEmpty(String str) {
+		return str != null && str.isEmpty();
+	}
+
+	private boolean isEmpty(Long longValue) {
+		return longValue != null && longValue.longValue() == 0;
+	}
+
+	private boolean isEmpty(Double doubleValue) {
+		return doubleValue != null && doubleValue.doubleValue() == 0;
+	}
+
+	private boolean isEmpty(Integer integerValue) {
+		return integerValue != null && integerValue.intValue() == 0;
 	}
 }
