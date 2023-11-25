@@ -338,18 +338,17 @@ class FinalReviewResultServiceTest {
 		FinalReviewResultAnswerDropdown dropdownAnswer = new FinalReviewResultAnswerDropdown(1L, 4L);
 		FinalReviewResultAnswerHexStat hexstatAnswer = new FinalReviewResultAnswerHexStat(1L, 5L);
 
-		List<FinalReviewResultAnswerSubject> subjectAnswers = List.of(subjectAnswer);
 		List<FinalReviewResultAnswerObjects> objectAnswers = List.of(objectAnswer);
 		List<FinalReviewResultAnswerRating> ratingAnswers = List.of(ratingAnswer);
 		List<FinalReviewResultAnswerDropdown> dropdownAnswers = List.of(dropdownAnswer);
 		List<FinalReviewResultAnswerHexStat> hexstatAnswers = List.of(hexstatAnswer);
 
 		when(finalReviewResultRepository.findById(finalReviewId)).thenReturn(Optional.of(fakeFinalReviewResult));
-		when(subjectTypeRepository.findAllByQuestionId(any())).thenReturn(subjectAnswers);
-		when(objectTypeRepository.findAllByQuestionId(any())).thenReturn(objectAnswers);
-		when(ratingTypeRepository.findAllByQuestionId(any())).thenReturn(ratingAnswers);
-		when(dropdownTypeRepository.findAllByQuestionId(any())).thenReturn(dropdownAnswers);
-		when(hexstatTypeRepository.findAllByQuestionId(any())).thenReturn(hexstatAnswers);
+		when(subjectTypeRepository.findByQuestionIdAndUserId(any(), any())).thenReturn(Optional.of(subjectAnswer));
+		when(objectTypeRepository.findAllByQuestionIdAndUserId(any(), any())).thenReturn(objectAnswers);
+		when(ratingTypeRepository.findAllByQuestionIdAndUserId(any(), any())).thenReturn(ratingAnswers);
+		when(dropdownTypeRepository.findAllByQuestionIdAndUserId(any(), any())).thenReturn(dropdownAnswers);
+		when(hexstatTypeRepository.findAllByQuestionIdAndUserId(any(), any())).thenReturn(hexstatAnswers);
 
 		// when
 		List<GetFinalReviewAnswerResponse> getFinalReviewAnswerResponses = finalReviewResultService.getFinalReviewAnswerList(

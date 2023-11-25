@@ -250,6 +250,7 @@ public class FinalReviewResultService {
 
 	public List<GetFinalReviewAnswerResponse> getFinalReviewAnswerList(Long finalReviewId) {
 		FinalReviewResult finalReviewResult = getFinalReviewResultOrThrow(finalReviewId);
+		Long userId = finalReviewResult.getUserId();
 		List<FinalQuestion> questions = finalReviewResult.getQuestions();
 
 		// 질문들의 식별자를 하나씩 사용하여 질문 타입에 맞는 답변들을 가져온다
@@ -264,17 +265,16 @@ public class FinalReviewResultService {
 
 			switch (finalQuestionType) {
 				case SUBJECTIVE -> {
-					List<FinalReviewResultAnswerSubject> subjectAnswers
-						= subjectTypeRepository.findAllByQuestionId(questionId); // TODO: 현재 조회하는 userID로 식별 필요
+					FinalReviewResultAnswerSubject subjectAnswers
+						= subjectTypeRepository.findByQuestionIdAndUserId(questionId, userId)
+						.orElseThrow(() -> new RangerException(NOT_FOUND_FINAL_REVIEW_ANSWER_OF_SUBJECT));
 
-					for (FinalReviewResultAnswerSubject answer : subjectAnswers) {
-						answerIdList.add(answer.getId());
-						answers.add(answer.getSubjects());
-					}
+					answerIdList.add(subjectAnswers.getId());
+					answers.add(subjectAnswers);
 				}
 				case SINGLE_CHOICE, MULTIPLE_CHOICE -> {
 					List<FinalReviewResultAnswerObjects> objectAnswers
-						= objectTypeRepository.findAllByQuestionId(questionId);
+						= objectTypeRepository.findAllByQuestionIdAndUserId(questionId, userId);
 
 					for (FinalReviewResultAnswerObjects answer : objectAnswers) {
 						answerIdList.add(answer.getId());
@@ -283,7 +283,7 @@ public class FinalReviewResultService {
 				}
 				case RATING -> {
 					List<FinalReviewResultAnswerRating> ratingAnswers
-						= ratingTypeRepository.findAllByQuestionId(questionId);
+						= ratingTypeRepository.findAllByQuestionIdAndUserId(questionId, userId);
 
 					for (FinalReviewResultAnswerRating answer : ratingAnswers) {
 						answerIdList.add(answer.getId());
@@ -292,7 +292,7 @@ public class FinalReviewResultService {
 				}
 				case DROPDOWN -> {
 					List<FinalReviewResultAnswerDropdown> dropdownAnswers
-						= dropdownTypeRepository.findAllByQuestionId(questionId);
+						= dropdownTypeRepository.findAllByQuestionIdAndUserId(questionId, userId);
 
 					for (FinalReviewResultAnswerDropdown answer : dropdownAnswers) {
 						answerIdList.add(answer.getId());
@@ -301,7 +301,7 @@ public class FinalReviewResultService {
 				}
 				case HEXASTAT -> {
 					List<FinalReviewResultAnswerHexStat> hexstatAnswers
-						= hexstatTypeRepository.findAllByQuestionId(questionId);
+						= hexstatTypeRepository.findAllByQuestionIdAndUserId(questionId, userId);
 
 					for (FinalReviewResultAnswerHexStat answer : hexstatAnswers) {
 						answerIdList.add(answer.getId());
