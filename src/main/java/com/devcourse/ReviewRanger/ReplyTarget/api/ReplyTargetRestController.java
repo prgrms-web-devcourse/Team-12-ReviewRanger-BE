@@ -52,15 +52,4 @@ public class ReplyTargetRestController {
 
 		return RangerResponse.ok(responses);
 	}
-
-	@Tag(name = "reply-target")
-	@Operation(summary = "테스트1", description = "테스트 API", responses = {
-		@ApiResponse(responseCode = "200", description = "테스트 성공"),
-	})
-	@GetMapping("/reviews/{reviewId}/test/lastTest")
-	public RangerResponse<Void> getRepliesByReceiver(@PathVariable Long reviewId) {
-		System.out.println(reviewId);
-
-		return RangerResponse.noData();
-	}
 }
