@@ -25,6 +25,7 @@ public enum ErrorCode {
 	FAIL_USER_LOGIN(NOT_FOUND, "존재하지 않는 계정입니다."),
 	NOT_FOUND_USER(NOT_FOUND, "존재하지 않는 사용자입니다."),
 	NOT_FOUND_REVIEW(NOT_FOUND, "존재하지 않는 리뷰입니다."),
+
 	NOT_FOUND_QUESTION(NOT_FOUND, "존재하지 않는 질문입니다."),
 	NOT_FOUND_PARTICIPATION(NOT_FOUND, "해당하는 리뷰가 없습니다."),
 	NOT_FOUND_REVIEW_TARGET(NOT_FOUND, "존재하지 않는 리뷰 대상입니다."),
@@ -34,6 +35,7 @@ public enum ErrorCode {
 	NOT_FOUND_QUESTION_OPTION(NOT_FOUND, "존재하지 않는 질문 옵션입니다."),
 	NOT_FOUND_FINAL_REVIEW_RESULT(NOT_FOUND, "존재하지 않는 최종 리뷰 결과입니다."),
 	NOT_FOUND_PARTICIPANTS(NOT_FOUND, "참여 목록이 존재하지 않습니다."),
+	NOT_FINISHED_PARTICIPANTS(NOT_FOUND, "리뷰가 모두 제출되지 않았습니다."),
 
 	// 409 error
 	EXIST_SAME_NAME(CONFLICT, "이미 사용중인 이름 입니다."),
