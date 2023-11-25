@@ -98,7 +98,7 @@ public class ReplyTargetService {
 	private List<ReplyResponse> getAllReplies(ReplyTarget replyTarget) {
 		return replyTarget.getReplies().stream()
 			.map(reply -> {
-				if (reply.getQuestionOptionId() == null) {
+				if (reply.isNotOptionQuestionReply()) {
 					return ReplyResponse.toResponse(reply);
 				}
 
