@@ -2,40 +2,68 @@ package com.devcourse.ReviewRanger.common.exception;
 
 import static org.springframework.http.HttpStatus.*;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+	private static final String VALID_LOG_FORMAT = "Class : {}, Error : {}, ErrorMessage : {}";
+	private static final String LOG_FORMAT = "Class : {}, ErrorMessage : {}";
 
 	public record ErrorResponse(
-		HttpStatus status,
-		String errorCode,
 		String message
 	) {
 	}
 
 	@ExceptionHandler(RangerException.class)
-	@ResponseBody
-	public ErrorResponse handleRangerException(RangerException e) {
+	public ResponseEntity<ErrorResponse> handleRangerException(RangerException e) {
 		ErrorCode errorCode = e.getErrorCode();
-		return new ErrorResponse(errorCode.getHttpStatus(), errorCode.name(), errorCode.getMessage());
+		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), errorCode);
+
+		return ResponseEntity.status(errorCode.getHttpStatus())
+			.body(new ErrorResponse(errorCode.getMessage()));
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	@ResponseBody
-	public ErrorResponse handleRangerException(MethodArgumentNotValidException e) {
+	public ResponseEntity<ErrorResponse> handleRangerException(MethodArgumentNotValidException e) {
 		String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-		return new ErrorResponse(BAD_REQUEST, BAD_REQUEST.name(), errorMessage);
+		log.warn(VALID_LOG_FORMAT, e.getClass().getSimpleName(), "@Valid", errorMessage);
+
+		return ResponseEntity.status(BAD_REQUEST)
+			.body(new ErrorResponse(errorMessage));
+	}
+
+	@ExceptionHandler(DataAccessException.class)
+	public ResponseEntity<ErrorResponse> handleRangerException(DataAccessException e) {
+		String errorMessage = e.getMessage();
+		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
+
+		return ResponseEntity.status(BAD_REQUEST)
+			.body(new ErrorResponse(errorMessage));
+	}
+
+	@ExceptionHandler(JsonProcessingException.class)
+	public ResponseEntity<ErrorResponse> handleRangerException(JsonProcessingException e) {
+		String errorMessage = e.getMessage();
+		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
+
+		return ResponseEntity.status(BAD_REQUEST)
+			.body(new ErrorResponse(errorMessage));
 	}
 
 	@ExceptionHandler(RuntimeException.class)
-	@ResponseBody
-	public ErrorResponse handleRuntimeException(RuntimeException e) {
-		return new ErrorResponse(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR.name(), e.getMessage());
-	}
+	public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), e.getMessage());
 
+		return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+			.body(new ErrorResponse(e.getMessage()));
+	}
 }

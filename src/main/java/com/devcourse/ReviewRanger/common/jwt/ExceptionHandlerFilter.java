@@ -36,8 +36,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 		response.setStatus(status.value());
 		response.setContentType("application/json; charset=UTF-8");
 
-		GlobalExceptionHandler.ErrorResponse errorResponse = new GlobalExceptionHandler.ErrorResponse(
-			HttpStatus.UNAUTHORIZED, HttpStatus.UNAUTHORIZED.name(), ex.getMessage());
+		GlobalExceptionHandler.ErrorResponse errorResponse = new GlobalExceptionHandler.ErrorResponse(ex.getMessage());
 
 		response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
 	}
