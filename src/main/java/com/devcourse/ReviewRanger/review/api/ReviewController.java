@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -145,5 +146,12 @@ public class ReviewController {
 		List<ReceiverResponse> response = participationService.getAllReceiver(id, searchName);
 
 		return RangerResponse.ok(response);
+	}
+
+	@DeleteMapping("/reviews/{id}")
+	public RangerResponse<Void> deleteReview(@PathVariable Long id) {
+		reviewService.deleteReviewOrThrow(id);
+
+		return RangerResponse.noData();
 	}
 }

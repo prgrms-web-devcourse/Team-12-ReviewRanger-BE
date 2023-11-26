@@ -98,4 +98,14 @@ public class ReviewService {
 
 		participationService.closeParticipationOrThrow(reviewId);
 	}
+
+	@Transactional
+	public void deleteReviewOrThrow(Long id) {
+		Review review = reviewRepository.findById(id)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+		questionService.deleteQuestions(id);
+		participationService.deleteParticipations(id);
+
+		reviewRepository.delete(review);
+	}
 }
