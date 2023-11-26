@@ -32,7 +32,6 @@ class FinalReviewResultPagingTest {
 		// when
 		Slice<FinalReviewResultListResponse> allFinalReviewResults
 			= finalReviewResultRepository.findAllFinalReviewResults(cursorId, userId, pageable);
-		System.out.println("size: " + allFinalReviewResults.getNumberOfElements());
 
 		// then
 		assertEquals(12, allFinalReviewResults.getSize());
