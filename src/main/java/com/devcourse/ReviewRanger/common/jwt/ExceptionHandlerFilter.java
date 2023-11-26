@@ -33,7 +33,6 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 		HttpServletResponse response, Throwable ex) throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		//response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setStatus(status.value());
 		response.setContentType("application/json; charset=UTF-8");
 
