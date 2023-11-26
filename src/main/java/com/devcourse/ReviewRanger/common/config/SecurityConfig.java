@@ -38,14 +38,30 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 
+	// @Bean
+	// public CorsConfigurationSource corsConfigurationSource() {
+	// 	CorsConfiguration configuration = new CorsConfiguration();
+	//
+	// 	configuration.setAllowedOrigins(List.of("http://localhost:3000/"));
+	// 	configuration.setAllowedMethods(List.of("*"));
+	// 	configuration.addAllowedHeader("*");
+	// 	configuration.setAllowCredentials(true);
+	//
+	// 	UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	// 	source.registerCorsConfiguration("/**", configuration);
+	// 	return source;
+	// }
+
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 
-		configuration.setAllowedOrigins(List.of("http://localhost:3000/"));
-		configuration.setAllowedMethods(List.of("*"));
+		configuration.setAllowedOrigins(List.of("http://localhost:3001", "http://localhost:5173", "http://team12-bucket.s3-website.ap-northeast-2.amazonaws.com"));
+		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
 		configuration.addAllowedHeader("*");
+		configuration.setExposedHeaders(List.of("Custom-Header"));
 		configuration.setAllowCredentials(true);
+		configuration.setMaxAge(3600L);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
@@ -55,6 +71,8 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
+			.cors().configurationSource(corsConfigurationSource())
+			.and()
 			.csrf().disable()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
