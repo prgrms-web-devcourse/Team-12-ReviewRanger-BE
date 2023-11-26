@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devcourse.ReviewRanger.ReplyTarget.application.ReplyTargetService;
+import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
 import com.devcourse.ReviewRanger.ReplyTarget.repository.ReplyTargetRepository;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
@@ -153,5 +154,17 @@ public class ParticipationService {
 
 	public List<Participation> getAllByReviewId(Long reviewId) {
 		return participationRepository.findByReviewId(reviewId);
+	}
+
+	@Transactional
+	public void deleteParticipations(Long id) {
+		List<Participation> participations = participationRepository.findByReviewId(id);
+
+		participations.forEach(participation -> {
+			List<ReplyTarget> replyTarget = replyTargetRepository.findAllByParticipationId(
+				participation.getId());
+			replyTargetRepository.deleteAll(replyTarget);
+		});
+		participationRepository.deleteAll(participations);
 	}
 }
