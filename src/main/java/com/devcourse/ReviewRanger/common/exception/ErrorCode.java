@@ -38,12 +38,13 @@ public enum ErrorCode {
 	NOT_FOUND_FINAL_REVIEW_RESULT(NOT_FOUND, "존재하지 않는 최종 리뷰 결과입니다."),
 	NOT_FOUND_FINAL_REVIEW_ANSWER_OF_SUBJECT(NOT_FOUND, "존재하지 않는 주관식 답변입니다."),
 	NOT_FOUND_PARTICIPANTS(NOT_FOUND, "참여 목록이 존재하지 않습니다."),
-	NOT_FINISHED_PARTICIPANTS(NOT_FOUND, "리뷰가 모두 제출되지 않았습니다."),
 
 	// 409 error
 	EXIST_SAME_NAME(CONFLICT, "이미 사용중인 이름 입니다."),
 	EXIST_SAME_EMAIL(CONFLICT, "이미 사용중인 이메일 입니다."),
 	NOT_OWNER_OF_FINAL_REVIEW_RESULT(CONFLICT, "리뷰 결과의 주인이 아닙니다."),
+	NOT_FINISHED_PARTICIPANTS(CONFLICT, "리뷰가 모두 제출되지 않았습니다."),
+	NOT_REMOVE_AFTER_DEADLINE_REVIEW(CONFLICT, "마감, 종료된 리뷰는 삭제할 수 없습니다."),
 
 	//500 error
 	NOT_RECEIVED_RESPONSE_FROM_OPEN_AI_API(INTERNAL_SERVER_ERROR, "OPEN AI API로부터 응답받지 못했습니다.");

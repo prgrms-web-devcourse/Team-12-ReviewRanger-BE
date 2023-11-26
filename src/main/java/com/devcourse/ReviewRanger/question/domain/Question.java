@@ -3,6 +3,7 @@ package com.devcourse.ReviewRanger.question.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -40,7 +41,7 @@ public class Question extends BaseEntity {
 	@Column(name = "is_required", nullable = false)
 	private Boolean isRequired;
 
-	@OneToMany(mappedBy = "question")
+	@OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
 	private List<QuestionOption> questionOptions = new ArrayList<>();
 
 	protected Question() {
