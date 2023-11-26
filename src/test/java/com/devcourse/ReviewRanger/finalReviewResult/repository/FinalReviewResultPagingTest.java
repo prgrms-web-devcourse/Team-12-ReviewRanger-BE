@@ -3,36 +3,41 @@ package com.devcourse.ReviewRanger.finalReviewResult.repository;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.devcourse.ReviewRanger.common.config.QueryDslConfig;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.FinalReviewResultListResponse;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(QueryDslConfig.class)
+@DataJpaTest
 class FinalReviewResultPagingTest {
 
 	@Autowired
 	private FinalReviewResultRepository finalReviewResultRepository;
 
 	@Test
-	void 커서페이징_성공() {
+	void 최종결과_최신순_페이징_성공() {
 		// given
-		PageRequest pageRequest = PageRequest.of(0, 12);
+		Pageable pageable = PageRequest.of(0, 12);
+		Long userId = 2L;
+		Long cursorId = null;
 
 		// when
-		Slice<FinalReviewResultListResponse> finalReviewResultResponses
-			= finalReviewResultRepository.findAllFinalReviewResults(0L, 3L, pageRequest);
+		Slice<FinalReviewResultListResponse> allFinalReviewResults
+			= finalReviewResultRepository.findAllFinalReviewResults(cursorId, userId, pageable);
 
 		// then
-		assertEquals(12, finalReviewResultResponses.getSize());
-		assertEquals(4, finalReviewResultResponses.getNumberOfElements());
-		assertEquals(4, finalReviewResultResponses.getContent().get(0).id());
-		assertEquals(5, finalReviewResultResponses.getContent().get(1).id());
-		assertFalse(finalReviewResultResponses.hasNext());
+		assertEquals(12, allFinalReviewResults.getSize());
+		assertEquals(19, allFinalReviewResults.getContent().get(0).id());
+		assertEquals(18, allFinalReviewResults.getContent().get(1).id());
+		assertEquals(10, allFinalReviewResults.getContent().get(9).id());
+		assertTrue(allFinalReviewResults.hasNext());
 	}
 }
