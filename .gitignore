@@ -6,6 +6,7 @@ build/
 application-jasypt.yml
 application-jwt.yml
 application-db.yml
+src/test/resources/application.yml
 
 ### STS ###
 .apt_generated
