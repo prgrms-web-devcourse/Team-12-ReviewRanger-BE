@@ -109,7 +109,8 @@ public class ReviewController {
 	@Tag(name = "review")
 	@Operation(summary = "리뷰 마감 요청", description = "생성자 리뷰 마감 API", responses = {
 		@ApiResponse(responseCode = "200", description = "리뷰 마감 요청 성공"),
-		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우")
+		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우"),
+		@ApiResponse(responseCode = "409", description = "모든 응답자가 리뷰를 제출하지 않음에 따른 마감 요청 실패")
 	})
 	@PostMapping("/reviews/{id}/close")
 	public RangerResponse<Void> closeReview(@PathVariable("id") Long reviewId) {
@@ -148,6 +149,11 @@ public class ReviewController {
 		return RangerResponse.ok(response);
 	}
 
+	@Tag(name = "review")
+	@Operation(summary = "리뷰 삭제", description = "마감 이전 진행중인 리뷰 삭제 API", responses = {
+		@ApiResponse(responseCode = "200", description = "리뷰 삭제 성공"),
+		@ApiResponse(responseCode = "409", description = "마감 이후 상태에 따른 리뷰 삭제 실패")
+	})
 	@DeleteMapping("/reviews/{id}")
 	public RangerResponse<Void> deleteReview(@PathVariable Long id) {
 		reviewService.deleteReviewOrThrow(id);
