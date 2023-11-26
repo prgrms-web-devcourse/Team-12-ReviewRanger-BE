@@ -75,6 +75,6 @@ public class QuestionService {
 	@Transactional
 	public void deleteQuestions(Long reviewId) {
 		List<Question> questions = questionRepository.findByReviewId(reviewId);
-		questionRepository.deleteAll(questions);
+		questionRepository.deleteAllInBatch(questions);
 	}
 }

@@ -163,8 +163,8 @@ public class ParticipationService {
 		participations.forEach(participation -> {
 			List<ReplyTarget> replyTarget = replyTargetRepository.findAllByParticipationId(
 				participation.getId());
-			replyTargetRepository.deleteAll(replyTarget);
+			replyTargetRepository.deleteAllInBatch(replyTarget);
 		});
-		participationRepository.deleteAll(participations);
+		participationRepository.deleteAllInBatch(participations);
 	}
 }

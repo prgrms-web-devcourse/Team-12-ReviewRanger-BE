@@ -74,8 +74,8 @@ public class ReviewService {
 	}
 
 	public GetReviewDetailResponse getReviewDetailOrThrow(Long reviewId, Long responserId) {
-		Review review = reviewRepository.findById(reviewId)
-			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+		Review review = getReviewOrThrow(reviewId);
+
 		List<GetQuestionResponse> questionResponses = questionService.getAllQuestionsByReview(reviewId);
 
 		List<GetUserResponse> receiverResponses = getAllReceivers(reviewId, responserId);
@@ -92,24 +92,28 @@ public class ReviewService {
 	}
 
 	@Transactional
-	public void closeReviewOrThrow(Long reviewId) {
-		Review review = reviewRepository.findById(reviewId)
-			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+	public void closeReviewOrThrow(Long id) {
+		Review review = getReviewOrThrow(id);
 		review.changeStatus(ReviewStatus.DEADLINE);
 
-		participationService.closeParticipationOrThrow(reviewId);
+		participationService.closeParticipationOrThrow(id);
 	}
 
 	@Transactional
-	public void deleteReviewOrThrow(Long id) {
-		Review review = reviewRepository.findById(id)
-			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+	public void deleteReviewOrThrow(Long reviewId) {
+		Review review = getReviewOrThrow(reviewId);
+
 		if(review.getStatus()!=PROCEEDING){
 			throw new RangerException(NOT_REMOVE_AFTER_DEADLINE_REVIEW);
 		}
-		questionService.deleteQuestions(id);
-		participationService.deleteParticipations(id);
 
+		questionService.deleteQuestions(reviewId);
+		participationService.deleteParticipations(reviewId);
 		reviewRepository.delete(review);
+	}
+
+	private Review getReviewOrThrow(Long reviewId) {
+		return reviewRepository.findById(reviewId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
 	}
 }
