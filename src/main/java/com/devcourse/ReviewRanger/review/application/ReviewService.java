@@ -1,6 +1,7 @@
 package com.devcourse.ReviewRanger.review.application;
 
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
+import static com.devcourse.ReviewRanger.participation.domain.ReviewStatus.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +104,9 @@ public class ReviewService {
 	public void deleteReviewOrThrow(Long id) {
 		Review review = reviewRepository.findById(id)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+		if(review.getStatus()!=PROCEEDING){
+			throw new RangerException(NOT_REMOVE_AFTER_DEADLINE_REVIEW);
+		}
 		questionService.deleteQuestions(id);
 		participationService.deleteParticipations(id);
 
