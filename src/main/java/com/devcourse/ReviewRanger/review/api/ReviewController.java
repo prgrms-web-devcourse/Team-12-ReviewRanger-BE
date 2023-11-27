@@ -86,7 +86,7 @@ public class ReviewController {
 		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우"),
 		@ApiResponse(responseCode = "409", description = "리뷰의 주인과 접근하는 사용자(토큰)이 다른 경우"),
 	})
-	@GetMapping("/{id}")
+	@GetMapping("/{id}/creator")
 	public RangerResponse<GetReviewDetailResponse> getReviewDetail(
 		@PathVariable("id") Long reviewId,
 		@AuthenticationPrincipal UserPrincipal user
@@ -175,10 +175,27 @@ public class ReviewController {
 	@Operation(summary = "응답자별 답변 조회 기능", description = "응답자별 답변 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "응답자별 답변 조회 성공"),
 		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
+		@ApiResponse(responseCode = "409", description = "응답자와 접근하는 사용자(토큰)이 다른 경우"),
+	})
+	@GetMapping("/{reviewId}/responser/{responserId}/participation")
+	public RangerResponse<List<ReplyTargetResponse>> getRepliesByResponserApproachingParticipation(
+		@AuthenticationPrincipal UserPrincipal user,
+		@PathVariable Long reviewId,
+		@PathVariable Long responserId) {
+		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByResponser(
+			reviewId, responserId);
+
+		return RangerResponse.ok(responses);
+	}
+
+	@Tag(name = "review")
+	@Operation(summary = "응답자별 답변 조회 기능", description = "응답자별 답변 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "응답자별 답변 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
 		@ApiResponse(responseCode = "409", description = "리뷰의 주인과 접근하는 사용자(토큰)이 다른 경우"),
 	})
-	@GetMapping("/{reviewId}/responser/{responserId}")
-	public RangerResponse<List<ReplyTargetResponse>> getRepliesByResponser(
+	@GetMapping("/{reviewId}/responser/{responserId}/creator")
+	public RangerResponse<List<ReplyTargetResponse>> getRepliesByResponserApproachingCreator(
 		@AuthenticationPrincipal UserPrincipal user,
 		@PathVariable Long reviewId,
 		@PathVariable Long responserId) {
