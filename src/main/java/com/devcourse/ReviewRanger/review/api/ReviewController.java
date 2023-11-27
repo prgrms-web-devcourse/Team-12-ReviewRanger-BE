@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devcourse.ReviewRanger.ReplyTarget.application.ReplyTargetService;
+import com.devcourse.ReviewRanger.ReplyTarget.dto.response.ReplyTargetResponse;
 import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
@@ -32,6 +34,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Tag(name = "review", description = "리뷰 API")
+@RequestMapping("/reviews")
 public class ReviewController {
 
 	private final ReviewService reviewService;
@@ -50,7 +53,7 @@ public class ReviewController {
 		@ApiResponse(responseCode = "200", description = "리뷰를 생성 및 요청 성공"),
 		@ApiResponse(responseCode = "401", description = "토큰을 넣지 않은 경우")
 	})
-	@PostMapping("/reviews")
+	@PostMapping
 	public RangerResponse<Void> createReview(
 		@RequestBody CreateReviewRequest createReviewRequest,
 		@AuthenticationPrincipal UserPrincipal user
@@ -64,7 +67,7 @@ public class ReviewController {
 	@Operation(summary = "[토큰] 요청자가 만든 리뷰 전체 조회", description = "[토큰] 요청자가 만든 리뷰 전체 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "요청자가 만든 리뷰 전체 조회 성공"),
 	})
-	@GetMapping("/reviews")
+	@GetMapping
 	public RangerResponse<Slice<GetReviewResponse>> getAllReviewsByRequesterOfCursorPaging(
 		@AuthenticationPrincipal UserPrincipal user,
 		@RequestParam(required = false) Long cursorId,
@@ -80,13 +83,15 @@ public class ReviewController {
 	@Tag(name = "review")
 	@Operation(summary = "[토큰] 리뷰 상세 조회", description = "[토큰] 리뷰 첫 상세 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "리뷰를 첫 상세 조회 성공"),
-		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우")
+		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우"),
+		@ApiResponse(responseCode = "409", description = "리뷰의 주인과 접근하는 사용자(토큰)이 다른 경우"),
 	})
-	@GetMapping("/reviews/{id}")
+	@GetMapping("/{id}/creator")
 	public RangerResponse<GetReviewDetailResponse> getReviewDetail(
 		@PathVariable("id") Long reviewId,
 		@AuthenticationPrincipal UserPrincipal user
 	) {
+		reviewService.checkReviewOwnerEqualityOrThrow(reviewId, user.getId());
 		GetReviewDetailResponse response = reviewService.getReviewDetailOrThrow(reviewId, user.getId());
 
 		return RangerResponse.ok(response);
@@ -96,7 +101,7 @@ public class ReviewController {
 	@Operation(summary = "[토큰] 응답자를 제외한 리뷰의 수신자 전체 조회", description = "[토큰] 응답자를 제외한 리뷰의 수신자 전체 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "응답자를 제외한 리뷰의 수신자 전체 조회")
 	})
-	@GetMapping("/reviews/{reviewId}/responser/receiver")
+	@GetMapping("/{reviewId}/responser/receiver")
 	public RangerResponse<List<GetUserResponse>> getAllReceivers(
 		@PathVariable Long reviewId,
 		@AuthenticationPrincipal UserPrincipal user
@@ -112,9 +117,21 @@ public class ReviewController {
 		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우"),
 		@ApiResponse(responseCode = "409", description = "모든 응답자가 리뷰를 제출하지 않음에 따른 마감 요청 실패")
 	})
-	@PostMapping("/reviews/{id}/close")
+	@PostMapping("/{id}/close")
 	public RangerResponse<Void> closeReview(@PathVariable("id") Long reviewId) {
 		reviewService.closeReviewOrThrow(reviewId);
+
+		return RangerResponse.noData();
+	}
+
+	@Tag(name = "review")
+	@Operation(summary = "리뷰 삭제", description = "마감 이전 진행중인 리뷰 삭제 API", responses = {
+		@ApiResponse(responseCode = "200", description = "리뷰 삭제 성공"),
+		@ApiResponse(responseCode = "409", description = "마감 이후 상태에 따른 리뷰 삭제 실패")
+	})
+	@DeleteMapping("/{id}")
+	public RangerResponse<Void> deleteReview(@PathVariable Long id) {
+		reviewService.deleteReviewOrThrow(id);
 
 		return RangerResponse.noData();
 	}
@@ -123,14 +140,16 @@ public class ReviewController {
 	@Operation(summary = "리뷰에 참여하는 모든 응답자 조회", description = "리뷰에 참여하는 모든 응답자 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "리뷰에 참여하는 모든 응답자 조회 성공"),
 		@ApiResponse(responseCode = "404", description = "리뷰 존재하지 않는 경우"),
-		@ApiResponse(responseCode = "404", description = "사용자 존재하지 않는 경우")
+		@ApiResponse(responseCode = "409", description = "리뷰의 주인과 접근하는 사용자(토큰)이 다른 경우"),
 	})
-	@GetMapping("/reviews/{id}/responser")
+	@GetMapping("/{id}/responser")
 	public RangerResponse<List<ParticipationResponse>> getAllParticipation(
+		@AuthenticationPrincipal UserPrincipal user,
 		@PathVariable Long id,
 		@RequestParam(value = "searchName", required = false) String searchName,
 		@RequestParam(value = "sort", required = false) String sort
 	) {
+		reviewService.checkReviewOwnerEqualityOrThrow(id, user.getId());
 		List<ParticipationResponse> response = participationService.getAllParticipationOrThrow(id, searchName, sort);
 
 		return RangerResponse.ok(response);
@@ -138,26 +157,69 @@ public class ReviewController {
 
 	@Tag(name = "review")
 	@Operation(summary = "리뷰를 받은 모든 수신자 조회", description = "리뷰를 받은 모든 수신자 조회 API", responses = {
-		@ApiResponse(responseCode = "200", description = "리뷰를 받은 모든 수신자 조회 성공")
+		@ApiResponse(responseCode = "200", description = "리뷰를 받은 모든 수신자 조회 성공"),
+		@ApiResponse(responseCode = "409", description = "리뷰의 주인과 접근하는 사용자(토큰)이 다른 경우"),
 	})
-	@GetMapping("/reviews/{id}/receiver")
+	@GetMapping("/{id}/receiver")
 	public RangerResponse<List<ReceiverResponse>> getAllReceiverParticipateInReview(
+		@AuthenticationPrincipal UserPrincipal user,
 		@PathVariable Long id,
 		@RequestParam(value = "searchName", required = false) String searchName) {
+		reviewService.checkReviewOwnerEqualityOrThrow(id, user.getId());
 		List<ReceiverResponse> response = participationService.getAllReceiver(id, searchName);
 
 		return RangerResponse.ok(response);
 	}
 
 	@Tag(name = "review")
-	@Operation(summary = "리뷰 삭제", description = "마감 이전 진행중인 리뷰 삭제 API", responses = {
-		@ApiResponse(responseCode = "200", description = "리뷰 삭제 성공"),
-		@ApiResponse(responseCode = "409", description = "마감 이후 상태에 따른 리뷰 삭제 실패")
+	@Operation(summary = "응답자별 답변 조회 기능", description = "응답자별 답변 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "응답자별 답변 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
+		@ApiResponse(responseCode = "409", description = "응답자와 접근하는 사용자(토큰)이 다른 경우"),
 	})
-	@DeleteMapping("/reviews/{id}")
-	public RangerResponse<Void> deleteReview(@PathVariable Long id) {
-		reviewService.deleteReviewOrThrow(id);
+	@GetMapping("/{reviewId}/responser/{responserId}/participation")
+	public RangerResponse<List<ReplyTargetResponse>> getRepliesByResponserApproachingParticipation(
+		@AuthenticationPrincipal UserPrincipal user,
+		@PathVariable Long reviewId,
+		@PathVariable Long responserId) {
+		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByResponser(
+			reviewId, responserId);
 
-		return RangerResponse.noData();
+		return RangerResponse.ok(responses);
+	}
+
+	@Tag(name = "review")
+	@Operation(summary = "응답자별 답변 조회 기능", description = "응답자별 답변 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "응답자별 답변 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
+		@ApiResponse(responseCode = "409", description = "리뷰의 주인과 접근하는 사용자(토큰)이 다른 경우"),
+	})
+	@GetMapping("/{reviewId}/responser/{responserId}/creator")
+	public RangerResponse<List<ReplyTargetResponse>> getRepliesByResponserApproachingCreator(
+		@AuthenticationPrincipal UserPrincipal user,
+		@PathVariable Long reviewId,
+		@PathVariable Long responserId) {
+		reviewService.checkReviewOwnerEqualityOrThrow(reviewId, user.getId());
+		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByResponser(
+			reviewId, responserId);
+
+		return RangerResponse.ok(responses);
+	}
+
+	@Tag(name = "review")
+	@Operation(summary = "수신자별 답변 조회 기능", description = "수신자별 답변 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "수신자별 답변 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
+		@ApiResponse(responseCode = "409", description = "리뷰의 주인과 접근하는 사용자(토큰)이 다른 경우"),
+	})
+	@GetMapping("/{reviewId}/receiver/{receiverId}")
+	public RangerResponse<List<ReplyTargetResponse>> getRepliesByReceiver(
+		@AuthenticationPrincipal UserPrincipal user,
+		@PathVariable Long reviewId,
+		@PathVariable Long receiverId) {
+		reviewService.checkReviewOwnerEqualityOrThrow(reviewId, user.getId());
+		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByReceiver(reviewId, receiverId);
+
+		return RangerResponse.ok(responses);
 	}
 }

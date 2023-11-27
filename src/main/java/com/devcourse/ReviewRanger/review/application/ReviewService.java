@@ -60,7 +60,7 @@ public class ReviewService {
 		Long requesterId,
 		Pageable pageable
 	) {
-		Slice<Review> requesterReviews = reviewRepository.findByRequesterId(cursorId,requesterId, pageable);
+		Slice<Review> requesterReviews = reviewRepository.findByRequesterId(cursorId, requesterId, pageable);
 
 		List<GetReviewResponse> reviewResponses = new ArrayList<>();
 		for (Review requesterReview : requesterReviews) {
@@ -103,13 +103,21 @@ public class ReviewService {
 	public void deleteReviewOrThrow(Long reviewId) {
 		Review review = getReviewOrThrow(reviewId);
 
-		if(review.getStatus()!=PROCEEDING){
+		if (review.getStatus() != PROCEEDING) {
 			throw new RangerException(NOT_REMOVE_AFTER_DEADLINE_REVIEW);
 		}
 
 		questionService.deleteQuestions(reviewId);
 		participationService.deleteParticipations(reviewId);
 		reviewRepository.delete(review);
+	}
+
+	public void checkReviewOwnerEqualityOrThrow(Long reviewId, Long userId) {
+		Review review = getReviewOrThrow(reviewId);
+
+		if (review.getRequesterId() != userId) {
+			throw new RangerException(NOT_OWNER_OF_REVIEW);
+		}
 	}
 
 	private Review getReviewOrThrow(Long reviewId) {
