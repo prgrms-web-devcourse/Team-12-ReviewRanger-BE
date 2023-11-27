@@ -81,13 +81,13 @@ public class ReviewController {
 	}
 
 	@Tag(name = "review")
-	@Operation(summary = "[토큰] 리뷰 상세 조회", description = "[토큰] 리뷰 첫 상세 조회 API", responses = {
-		@ApiResponse(responseCode = "200", description = "리뷰를 첫 상세 조회 성공"),
+	@Operation(summary = "[토큰] 생성자 리뷰 상세 조회", description = "[토큰] 생성자 리뷰 상세 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "리뷰를 상세 조회 성공"),
 		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우"),
 		@ApiResponse(responseCode = "409", description = "리뷰의 주인과 접근하는 사용자(토큰)이 다른 경우"),
 	})
 	@GetMapping("/{id}/creator")
-	public RangerResponse<GetReviewDetailResponse> getReviewDetail(
+	public RangerResponse<GetReviewDetailResponse> getReviewDetailApproachingCreator(
 		@PathVariable("id") Long reviewId,
 		@AuthenticationPrincipal UserPrincipal user
 	) {
@@ -96,6 +96,24 @@ public class ReviewController {
 
 		return RangerResponse.ok(response);
 	}
+
+	@Tag(name = "review")
+	@Operation(summary = "[토큰] 참여자 리뷰 상세 조회", description = "[토큰] 참여자 리뷰 상세 조회 API", responses = {
+		@ApiResponse(responseCode = "200", description = "리뷰를 상세 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "리뷰가 존재하지 않는 경우"),
+		@ApiResponse(responseCode = "409", description = "리뷰의 주인과 접근하는 사용자(토큰)이 다른 경우"),
+	})
+	@GetMapping("/{id}/participation")
+	public RangerResponse<GetReviewDetailResponse> getReviewDetailApproachingParticipation(
+		@PathVariable("id") Long reviewId,
+		@AuthenticationPrincipal UserPrincipal user
+	) {
+		participationService.checkReviewParticipationEqualityOrThrow(reviewId, user.getId());
+		GetReviewDetailResponse response = reviewService.getReviewDetailOrThrow(reviewId, user.getId());
+
+		return RangerResponse.ok(response);
+	}
+
 
 	@Tag(name = "review")
 	@Operation(summary = "[토큰] 응답자를 제외한 리뷰의 수신자 전체 조회", description = "[토큰] 응답자를 제외한 리뷰의 수신자 전체 조회 API", responses = {
@@ -172,7 +190,7 @@ public class ReviewController {
 	}
 
 	@Tag(name = "review")
-	@Operation(summary = "응답자별 답변 조회 기능", description = "응답자별 답변 조회 API", responses = {
+	@Operation(summary = "응답자가 접근한 응답자 답변 조회 기능", description = "응답자별 답변 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "응답자별 답변 조회 성공"),
 		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
 		@ApiResponse(responseCode = "409", description = "응답자와 접근하는 사용자(토큰)이 다른 경우"),
@@ -182,6 +200,7 @@ public class ReviewController {
 		@AuthenticationPrincipal UserPrincipal user,
 		@PathVariable Long reviewId,
 		@PathVariable Long responserId) {
+		participationService.checkReviewParticipationEqualityOrThrow(reviewId, user.getId());
 		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByResponser(
 			reviewId, responserId);
 
@@ -189,7 +208,7 @@ public class ReviewController {
 	}
 
 	@Tag(name = "review")
-	@Operation(summary = "응답자별 답변 조회 기능", description = "응답자별 답변 조회 API", responses = {
+	@Operation(summary = "리뷰 생성자가 접근한 응답자별 답변 조회 기능", description = "응답자별 답변 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "응답자별 답변 조회 성공"),
 		@ApiResponse(responseCode = "404", description = "수신자가 존재하지 않는 경우"),
 		@ApiResponse(responseCode = "409", description = "리뷰의 주인과 접근하는 사용자(토큰)이 다른 경우"),
