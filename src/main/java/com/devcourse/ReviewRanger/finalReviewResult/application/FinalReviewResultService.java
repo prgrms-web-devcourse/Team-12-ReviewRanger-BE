@@ -270,7 +270,7 @@ public class FinalReviewResultService {
 						.orElseThrow(() -> new RangerException(NOT_FOUND_FINAL_REVIEW_ANSWER_OF_SUBJECT));
 
 					answerIdList.add(subjectAnswers.getId());
-					answers.add(subjectAnswers);
+					answers.add(subjectAnswers.getSubjects());
 				}
 				case SINGLE_CHOICE, MULTIPLE_CHOICE -> {
 					List<FinalReviewResultAnswerObjects> objectAnswers
