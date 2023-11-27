@@ -46,6 +46,7 @@ public enum ErrorCode {
 	NOT_FINISHED_PARTICIPANTS(CONFLICT, "리뷰가 모두 제출되지 않았습니다."),
 	NOT_REMOVE_AFTER_DEADLINE_REVIEW(CONFLICT, "마감, 종료된 리뷰는 삭제할 수 없습니다."),
 	NOT_OWNER_OF_REVIEW(CONFLICT, "리뷰의 주인이 아닙니다."),
+	NOT_PARTICIPANT_OF_REVIEW(CONFLICT, "리뷰의 응답자가 아닙니다."),
 
 	//500 error
 	NOT_RECEIVED_RESPONSE_FROM_OPEN_AI_API(INTERNAL_SERVER_ERROR, "OPEN AI API로부터 응답받지 못했습니다.");

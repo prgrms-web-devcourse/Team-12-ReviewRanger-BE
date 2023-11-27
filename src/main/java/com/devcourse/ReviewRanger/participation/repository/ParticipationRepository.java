@@ -1,6 +1,7 @@
 package com.devcourse.ReviewRanger.participation.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,7 +13,7 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
 
 	List<Participation> findByReviewId(Long reviewId);
 
-	Participation findByReviewIdAndResponserId(Long reviewId, Long responserId);
+	Optional<Participation> findByReviewIdAndResponserId(Long reviewId, Long responserId);
 
 	List<Participation> findAllByReviewId(Long reviewId);
 

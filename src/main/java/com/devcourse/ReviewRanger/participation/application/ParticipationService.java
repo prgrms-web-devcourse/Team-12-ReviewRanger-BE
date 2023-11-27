@@ -167,4 +167,9 @@ public class ParticipationService {
 		});
 		participationRepository.deleteAllInBatch(participations);
 	}
+
+	public void checkReviewParticipationEqualityOrThrow(Long reviewId, Long userId) {
+		participationRepository.findByReviewIdAndResponserId(reviewId, userId)
+			.orElseThrow(()->new RangerException(NOT_PARTICIPANT_OF_REVIEW));
+	}
 }
