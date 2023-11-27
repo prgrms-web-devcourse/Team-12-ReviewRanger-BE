@@ -84,7 +84,7 @@ class ReplyTargetServiceTest {
 		given(questionOptionRepository.findById(1L)).willReturn(Optional.of(questionOption));
 
 		//when
-		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByReceiver(1L, 2L);
+		List<ReplyTargetResponse> responses = replyTargetService.getAllNonEmptyRepliesByReceiver(1L, 2L);
 
 		//then
 		assertThat(responses.get(0).responser().name()).isEqualTo("장수연");
