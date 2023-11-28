@@ -68,4 +68,8 @@ public class UserPrincipal implements UserDetails {
 	public String getName() {
 		return user.getName();
 	}
+
+	public String getPath() {
+		return user.getImageUrl();
+	}
 }

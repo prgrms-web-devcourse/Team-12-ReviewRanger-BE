@@ -76,8 +76,9 @@ public class UserService {
 	public UserInfoResponse getUserInfo(UserPrincipal user) {
 		Long id = user.getId();
 		String name = user.getName();
+		String path = user.getPath();
 		String email = user.getUsername();
 
-		return new UserInfoResponse(id, name, email);
+		return new UserInfoResponse(id, name, path, email);
 	}
 }
