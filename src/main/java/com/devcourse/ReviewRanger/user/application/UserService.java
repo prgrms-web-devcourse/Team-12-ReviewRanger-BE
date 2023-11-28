@@ -47,7 +47,7 @@ public class UserService {
 	@Transactional
 	public void updateImage(Long id, MultipartFile multipartFile) {
 		User user = getUserOrThrow(id);
-		String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
+		String fileName = UUID.randomUUID().toString();
 
 		s3Manager.delete(fileName, DIRECTORY);
 		String uploadImageUrl = s3Manager.upload(multipartFile, DIRECTORY, fileName);
