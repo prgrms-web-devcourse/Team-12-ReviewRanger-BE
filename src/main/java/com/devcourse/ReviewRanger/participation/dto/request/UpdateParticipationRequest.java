@@ -2,6 +2,7 @@ package com.devcourse.ReviewRanger.participation.dto.request;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.devcourse.ReviewRanger.ReplyTarget.dto.request.UpdateReplyTargetRequest;
@@ -18,6 +19,6 @@ public record UpdateParticipationRequest(
 
 	@Schema(description = "답변 타겟 수정 요청 DTO")
 	@JsonProperty("replyTargets")
-	List<UpdateReplyTargetRequest> updateReplyTargetRequests
+	List<@Valid UpdateReplyTargetRequest> updateReplyTargetRequests
 ) {
 }
