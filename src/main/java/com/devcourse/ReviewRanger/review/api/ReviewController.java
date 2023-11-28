@@ -114,7 +114,6 @@ public class ReviewController {
 		return RangerResponse.ok(response);
 	}
 
-
 	@Tag(name = "review")
 	@Operation(summary = "[토큰] 응답자를 제외한 리뷰의 수신자 전체 조회", description = "[토큰] 응답자를 제외한 리뷰의 수신자 전체 조회 API", responses = {
 		@ApiResponse(responseCode = "200", description = "응답자를 제외한 리뷰의 수신자 전체 조회")
@@ -219,7 +218,7 @@ public class ReviewController {
 		@PathVariable Long reviewId,
 		@PathVariable Long responserId) {
 		reviewService.checkReviewOwnerEqualityOrThrow(reviewId, user.getId());
-		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByResponser(
+		List<ReplyTargetResponse> responses = replyTargetService.getAllNonEmptyRepliesByResponser(
 			reviewId, responserId);
 
 		return RangerResponse.ok(responses);
@@ -237,7 +236,7 @@ public class ReviewController {
 		@PathVariable Long reviewId,
 		@PathVariable Long receiverId) {
 		reviewService.checkReviewOwnerEqualityOrThrow(reviewId, user.getId());
-		List<ReplyTargetResponse> responses = replyTargetService.getAllRepliesByReceiver(reviewId, receiverId);
+		List<ReplyTargetResponse> responses = replyTargetService.getAllNonEmptyRepliesByReceiver(reviewId, receiverId);
 
 		return RangerResponse.ok(responses);
 	}

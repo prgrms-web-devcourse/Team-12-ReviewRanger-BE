@@ -85,7 +85,7 @@ public class Reply extends BaseEntity {
 		return this.questionOptionId == null || this.questionOptionId == 0;
 	}
 
-	private boolean isEmptyAnswer() {
+	public boolean isEmptyAnswer() {
 		return isEmpty(this.answerText) || isEmpty(this.questionOptionId) || isEmpty(this.rating) || isEmpty(
 			this.hexastat);
 	}
