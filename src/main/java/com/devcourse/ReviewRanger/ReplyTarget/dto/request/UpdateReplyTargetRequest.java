@@ -2,6 +2,7 @@ package com.devcourse.ReviewRanger.ReplyTarget.dto.request;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.devcourse.ReviewRanger.reply.dto.request.UpdateReplyRequest;
@@ -21,6 +22,6 @@ public record UpdateReplyTargetRequest(
 
 	@Schema(description = "답변 수정 요청 DTO")
 	@JsonProperty("replies")
-	List<UpdateReplyRequest> updateReplyRequests
+	List<@Valid UpdateReplyRequest> updateReplyRequests
 ) {
 }

@@ -8,6 +8,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.Max;
 
 import com.devcourse.ReviewRanger.BaseEntity;
 import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
@@ -34,9 +36,11 @@ public class Reply extends BaseEntity {
 	private String answerText;
 
 	@Column(name = "rating", nullable = true)
+	@DecimalMax(value = "5.0", message = "별점은 1~5까지 값만 가능합니다.")
 	private Double rating;
 
 	@Column(name = "hexastat", nullable = true)
+	@Max(value = 10, message = "헥사 스탯은 1~10까지 값만 가능합니다.")
 	private Integer hexastat;
 
 	@ManyToOne
