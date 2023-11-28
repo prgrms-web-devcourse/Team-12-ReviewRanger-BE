@@ -48,6 +48,9 @@ public enum ErrorCode {
 	NOT_OWNER_OF_REVIEW(CONFLICT, "리뷰의 주인이 아닙니다."),
 	NOT_PARTICIPANT_OF_REVIEW(CONFLICT, "리뷰의 응답자가 아닙니다."),
 
+	//413
+	FILE_MAX_SIZE(PAYLOAD_TOO_LARGE, "파일 용량이 너무 큽니다."),
+
 	//500 error
 	NOT_RECEIVED_RESPONSE_FROM_OPEN_AI_API(INTERNAL_SERVER_ERROR, "OPEN AI API로부터 응답받지 못했습니다.");
 

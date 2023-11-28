@@ -1,5 +1,6 @@
 package com.devcourse.ReviewRanger.common.exception;
 
+import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 import static org.springframework.http.HttpStatus.*;
 
 import org.springframework.dao.DataAccessException;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -57,6 +59,15 @@ public class GlobalExceptionHandler {
 
 		return ResponseEntity.status(BAD_REQUEST)
 			.body(new ErrorResponse(errorMessage));
+	}
+
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public ResponseEntity<ErrorResponse> handleRangerException(MaxUploadSizeExceededException e) {
+		String errorMessage = e.getMessage();
+		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
+
+		return ResponseEntity.status(PAYLOAD_TOO_LARGE)
+			.body(new ErrorResponse(FILE_MAX_SIZE.getMessage()));
 	}
 
 	@ExceptionHandler(RuntimeException.class)
