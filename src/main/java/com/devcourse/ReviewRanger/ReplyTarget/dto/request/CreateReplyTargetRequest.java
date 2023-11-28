@@ -2,6 +2,7 @@ package com.devcourse.ReviewRanger.ReplyTarget.dto.request;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.devcourse.ReviewRanger.ReplyTarget.domain.ReplyTarget;
@@ -23,7 +24,7 @@ public record CreateReplyTargetRequest(
 
 	@Schema(description = "답변 생성 요청 DTO")
 	@JsonProperty("replies")
-	List<CreateReplyRequest> createReplyRequests
+	List<@Valid CreateReplyRequest> createReplyRequests
 ) {
 	public ReplyTarget toEntity(User receiver, User Responer) {
 		return new ReplyTarget(receiver, Responer);
