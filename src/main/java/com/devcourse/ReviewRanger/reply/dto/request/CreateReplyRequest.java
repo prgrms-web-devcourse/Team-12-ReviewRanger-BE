@@ -1,7 +1,9 @@
 package com.devcourse.ReviewRanger.reply.dto.request;
 
+import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 import com.devcourse.ReviewRanger.reply.domain.Reply;
@@ -30,12 +32,14 @@ public record CreateReplyRequest(
 
 	@Schema(description = "별점 답변")
 	@JsonProperty("answerRating")
-	@Max(value = 5, message = "별점은 1~5까지 값만 가능합니다.")
+	@DecimalMax(value = "5.0", message = "별점은 1~5까지 값만 가능합니다.")
+	@Positive(message = "값은 양수여야 합니다.")
 	Double rating,
 
 	@Schema(description = "육각스탯 답변")
 	@JsonProperty("answerHexa")
 	@Max(value = 10, message = "헥사 스탯은 1~10까지 값만 가능합니다.")
+	@Positive(message = "값은 양수여야 합니다.")
 	Integer hexastat
 ) {
 	public Reply toEntity() {
