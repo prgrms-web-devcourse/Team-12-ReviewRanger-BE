@@ -194,11 +194,7 @@ public class FinalReviewResultService {
 			haveUnsentReviewUserIds.add(finalReviewResult.getUserId());
 		}
 
-		int participantNums = participationRepository.findAllByReviewId(reviewId).size();
-		int notSentFinalResultNums = finalReviewResults.size();
-
-		boolean checkStatus = (participantNums == notSentFinalResultNums);
-		return new CheckFinalResultStatus(checkStatus, haveUnsentReviewUserIds);
+		return new CheckFinalResultStatus(true, haveUnsentReviewUserIds);
 	}
 
 	@Transactional
