@@ -25,17 +25,17 @@ public record CreateReplyRequest(
 	Long questionOptionId,
 
 	@Schema(description = "주관식 답변")
-	@Size(max = 100)
+	@Size(max = 500, message = "주관식 답변은 최대 500자까지 가능합니다.")
 	String answerText,
 
 	@Schema(description = "별점 답변")
 	@JsonProperty("answerRating")
-	@Max(value = 5)
+	@Max(value = 5, message = "별점은 1~5까지 값만 가능합니다.")
 	Double rating,
 
 	@Schema(description = "육각스탯 답변")
 	@JsonProperty("answerHexa")
-	@Max(value = 6)
+	@Max(value = 10, message = "헥사 스탯은 1~10까지 값만 가능합니다.")
 	Integer hexastat
 ) {
 	public Reply toEntity() {
