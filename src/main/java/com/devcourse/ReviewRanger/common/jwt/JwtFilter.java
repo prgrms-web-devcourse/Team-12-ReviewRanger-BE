@@ -51,10 +51,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
 			if (StringUtils.hasText(refreshToken) && jwtTokenProvider.validateRefreshToken(refreshToken)) {
 				Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
-				String newAccessToken = jwtTokenProvider.createRefreshToken(authentication);
+				String newAccessToken = jwtTokenProvider.createAccessToken(authentication);
 				SecurityContextHolder.getContext().setAuthentication(authentication);
-
-				System.out.println("newAccessToken: " + newAccessToken);
 
 				response.setHeader(HttpHeaders.AUTHORIZATION, newAccessToken);
 			}
