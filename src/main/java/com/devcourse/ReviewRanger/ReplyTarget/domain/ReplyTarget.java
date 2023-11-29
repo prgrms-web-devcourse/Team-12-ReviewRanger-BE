@@ -62,11 +62,11 @@ public class ReplyTarget extends BaseEntity {
 		this.replies = replies;
 	}
 
-	public void setParticipationId(Long participationId) {
+	public void assignParticipationId(Long participationId) {
 		this.participationId = participationId;
 	}
 
-	public void setReviewId(Long reviewId) {
+	public void assignReviewId(Long reviewId) {
 		this.reviewId = reviewId;
 	}
 }

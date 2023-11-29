@@ -53,8 +53,8 @@ public class ReplyTargetService {
 				.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 
 			ReplyTarget replyTarget = createReplyTargetRequest.toEntity(receiver, responser);
-			replyTarget.setParticipationId(participationId);
-			replyTarget.setReviewId(reviewId);
+			replyTarget.assignParticipationId(participationId);
+			replyTarget.assignReviewId(reviewId);
 
 			ReplyTarget savedReplyTarget = replyTargetRepository.save(replyTarget);
 
@@ -65,7 +65,12 @@ public class ReplyTargetService {
 	@Transactional
 	public void updateReviewTarget(List<UpdateReplyTargetRequest> updateReplyTargetRequests) {
 		for (UpdateReplyTargetRequest updateReplyTargetRequest : updateReplyTargetRequests) {
-			replyService.updateReply(updateReplyTargetRequest.updateReplyRequests());
+			ReplyTarget replyTarget = replyTargetRepository.findById(updateReplyTargetRequest.id())
+				.orElseThrow((() -> new RangerException(NOT_FOUND_REVIEW_TARGET)));
+			List<Reply> replies = replyTarget.getReplies();
+			replyService.deleteReplise(replies);
+
+			replyService.updateReply(replyTarget, updateReplyTargetRequest.updateReplyRequests());
 		}
 	}
 

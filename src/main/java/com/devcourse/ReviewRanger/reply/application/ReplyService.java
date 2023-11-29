@@ -38,19 +38,20 @@ public class ReplyService {
 	}
 
 	@Transactional
-	public void updateReply(List<UpdateReplyRequest> updateReplyRequests) {
+	public void updateReply(ReplyTarget replyTarget, List<UpdateReplyRequest> updateReplyRequests) {
 		for (UpdateReplyRequest updateReplyRequest : updateReplyRequests) {
-			Reply reply = getByIdOrThrow(updateReplyRequest.id());
+			Reply reply = updateReplyRequest.toEntity();
 
 			if (updateReplyRequest.isRequiredQuestion()) {
 				reply.validateReplyInputsOrThrow();
 			}
-			reply.update(
-				updateReplyRequest.questionOptionId(),
-				updateReplyRequest.answerText(),
-				updateReplyRequest.rating(),
-				updateReplyRequest.hexastat());
+			reply.assignReviewedTarget(replyTarget);
+			replyRepository.save(reply);
 		}
+	}
+
+	public void deleteReplise(List<Reply> replies) {
+		replyRepository.deleteAll(replies);
 	}
 
 	public Reply getByIdOrThrow(Long id) {

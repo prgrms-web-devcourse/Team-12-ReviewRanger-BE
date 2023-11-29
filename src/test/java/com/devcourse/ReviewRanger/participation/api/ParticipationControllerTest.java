@@ -1,7 +1,6 @@
 package com.devcourse.ReviewRanger.participation.api;
 
 import static com.devcourse.ReviewRanger.user.UserFixture.*;
-import static com.devcourse.ReviewRanger.user.application.TestPrincipalDetailsService.*;
 import static org.assertj.core.api.BDDAssumptions.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -50,7 +49,6 @@ import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.review.domain.ReviewType;
 import com.devcourse.ReviewRanger.review.dto.request.CreateReviewRequest;
 import com.devcourse.ReviewRanger.user.domain.User;
-import com.devcourse.ReviewRanger.user.application.TestPrincipalDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(ParticipationController.class)
@@ -141,24 +139,24 @@ class ParticipationControllerTest {
 	@Test
 	void 답변_수정() throws Exception {
 		//given
-		UpdateReplyRequest updateReplyRequest1 = new UpdateReplyRequest(1L, 1L, true, 1L, null, null, null);
-		UpdateReplyRequest updateReplyRequest2 = new UpdateReplyRequest(1L, 1L, true, 2L, null, null, null);
-		UpdateReplyRequest updateReplyRequest3 = new UpdateReplyRequest(1L, 2L, true, null, "수연 -> 범철 주관식 답변", null,
+		UpdateReplyRequest updateReplyRequest1 = new UpdateReplyRequest(1L, true, 1L, null, null, null);
+		UpdateReplyRequest updateReplyRequest2 = new UpdateReplyRequest(1L, true, 2L, null, null, null);
+		UpdateReplyRequest updateReplyRequest3 = new UpdateReplyRequest(2L, true, null, "수연 -> 범철 주관식 답변", null,
 			null);
 		List<UpdateReplyRequest> updateReplyRequestList = List.of(updateReplyRequest1, updateReplyRequest2,
 			updateReplyRequest3);
 
-		UpdateReplyTargetRequest updateReplyTargetRequest1 = new UpdateReplyTargetRequest(2L, 1L,
+		UpdateReplyTargetRequest updateReplyTargetRequest1 = new UpdateReplyTargetRequest(1L, 2L, 1L,
 			updateReplyRequestList);
 
-		UpdateReplyRequest updateReplyRequest4 = new UpdateReplyRequest(1L, 1L, true, 1L, null, null, null);
-		UpdateReplyRequest updateReplyRequest5 = new UpdateReplyRequest(1L, 1L, true, 2L, null, null, null);
-		UpdateReplyRequest updateReplyRequest6 = new UpdateReplyRequest(1L, 2L, true, null, "수연 -> 주웅 주관식 답변", null,
+		UpdateReplyRequest updateReplyRequest4 = new UpdateReplyRequest(1L, true, 1L, null, null, null);
+		UpdateReplyRequest updateReplyRequest5 = new UpdateReplyRequest(1L, true, 2L, null, null, null);
+		UpdateReplyRequest updateReplyRequest6 = new UpdateReplyRequest(2L, true, null, "수연 -> 주웅 주관식 답변", null,
 			null);
 		List<UpdateReplyRequest> createReplyRequestList2 = List.of(updateReplyRequest4, updateReplyRequest5,
 			updateReplyRequest6);
 
-		UpdateReplyTargetRequest updateReplyTargetRequest2 = new UpdateReplyTargetRequest(3L, 1L,
+		UpdateReplyTargetRequest updateReplyTargetRequest2 = new UpdateReplyTargetRequest(2L, 3L, 1L,
 			createReplyRequestList2);
 
 		List<UpdateReplyTargetRequest> updateReplyTargetRequestList = List.of(updateReplyTargetRequest1,
@@ -196,7 +194,7 @@ class ParticipationControllerTest {
 
 		when(participationService.getAllParticipationsByResponserOfCursorPaging(cursorId, null, pageable))
 			.thenReturn(getReviewResponses);
-		UserDetails userDetails= new UserPrincipal(SUYEON_FIXTURE.toEntity());
+		UserDetails userDetails = new UserPrincipal(SUYEON_FIXTURE.toEntity());
 
 		// when
 		// then
