@@ -9,13 +9,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devcourse.ReviewRanger.auth.domain.RefreshToken;
+import com.devcourse.ReviewRanger.auth.dto.JoinRequest;
+import com.devcourse.ReviewRanger.auth.dto.LoginRequest;
+import com.devcourse.ReviewRanger.auth.dto.LoginResponse;
+import com.devcourse.ReviewRanger.auth.repository.RefreshTokenRepository;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 import com.devcourse.ReviewRanger.common.redis.RedisUtil;
 import com.devcourse.ReviewRanger.user.domain.User;
-import com.devcourse.ReviewRanger.auth.dto.JoinRequest;
-import com.devcourse.ReviewRanger.auth.dto.LoginRequest;
-import com.devcourse.ReviewRanger.auth.dto.LoginResponse;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 @Service
@@ -27,15 +29,17 @@ public class AuthService {
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RedisUtil redisUtil;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder,
 		AuthenticationManagerBuilder authenticationManagerBuilder, JwtTokenProvider jwtTokenProvider,
-		RedisUtil redisUtil) {
+		RedisUtil redisUtil, RefreshTokenRepository refreshTokenRepository) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.authenticationManagerBuilder = authenticationManagerBuilder;
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.redisUtil = redisUtil;
+		this.refreshTokenRepository = refreshTokenRepository;
 	}
 
 	@Transactional
@@ -54,21 +58,35 @@ public class AuthService {
 		return (userRepository.save(newUser).getId()) > 0;
 	}
 
+	@Transactional
 	public LoginResponse login(LoginRequest request) {
 		// user 검증
+		String userEmail = request.email();
 		UsernamePasswordAuthenticationToken authenticationToken
-			= new UsernamePasswordAuthenticationToken(request.email(), request.password());
+			= new UsernamePasswordAuthenticationToken(userEmail, request.password());
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
 		// token 생성
-		String accessToken = jwtTokenProvider.createToken(authentication);
+		String accessToken = jwtTokenProvider.createAccessToken(authentication);
+		String refreshToken = jwtTokenProvider.createRefreshToken(authentication);
+
+		// refreshToken 저장
+		User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+		refreshTokenRepository.findByUserId(user.getId())
+			.ifPresentOrElse(
+				token -> token.update(refreshToken),
+				() -> {
+					RefreshToken savedRefreshToken = new RefreshToken(user.getId(), refreshToken);
+					refreshTokenRepository.save(savedRefreshToken);
+				}
+			);
 
 		return new LoginResponse(accessToken, "Bearer");
 	}
 
 	public void logout(String accessToken) {
 		accessToken = getAccessToken(accessToken);
-		redisUtil.setBlackList(accessToken, "accessToken", 5);
+		redisUtil.setBlackList(accessToken, "accessToken", 60 * 24);
 	}
 
 	private String getAccessToken(String accessToken) {

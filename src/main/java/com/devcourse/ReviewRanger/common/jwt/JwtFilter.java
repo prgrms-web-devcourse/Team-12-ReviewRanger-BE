@@ -11,7 +11,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
+
+import io.jsonwebtoken.ExpiredJwtException;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -27,27 +32,42 @@ public class JwtFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
-		String token = resolveToken(request);
+		String accessToken = resolveToken(request, "Authorization");
 
-		if (jwtTokenProvider.isValidToken(token)) {
-			Authentication authentication = jwtTokenProvider.getAuthentication(token);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
+		try {
+			if (StringUtils.hasText(accessToken) && jwtTokenProvider.isValidToken(accessToken)) {
+				Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			}
+		} catch (ExpiredJwtException e) {
+			String refreshToken = null;
+
+			if (StringUtils.hasText(request.getHeader("Authorization"))) {
+				Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+				UserPrincipal principal = (UserPrincipal)authentication.getPrincipal();
+				Long userId = principal.getId();
+				refreshToken = jwtTokenProvider.getRefreshToken(userId);
+			}
+
+			if (StringUtils.hasText(refreshToken) && jwtTokenProvider.validateRefreshToken(refreshToken)) {
+				Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
+				String newAccessToken = jwtTokenProvider.createRefreshToken(authentication);
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+
+				System.out.println("newAccessToken: " + newAccessToken);
+
+				response.setHeader(HttpHeaders.AUTHORIZATION, newAccessToken);
+			}
 		}
 
 		filterChain.doFilter(request, response);
 	}
 
-	private String resolveToken(HttpServletRequest request) {
-		String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-		return isBearerToken(bearerToken) ? extractJwt(bearerToken) : null;
+	private String resolveToken(HttpServletRequest request, String header) {
+		String bearerToken = request.getHeader(header);
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+			return bearerToken.substring(7);
+		}
+		return null;
 	}
-
-	private boolean isBearerToken(String token) {
-		return token != null && token.startsWith(BEARER_PREFIX);
-	}
-
-	private String extractJwt(String bearerToken) {
-		return bearerToken.substring(BEARER_PREFIX.length());
-	}
-
 }
