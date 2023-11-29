@@ -4,7 +4,6 @@ import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -55,20 +54,22 @@ class ReplyServiceTest {
 	@Test
 	void 답변_수정_성공() {
 		//given
+		User user1 = UserFixture.SUYEON_FIXTURE.toEntity();
+		User user2 = UserFixture.BEOMCHUL_FIXTURE.toEntity();
+
 		Reply reply = new Reply(2L, null, "수연 -> 범철 주관식 답변", null, null);
 		replyRepository.save(reply);
 
-		UpdateReplyRequest updateReplyRequest1 = new UpdateReplyRequest(1L, 2L, true, null, "수연 -> 범철 주관식 답변", null,
+		UpdateReplyRequest updateReplyRequest1 = new UpdateReplyRequest(2L, true, null, "수연 -> 범철 주관식 답변", null,
 			null);
 		List<UpdateReplyRequest> updateReplyRequestList = List.of(updateReplyRequest1);
-
-		given(replyRepository.findById(updateReplyRequest1.id())).willReturn(Optional.of(reply));
+		ReplyTarget replyTarget = new ReplyTarget(user2, user1, 1L);
 
 		//when
-		replyService.updateReply(updateReplyRequestList);
+		replyService.updateReply(replyTarget, updateReplyRequestList);
 
 		//then
-		verify(replyRepository, times(1)).save(any(Reply.class));
+		verify(replyRepository, times(2)).save(any(Reply.class));
 	}
 
 	@Test
