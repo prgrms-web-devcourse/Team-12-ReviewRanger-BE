@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(RangerException.class)
 	public ResponseEntity<ErrorResponse> handleRangerException(RangerException e) {
 		ErrorCode errorCode = e.getErrorCode();
-		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), errorCode);
+		log.error(LOG_FORMAT, e.getClass().getSimpleName(), errorCode);
 
 		return ResponseEntity.status(errorCode.getHttpStatus())
 			.body(new ErrorResponse(errorCode.getMessage()));
@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorResponse> handleRangerException(MethodArgumentNotValidException e) {
 		String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-		log.warn(VALID_LOG_FORMAT, e.getClass().getSimpleName(), "@Valid", errorMessage);
+		log.error(VALID_LOG_FORMAT, e.getClass().getSimpleName(), "@Valid", errorMessage);
 
 		return ResponseEntity.status(BAD_REQUEST)
 			.body(new ErrorResponse(errorMessage));
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(DataAccessException.class)
 	public ResponseEntity<ErrorResponse> handleRangerException(DataAccessException e) {
 		String errorMessage = e.getMessage();
-		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
+		log.error(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
 
 		return ResponseEntity.status(BAD_REQUEST)
 			.body(new ErrorResponse(errorMessage));
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(JsonProcessingException.class)
 	public ResponseEntity<ErrorResponse> handleRangerException(JsonProcessingException e) {
 		String errorMessage = e.getMessage();
-		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
+		log.error(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
 
 		return ResponseEntity.status(BAD_REQUEST)
 			.body(new ErrorResponse(errorMessage));
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MaxUploadSizeExceededException.class)
 	public ResponseEntity<ErrorResponse> handleRangerException(MaxUploadSizeExceededException e) {
 		String errorMessage = e.getMessage();
-		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
+		log.error(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
 
 		return ResponseEntity.status(PAYLOAD_TOO_LARGE)
 			.body(new ErrorResponse(FILE_MAX_SIZE.getMessage()));
@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
-		log.warn(LOG_FORMAT, e.getClass().getSimpleName(), e.getMessage());
+		log.error(LOG_FORMAT, e.getClass().getSimpleName(), e.getMessage());
 
 		return ResponseEntity.status(INTERNAL_SERVER_ERROR)
 			.body(new ErrorResponse(e.getMessage()));
