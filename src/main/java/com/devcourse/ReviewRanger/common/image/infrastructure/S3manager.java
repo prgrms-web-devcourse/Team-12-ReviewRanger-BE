@@ -53,7 +53,7 @@ public class S3manager implements ImageManager {
 
 	private void validateImage(MultipartFile file) {
 		if (file.isEmpty()) {
-			log.warn("이미지가 없습니다. {}", file.getOriginalFilename());
+			log.error("이미지가 없습니다. {}", file.getOriginalFilename());
 			throw new RangerException(EMPTY_IMAGE);
 		}
 
@@ -63,7 +63,7 @@ public class S3manager implements ImageManager {
 		boolean isExtension = imageExtensions.contains(extension.toLowerCase());
 
 		if (!isExtension) {
-			log.warn("이미지 확장자 검증 오류 : {}", filename);
+			log.error("이미지 확장자 검증 오류 : {}", filename);
 			throw new RangerException(INVALID_IMAGE_EXTENSION);
 		}
 

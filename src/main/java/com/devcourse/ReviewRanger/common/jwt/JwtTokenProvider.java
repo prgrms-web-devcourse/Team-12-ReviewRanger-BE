@@ -69,7 +69,7 @@ public class JwtTokenProvider {
 		Claims claims = parseClaims(accessToken);
 
 		if (claims.get("auth") == null) {
-			log.warn("JWT Exception Occurs : {}", LOGOUT_JWT_TOKEN);
+			log.error("JWT Exception Occurs : {}", LOGOUT_JWT_TOKEN);
 			throw new RangerException(NOT_AUTHORIZED_TOKEN);
 		}
 
@@ -89,22 +89,22 @@ public class JwtTokenProvider {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 
 			if (redisUtil.hasKeyBlackList(token)) {
-				log.warn("JWT Exception Occurs : {}", LOGOUT_JWT_TOKEN);
+				log.error("JWT Exception Occurs : {}", LOGOUT_JWT_TOKEN);
 				throw new JwtException(LOGOUT_JWT_TOKEN.getMessage());
 			}
 
 			return true;
 		} catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-			log.warn("JWT Exception Occurs : {}", NOT_CORRECT_JWT_SIGN);
+			log.error("JWT Exception Occurs : {}", NOT_CORRECT_JWT_SIGN);
 			throw new JwtException(NOT_CORRECT_JWT_SIGN.getMessage());
 		} catch (ExpiredJwtException e) {
-			log.warn("JWT Exception Occurs : {}", EXPIRED_JWT_TOKEN);
+			log.error("JWT Exception Occurs : {}", EXPIRED_JWT_TOKEN);
 			throw new JwtException(EXPIRED_JWT_TOKEN.getMessage());
 		} catch (UnsupportedJwtException e) {
-			log.warn("JWT Exception Occurs : {}", NOT_SUPPORTED_JWT_TOKEN);
+			log.error("JWT Exception Occurs : {}", NOT_SUPPORTED_JWT_TOKEN);
 			throw new JwtException(NOT_SUPPORTED_JWT_TOKEN.getMessage());
 		} catch (IllegalArgumentException e) {
-			log.warn("JWT Exception Occurs : {}", NOT_CORRECT_JWT);
+			log.error("JWT Exception Occurs : {}", NOT_CORRECT_JWT);
 			// throw new JwtException(NOT_SUPPORTED_JWT_TOKEN.getMessage()); TODO: Postman에서 로그인할 때 오류남 따라서 임시 조치
 		}
 		return false;
