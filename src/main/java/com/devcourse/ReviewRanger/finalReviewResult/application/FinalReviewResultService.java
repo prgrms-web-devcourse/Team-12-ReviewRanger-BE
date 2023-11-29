@@ -40,6 +40,7 @@ import com.devcourse.ReviewRanger.finalReviewResult.repository.ObjectTypeReposit
 import com.devcourse.ReviewRanger.finalReviewResult.repository.RatingTypeRepository;
 import com.devcourse.ReviewRanger.finalReviewResult.repository.SubjectTypeRepository;
 import com.devcourse.ReviewRanger.participation.domain.Participation;
+import com.devcourse.ReviewRanger.participation.domain.ReviewStatus;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
 import com.devcourse.ReviewRanger.question.repository.QuestionRepository;
 import com.devcourse.ReviewRanger.review.domain.Review;
@@ -104,7 +105,7 @@ public class FinalReviewResultService {
 		Long userId = createFinalReviewRequest.userId();
 		Long reviewId = createFinalReviewRequest.reviewId();
 		validateUserId(userId);
-		validateReviewId(reviewId);
+		validateReviewIdAndDeadLineStatus(reviewId);
 
 		FinalReviewResult finalReviewResult = finalReviewResultRepository
 			.findByReviewIdAndUserIdAndStatus(reviewId, userId, NOT_SENT)
@@ -342,6 +343,11 @@ public class FinalReviewResultService {
 	private void validateReviewId(Long reviewId) {
 		reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new RangerException(NOT_FOUND_REVIEW));
+	}
+
+	private void validateReviewIdAndDeadLineStatus(Long reviewId) {
+		reviewRepository.findByIdAndStatus(reviewId, ReviewStatus.DEADLINE)
+			.orElseThrow(() -> new RangerException(ONLY_DEADLINE_REVIEW_CAN_HAVE_FINAL_RESULT));
 	}
 
 	private void validateUserId(Long userId) {

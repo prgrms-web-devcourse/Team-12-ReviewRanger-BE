@@ -47,6 +47,7 @@ public enum ErrorCode {
 	NOT_REMOVE_AFTER_DEADLINE_REVIEW(CONFLICT, "마감, 종료된 리뷰는 삭제할 수 없습니다."),
 	NOT_OWNER_OF_REVIEW(CONFLICT, "리뷰의 주인이 아닙니다."),
 	NOT_PARTICIPANT_OF_REVIEW(CONFLICT, "리뷰의 응답자가 아닙니다."),
+	ONLY_DEADLINE_REVIEW_CAN_HAVE_FINAL_RESULT(CONFLICT, "마감된 상태의 리뷰만 최종 결과를 생성할 수 있습니다."),
 
 	//413
 	FILE_MAX_SIZE(PAYLOAD_TOO_LARGE, "파일 용량이 너무 큽니다."),
