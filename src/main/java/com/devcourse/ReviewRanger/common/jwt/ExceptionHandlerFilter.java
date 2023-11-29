@@ -14,7 +14,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.JwtException;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
@@ -41,7 +43,8 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 		response.setContentType("application/json; charset=UTF-8");
 
 		ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
-
+		log.error(ex.getMessage());
+    
 		response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
 	}
 }

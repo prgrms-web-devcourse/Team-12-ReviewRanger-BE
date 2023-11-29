@@ -10,6 +10,9 @@ public record UserInfoResponse(
 	@Schema(description = "사용자 이름")
 	String name,
 
+	@Schema(description = "사용자 이미지 경로")
+	String path,
+
 	@Schema(description = "사용자 이메일")
 	String email
 ) {

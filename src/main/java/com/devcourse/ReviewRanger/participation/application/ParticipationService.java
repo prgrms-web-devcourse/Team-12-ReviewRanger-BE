@@ -23,6 +23,8 @@ import com.devcourse.ReviewRanger.participation.dto.response.GetParticipationRes
 import com.devcourse.ReviewRanger.participation.dto.response.ParticipationResponse;
 import com.devcourse.ReviewRanger.participation.dto.response.ReceiverResponse;
 import com.devcourse.ReviewRanger.participation.repository.ParticipationRepository;
+import com.devcourse.ReviewRanger.reply.domain.Reply;
+import com.devcourse.ReviewRanger.reply.repository.ReplyRepository;
 import com.devcourse.ReviewRanger.review.domain.Review;
 import com.devcourse.ReviewRanger.review.dto.response.ReviewResponse;
 import com.devcourse.ReviewRanger.review.repository.ReviewRepository;
@@ -39,16 +41,17 @@ public class ParticipationService {
 	private final ReviewRepository reviewRepository;
 	private final ReplyTargetService replyTargetService;
 	private final ReplyTargetRepository replyTargetRepository;
+	private final ReplyRepository replyRepository;
 
-	public ParticipationService(ParticipationRepository participationRepository,
-		UserRepository userRepository,
+	public ParticipationService(ParticipationRepository participationRepository, UserRepository userRepository,
 		ReviewRepository reviewRepository, ReplyTargetService replyTargetService,
-		ReplyTargetRepository replyTargetRepository) {
+		ReplyTargetRepository replyTargetRepository, ReplyRepository replyRepository) {
 		this.participationRepository = participationRepository;
 		this.userRepository = userRepository;
 		this.reviewRepository = reviewRepository;
 		this.replyTargetService = replyTargetService;
 		this.replyTargetRepository = replyTargetRepository;
+		this.replyRepository = replyRepository;
 	}
 
 	@Transactional
@@ -161,10 +164,16 @@ public class ParticipationService {
 		List<Participation> participations = participationRepository.findByReviewId(id);
 
 		participations.forEach(participation -> {
-			List<ReplyTarget> replyTarget = replyTargetRepository.findAllByParticipationId(
+			List<ReplyTarget> replyTargets = replyTargetRepository.findAllByParticipationId(
 				participation.getId());
-			replyTargetRepository.deleteAllInBatch(replyTarget);
+
+			replyTargets.forEach(replyTarget -> {
+				List<Reply> replies = replyTarget.getReplies();
+				replyRepository.deleteAllInBatch(replies);
+			});
+			replyTargetRepository.deleteAllInBatch(replyTargets);
 		});
+
 		participationRepository.deleteAllInBatch(participations);
 	}
 

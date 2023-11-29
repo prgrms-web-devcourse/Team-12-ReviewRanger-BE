@@ -52,6 +52,7 @@ public class User extends BaseEntity {
 		this.name = name;
 		this.email = email;
 		this.password = password;
+		this.imageUrl = null;
 		this.role = Role.ROLE_USER;
 	}
 

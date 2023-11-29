@@ -9,13 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableJpaAuditing
 @EnableWebSecurity
 @EnableAsync
-@SpringBootApplication(
-	exclude = {
-		org.springframework.cloud.aws.autoconfigure.context.ContextInstanceDataAutoConfiguration.class,
-		org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration.class,
-		org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration.class
-	}
-)
+@SpringBootApplication
 public class ReviewRangerApplication {
 
 	public static void main(String[] args) {
