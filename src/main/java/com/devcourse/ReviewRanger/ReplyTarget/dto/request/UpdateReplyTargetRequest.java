@@ -12,6 +12,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "답변 타겟 수정 요청 DTO")
 public record UpdateReplyTargetRequest(
+	@Schema(description = "답변 타겟 Id")
+	@NotNull(message = "답변 타겟 Id는 Null값 일 수 없습니다.")
+	Long id,
+
 	@Schema(description = "수신자 Id")
 	@NotNull(message = "수신자 Id는 Null값 일 수 없습니다.")
 	Long receiverId,
