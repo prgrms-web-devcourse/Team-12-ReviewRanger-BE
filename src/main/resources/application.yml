@@ -10,7 +10,6 @@ spring:
     port: 6379
     host: 127.0.0.1
 
-
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}
@@ -30,6 +29,11 @@ spring:
         highlight_sql: true
         use_sql_comments: true
         show_sql: true
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 15MB
 jwt:
   secret: ENC(kDoP7OTxUqgTLrqazw/Z0/dji1ZlMlCnerIbYj2++jRfLktPgdc2r0BUvDwrYjXHVQlDDXS90BQhTfZ31ACd6w==)
 

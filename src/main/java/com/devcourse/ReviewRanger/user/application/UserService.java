@@ -47,7 +47,7 @@ public class UserService {
 	@Transactional
 	public void updateImage(Long id, MultipartFile multipartFile) {
 		User user = getUserOrThrow(id);
-		String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
+		String fileName = UUID.randomUUID().toString();
 
 		s3Manager.delete(fileName, DIRECTORY);
 		String uploadImageUrl = s3Manager.upload(multipartFile, DIRECTORY, fileName);
@@ -74,10 +74,13 @@ public class UserService {
 	}
 
 	public UserInfoResponse getUserInfo(UserPrincipal user) {
+		User savedUser = getUserOrThrow(user.getId());
+
 		Long id = user.getId();
 		String name = user.getName();
+		String path = savedUser.getImageUrl();
 		String email = user.getUsername();
 
-		return new UserInfoResponse(id, name, email);
+		return new UserInfoResponse(id, name, path, email);
 	}
 }

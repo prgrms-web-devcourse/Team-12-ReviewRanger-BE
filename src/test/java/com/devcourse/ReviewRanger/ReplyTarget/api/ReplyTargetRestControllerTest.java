@@ -1,7 +1,9 @@
 package com.devcourse.ReviewRanger.ReplyTarget.api;
 
+import static com.devcourse.ReviewRanger.user.UserFixture.*;
 import static java.time.LocalDateTime.*;
 import static org.mockito.BDDMockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -17,17 +19,22 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.devcourse.ReviewRanger.ReplyTarget.application.ReplyTargetService;
 import com.devcourse.ReviewRanger.ReplyTarget.dto.response.ReplyTargetResponse;
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.config.SecurityConfig;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
+import com.devcourse.ReviewRanger.participation.application.ParticipationService;
 import com.devcourse.ReviewRanger.question.dto.response.GetQuestionOptionResponse;
 import com.devcourse.ReviewRanger.reply.dto.response.ReplyResponse;
+import com.devcourse.ReviewRanger.review.api.ReviewController;
+import com.devcourse.ReviewRanger.review.application.ReviewService;
 import com.devcourse.ReviewRanger.user.dto.UserResponse;
 
-@WebMvcTest(ReplyTargetRestController.class)
+@WebMvcTest(ReviewController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @Import(SecurityConfig.class)
 class ReplyTargetRestControllerTest {
@@ -39,6 +46,12 @@ class ReplyTargetRestControllerTest {
 	private JwtTokenProvider jwtTokenProvider;
 
 	@MockBean
+	private ReviewService reviewService;
+
+	@MockBean
+	private ParticipationService participationService;
+
+	@MockBean
 	private ReplyTargetService replyTargetService;
 
 	private ReplyTargetResponse response;
@@ -47,9 +60,9 @@ class ReplyTargetRestControllerTest {
 	public void setup() {
 		LocalDateTime now = now();
 
-		UserResponse 수연 = new UserResponse(1L, "aaaatt11@naver.com", "수연", now,
+		UserResponse 수연 = new UserResponse(1L, "aaaatt11@naver.com", "장수연", now,
 			now);
-		UserResponse 범철 = new UserResponse(2L, "aaaatt22@naver.com", "범철", now,
+		UserResponse 범철 = new UserResponse(2L, "aaaatt22@naver.com", "신범철", now,
 			now());
 
 		GetQuestionOptionResponse 파이리 = new GetQuestionOptionResponse(1L, "파이리", now(),
@@ -98,21 +111,24 @@ class ReplyTargetRestControllerTest {
 	@Test
 	void 작성자_답변_조회_성공() throws Exception {
 
-		given(replyTargetService.getAllRepliesByResponser(1L, 1L)).willReturn(List.of(response));
+		given(replyTargetService.getAllNonEmptyRepliesByResponser(1L, 1L)).willReturn(List.of(response));
+		UserDetails userDetails = new UserPrincipal(SUYEON_FIXTURE.toEntity());
 
-		mockMvc.perform(get("/reviews/{reviewId}/responser/{responserId}", 1L, 1L)
-				.contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/reviews/{reviewId}/responser/{responserId}/creator", 1L, 1L)
+				.contentType(MediaType.APPLICATION_JSON)
+				.with(user(userDetails)))
 			.andExpect(status().isOk())
 			.andDo(print());
 	}
 
 	@Test
 	void 수신자_답변_조회_성공() throws Exception {
-
-		given(replyTargetService.getAllRepliesByReceiver(1L, 2L)).willReturn(List.of(response));
+		given(replyTargetService.getAllNonEmptyRepliesByReceiver(1L, 2L)).willReturn(List.of(response));
+		UserDetails userDetails = new UserPrincipal(BEOMCHUL_FIXTURE.toEntity());
 
 		mockMvc.perform(get("/reviews/{reviewId}/receiver/{receiverId}", 1L, 2L)
-				.contentType(MediaType.APPLICATION_JSON))
+				.contentType(MediaType.APPLICATION_JSON)
+				.with(user(userDetails)))
 			.andExpect(status().isOk())
 			.andDo(print());
 	}
