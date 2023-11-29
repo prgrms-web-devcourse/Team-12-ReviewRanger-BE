@@ -16,6 +16,7 @@ public enum ErrorCode {
 	INVALID_IMAGE_EXTENSION(BAD_REQUEST, "이미지 확장자가 올바르지 않습니다."),
 
 	// 401 error
+	INVALID_REFRESH_TOKEN(UNAUTHORIZED, "유효하지 않은 Refresh 토큰입니다."),
 	NOT_CORRECT_JWT(UNAUTHORIZED, "잘못된 JWT 토큰입니다."),
 	EXPIRED_JWT_TOKEN(UNAUTHORIZED, "만료된 토큰입니다."),
 	LOGOUT_JWT_TOKEN(UNAUTHORIZED, "로그아웃된 토큰입니다."),
