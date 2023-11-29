@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ErrorResponse> handleRangerException(MethodArgumentNotValidException e) {
+	public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
 		String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
 		log.error(VALID_LOG_FORMAT, e.getClass().getSimpleName(), "@Valid", errorMessage);
 
@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(DataAccessException.class)
-	public ResponseEntity<ErrorResponse> handleRangerException(DataAccessException e) {
+	public ResponseEntity<ErrorResponse> handleDataAccessException(DataAccessException e) {
 		String errorMessage = e.getMessage();
 		log.error(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
 
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(JsonProcessingException.class)
-	public ResponseEntity<ErrorResponse> handleRangerException(JsonProcessingException e) {
+	public ResponseEntity<ErrorResponse> handleJsonProcessingException(JsonProcessingException e) {
 		String errorMessage = e.getMessage();
 		log.error(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
 
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(MaxUploadSizeExceededException.class)
-	public ResponseEntity<ErrorResponse> handleRangerException(MaxUploadSizeExceededException e) {
+	public ResponseEntity<ErrorResponse> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
 		String errorMessage = e.getMessage();
 		log.error(LOG_FORMAT, e.getClass().getSimpleName(), errorMessage);
 
