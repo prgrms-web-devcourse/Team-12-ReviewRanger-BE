@@ -170,7 +170,7 @@ public class FinalReviewResultService {
 
 	@Transactional
 	public void updateAnswerOfSubject(UpdateAnswerOfSubject updateAnswerOfSubject) {
-		validateReviewId(updateAnswerOfSubject.reviewId());
+		validateReviewIdAndDeadLineStatus(updateAnswerOfSubject.reviewId());
 
 		Long questionId = updateAnswerOfSubject.questionId();
 		Long userId = updateAnswerOfSubject.userId();
