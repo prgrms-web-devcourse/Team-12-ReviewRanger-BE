@@ -33,8 +33,8 @@ public class Review extends BaseEntity {
 	@Size(max = 50, message = "50자 이하로 입력하세요.")
 	private String title;
 
-	@Column(length = 100)
-	@Size(max = 100, message = "100자 이하로 입력하세요.")
+	@Column(length = 500)
+	@Size(max = 500, message = "500자 이하로 입력하세요.")
 	private String description;
 
 	@Column(nullable = false)
