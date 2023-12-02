@@ -1,8 +1,8 @@
-package com.devcourse.ReviewRanger.slack;
+package com.devcourse.ReviewRanger.common.slack;
 
 import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 import static com.devcourse.ReviewRanger.participation.domain.ReviewStatus.*;
-import static com.devcourse.ReviewRanger.slack.SlackConstant.*;
+import static com.devcourse.ReviewRanger.common.slack.SlackConstant.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

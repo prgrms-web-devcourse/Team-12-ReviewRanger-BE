@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger;
+package com.devcourse.ReviewRanger.finalReviewResult;
 
 import static com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestionType.*;
 

@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger;
+package com.devcourse.ReviewRanger.common.entity;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.*;
 

@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.openAI.application;
+package com.devcourse.ReviewRanger.common.openai.application;
 
 import static com.devcourse.ReviewRanger.common.config.OpenAIConfig.*;
 
@@ -12,11 +12,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.devcourse.ReviewRanger.common.config.OpenAIConfig;
 
-import com.devcourse.ReviewRanger.openAI.Prompt;
-import com.devcourse.ReviewRanger.openAI.constant.Command;
-import com.devcourse.ReviewRanger.openAI.dto.request.CleanRepliesRequest;
-import com.devcourse.ReviewRanger.openAI.dto.request.OpenAIRequest;
-import com.devcourse.ReviewRanger.openAI.dto.request.Message;
+import com.devcourse.ReviewRanger.common.openai.Prompt;
+import com.devcourse.ReviewRanger.common.openai.constant.Command;
+import com.devcourse.ReviewRanger.common.openai.dto.request.CleanRepliesRequest;
+import com.devcourse.ReviewRanger.common.openai.dto.request.OpenAIRequest;
+import com.devcourse.ReviewRanger.common.openai.dto.request.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,7 +30,7 @@ public class OpenAIService {
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
-	public Flux<String> cleanRepliesOrThrow (CleanRepliesRequest cleanRepliesRequest) throws JsonProcessingException {
+	public Flux<String> cleanRepliesOrThrow(CleanRepliesRequest cleanRepliesRequest) throws JsonProcessingException {
 		WebClient client = WebClient.builder()
 			.baseUrl(CHAT_URL)
 			.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

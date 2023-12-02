@@ -3,7 +3,7 @@ package com.devcourse.ReviewRanger.auth.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import com.devcourse.ReviewRanger.BaseEntity;
+import com.devcourse.ReviewRanger.common.entity.BaseEntity;
 
 import lombok.Getter;
 

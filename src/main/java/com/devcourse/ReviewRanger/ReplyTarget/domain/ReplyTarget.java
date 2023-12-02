@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.devcourse.ReviewRanger.BaseEntity;
+import com.devcourse.ReviewRanger.common.entity.BaseEntity;
 import com.devcourse.ReviewRanger.reply.domain.Reply;
 import com.devcourse.ReviewRanger.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;

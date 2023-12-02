@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import com.devcourse.ReviewRanger.BaseEntity;
+import com.devcourse.ReviewRanger.common.entity.BaseEntity;
 
 import lombok.Getter;
 
@@ -47,7 +47,8 @@ public class Question extends BaseEntity {
 	protected Question() {
 	}
 
-	public Question(String title, String description,  QuestionType type, Boolean isRequired, List<QuestionOption> questionOptions) {
+	public Question(String title, String description, QuestionType type, Boolean isRequired,
+		List<QuestionOption> questionOptions) {
 		this.title = title;
 		this.description = description;
 		this.type = type;
