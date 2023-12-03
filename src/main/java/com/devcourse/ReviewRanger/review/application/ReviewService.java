@@ -87,7 +87,7 @@ public class ReviewService {
 		return participationService.getAllByReviewId(reviewId).stream()
 			.filter(participation -> participation.getResponser().getId() != responserId)
 			.map(participation -> userService.getUserOrThrow(participation.getResponser().getId()))
-			.map(user -> new GetUserResponse(user.getId(), user.getName()))
+			.map(user -> new GetUserResponse(user.getId(), user.getName(), user.getImageUrl()))
 			.toList();
 	}
 
