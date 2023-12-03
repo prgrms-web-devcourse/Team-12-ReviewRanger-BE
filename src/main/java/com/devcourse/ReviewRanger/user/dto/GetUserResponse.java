@@ -8,6 +8,9 @@ public record GetUserResponse(
 	Long receiverId,
 
 	@Schema(description = "사용자 이름")
-	String name
+	String name,
+
+	@Schema(description = "이미지 경로")
+	String path
 ) {
 }

@@ -69,7 +69,7 @@ public class UserService {
 
 	public List<GetUserResponse> getAllUsers() {
 		return userRepository.findAll().stream()
-			.map(user -> new GetUserResponse(user.getId(), user.getName()))
+			.map(user -> new GetUserResponse(user.getId(), user.getName(), user.getImageUrl()))
 			.toList();
 	}
 
