@@ -43,7 +43,8 @@ public class SecurityConfig {
 		CorsConfiguration configuration = new CorsConfiguration();
 
 		configuration.setAllowedOrigins(List.of("http://localhost:3001", "http://localhost:5173",
-			"http://team12-bucket.s3-website.ap-northeast-2.amazonaws.com", "https://dooohaj6qesmx.cloudfront.net"));
+			"http://team12-bucket.s3-website.ap-northeast-2.amazonaws.com", "https://dooohaj6qesmx.cloudfront.net",
+			"https://review-ranger-fe.vercel.app"));
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
 		configuration.addAllowedHeader("*");
 		configuration.setExposedHeaders(List.of("Custom-Header"));
