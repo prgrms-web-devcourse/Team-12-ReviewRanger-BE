@@ -93,6 +93,7 @@ class ReviewControllerTest {
 			3L,
 			"aaaatt33@naver.com",
 			"스펜서",
+			null,
 			now,
 			now
 		);
@@ -113,6 +114,7 @@ class ReviewControllerTest {
 			1L,
 			"aaaatt11@naver.com",
 			"수연",
+			null,
 			now,
 			now
 		);

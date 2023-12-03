@@ -60,9 +60,9 @@ class ReplyTargetRestControllerTest {
 	public void setup() {
 		LocalDateTime now = now();
 
-		UserResponse 수연 = new UserResponse(1L, "aaaatt11@naver.com", "장수연", now,
+		UserResponse 수연 = new UserResponse(1L, "aaaatt11@naver.com", "장수연", null, now,
 			now);
-		UserResponse 범철 = new UserResponse(2L, "aaaatt22@naver.com", "신범철", now,
+		UserResponse 범철 = new UserResponse(2L, "aaaatt22@naver.com", "신범철", null, now,
 			now());
 
 		GetQuestionOptionResponse 파이리 = new GetQuestionOptionResponse(1L, "파이리", now(),

@@ -17,6 +17,9 @@ public record UserResponse(
 	@Schema(description = "이름")
 	String name,
 
+	@Schema(description = "이미지 경로")
+	String path,
+
 	@Schema(description = "생성일")
 	LocalDateTime createdAt,
 
@@ -28,6 +31,7 @@ public record UserResponse(
 			user.getId(),
 			user.getEmail(),
 			user.getName(),
+			user.getImageUrl(),
 			user.getCreateAt(),
 			user.getUpdatedAt()
 		);
