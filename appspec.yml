@@ -4,6 +4,7 @@ os: linux
 files:
   - source: /
     destination: /home/ubuntu/ranger
+    overwrite: yes
 
 permissions:
   - object: /home/ubuntu/ranger
@@ -12,7 +13,7 @@ permissions:
 
 hooks:
 
-  AfterInstall:
+  ApplicationStart:
     - location: scripts/deploy.sh
       timeout: 60
       runas: ubuntu
