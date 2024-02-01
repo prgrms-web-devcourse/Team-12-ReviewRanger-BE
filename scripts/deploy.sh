@@ -1,23 +1,18 @@
 #!/usr/bin/env bash
 
-PROJECT_NAME=ranger
+echo "> 현재 실행 중인 Docker 컨테이너 pid 확인" >> /home/ubuntu/ranger
+CURRENT_PID=$(sudo docker container ls -q)
 REPOSITORY=/home/ubuntu/ranger
-cd $REPOSITORY
-
-JAR_NAME=$(ls $REPOSITORY/build/libs/ | grep 'SNAPSHOT.jar' | tail -n 1)
-JAR_PATH=$REPOSITORY/build/libs/$JAR_NAME
-
-CURRENT_PID=$(pgrep -f $JAR_NAME)
 
 if [ -z $CURRENT_PID ]
 then
-  echo "> 종료할 애플리케이션이 없습니다"
+  echo "> 현재 구동중인 Docker 컨테이너가 없으므로 종료하지 않습니다." >> /home/ubuntu/ranger
 else
-  echo "> 실행 중인 애플리케이션 종료 $CURRENT_PID"
-  kill -15 $CURRENT_PID
+  echo "> sudo docker stop $CURRENT_PID"   # 현재 구동중인 Docker 컨테이너가 있다면 모두 중지
+  sudo docker stop $CURRENT_PID
   sleep 5
 fi
 
-echo "> 배포 - $JAR_NAME"
-cd $REPOSITORY/build/libs/
-nohup java -jar $JAR_NAME > /dev/null 2> /dev/null < /dev/null &
+cd $REPOSITORY
+sudo docker build -t ranger-api-spring-boot-docker .
+sudo docker run -d -p 8080:8080 ranger-api-spring-boot-docker
