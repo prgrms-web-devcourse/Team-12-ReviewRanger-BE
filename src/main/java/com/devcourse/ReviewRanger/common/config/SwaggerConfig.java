@@ -1,6 +1,7 @@
 package com.devcourse.ReviewRanger.common.config;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -8,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
@@ -18,6 +18,7 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.SecurityReference;
+import springfox.documentation.service.Server;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -31,7 +32,14 @@ public class SwaggerConfig {
 
 	@Bean
 	public Docket api() {
+		Server localServer = new Server("local", "http://localhost:8080", "로컬 서버", Collections.emptyList(),
+			Collections.emptyList());
+		Server releaseServer = new Server("release", "https://api.review-ranger.store", "배포 서버",
+			Collections.emptyList(),
+			Collections.emptyList());
+
 		return new Docket(DocumentationType.OAS_30)
+			.servers(localServer, releaseServer)
 			.securityContexts(List.of(this.securityContext())) // SecurityContext 설정
 			.securitySchemes(List.of(this.apiKey())) // ApiKey 설정
 			.select()
