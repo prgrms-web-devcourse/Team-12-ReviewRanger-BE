@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.finalReviewResult.dto;
+package com.devcourse.ReviewRanger.finalReviewResult.dto.paging;
 
 import java.util.List;
 

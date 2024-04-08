@@ -4,6 +4,8 @@ import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.application.FinalReviewResultService;
 import com.devcourse.ReviewRanger.finalReviewResult.dto.*;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.paging.SliceResponse;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
