@@ -1,5 +1,13 @@
 package com.devcourse.ReviewRanger.auth.application;
 
+import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.devcourse.ReviewRanger.auth.dto.JoinRequest;
 import com.devcourse.ReviewRanger.auth.dto.LoginRequest;
 import com.devcourse.ReviewRanger.auth.dto.LoginResponse;
@@ -8,14 +16,6 @@ import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 import com.devcourse.ReviewRanger.common.redis.RedisUtil;
 import com.devcourse.ReviewRanger.user.domain.User;
 import com.devcourse.ReviewRanger.user.repository.UserRepository;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import static com.devcourse.ReviewRanger.common.exception.ErrorCode.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,16 +23,13 @@ public class AuthService {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RedisUtil redisUtil;
 
 	public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-		AuthenticationManagerBuilder authenticationManagerBuilder, JwtTokenProvider jwtTokenProvider,
-		RedisUtil redisUtil) {
+					   JwtTokenProvider jwtTokenProvider, RedisUtil redisUtil) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
-		this.authenticationManagerBuilder = authenticationManagerBuilder;
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.redisUtil = redisUtil;
 	}
@@ -57,12 +54,16 @@ public class AuthService {
 	public LoginResponse login(LoginRequest request) {
 		// user 검증
 		String userEmail = request.email();
-		UsernamePasswordAuthenticationToken authenticationToken
-			= new UsernamePasswordAuthenticationToken(userEmail, request.password());
+		String userPassword = request.password();
 
-		// todo
-		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-		// id검증 password 검증 .matches
+		User savedUser = userRepository.findByEmail(userEmail).
+				orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+
+		if(!passwordEncoder.matches(userPassword, savedUser.getPassword())) {
+			throw new RangerException(FAIL_USER_LOGIN);
+		}
+
+		Authentication authentication = new UsernamePasswordAuthenticationToken(userEmail, userPassword);
 
 		// token 생성
 		String accessToken = jwtTokenProvider.createAccessToken(authentication);
@@ -71,15 +72,6 @@ public class AuthService {
 		// refreshToken 저장
 		User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new RangerException(NOT_FOUND_USER));
 		user.updateRefreshToken(refreshToken);
-
-/*		refreshTokenRepository.findByUserId(user.getId())
-			.ifPresentOrElse(
-				token -> token.update(refreshToken),
-				() -> {
-					RefreshToken savedRefreshToken = new RefreshToken(user.getId(), refreshToken);
-					refreshTokenRepository.save(savedRefreshToken);
-				}
-			);*/
 
 		return new LoginResponse(accessToken, "Bearer");
 	}

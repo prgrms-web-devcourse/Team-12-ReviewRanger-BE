@@ -77,9 +77,9 @@ public class UserService {
 		User savedUser = getUserOrThrow(user.getId());
 
 		Long id = user.getId();
-		String name = user.getName();
+		String name = savedUser.getName();
 		String path = savedUser.getImageUrl();
-		String email = user.getUsername();
+		String email = savedUser.getEmail();
 
 		return new UserInfoResponse(id, name, path, email);
 	}
