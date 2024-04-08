@@ -3,6 +3,7 @@ package com.devcourse.ReviewRanger.finalReviewResult.dto;
 import java.util.List;
 
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestionType;
+import com.devcourse.ReviewRanger.finalReviewResult.domain.answerType.Answer;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -21,6 +22,6 @@ public record GetFinalReviewAnswerResponse(
 	List<Long> answerIdList,
 
 	@Schema(description = "답변 내용 목록")
-	List<Object> answers
+	List<Answer> answers
 ) {
 }

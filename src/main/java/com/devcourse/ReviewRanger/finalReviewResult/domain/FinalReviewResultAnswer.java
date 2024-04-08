@@ -6,11 +6,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import com.devcourse.ReviewRanger.finalReviewResult.domain.answerType.Answer;
+
 import lombok.Getter;
 
 @Getter
 @MappedSuperclass
-public abstract class FinalReviewResultAnswer {
+public abstract class FinalReviewResultAnswer implements Answer {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

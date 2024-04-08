@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestion;
 import com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestionType;
+import com.devcourse.ReviewRanger.finalReviewResult.dto.answerType.FinalAnswerDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -27,7 +28,7 @@ public record CreateFinalReplyRequest(
 
 	@Schema(name = "답변 리스트", description = "답변 리스트")
 	@NotEmpty(message = "답변은 빈값 일 수 없습니다.")
-	List<Object> answers
+	List<FinalAnswerDto> answers
 ) {
 	public FinalQuestion toEntity() {
 		return new FinalQuestion(questionId, questionType, questionTitle);

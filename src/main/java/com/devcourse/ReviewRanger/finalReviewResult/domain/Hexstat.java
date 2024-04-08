@@ -2,10 +2,12 @@ package com.devcourse.ReviewRanger.finalReviewResult.domain;
 
 import javax.persistence.Column;
 
+import com.devcourse.ReviewRanger.finalReviewResult.domain.answerType.Answer;
+
 import lombok.Getter;
 
 @Getter
-public class Hexstat {
+public class Hexstat implements Answer {
 
 	@Column(name = "stat_name", nullable = false)
 	private String statName;
