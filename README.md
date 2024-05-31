@@ -76,11 +76,10 @@ Miro를 통한 도메인 분석 및 플로우 차트 작성
 
 ## ✨ Architecture
 ### CI/CD
-<img width="800" alt="image" src="https://github.com/prgrms-web-devcourse/Team-12-ReviewRanger-BE/assets/89267864/434533d8-bd6b-41ab-b2ca-4373cb1515fe">
+<img width="800" alt="image" src="https://github.com/prgrms-web-devcourse/Team-12-ReviewRanger-BE/assets/84673536/02a16100-eaa8-45ce-b47e-2ef8fa8e7302">
 
 ### System Architecture
-<img width="800" alt="image" src="https://github.com/prgrms-web-devcourse/Team-12-ReviewRanger-BE/assets/89267864/711ec280-c843-44d4-aacc-fad4082c39b1">
-
+<img width="800" alt="image" src="https://github.com/prgrms-web-devcourse/Team-12-ReviewRanger-BE/assets/84673536/87858042-830c-4735-b81b-fea7a9392acb">
 
 ## ✨ ERD
 
