@@ -1,40 +1,21 @@
 package com.devcourse.ReviewRanger.finalReviewResult.api;
 
-import static org.springframework.http.HttpStatus.*;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.validation.Valid;
-
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.response.RangerResponse;
 import com.devcourse.ReviewRanger.finalReviewResult.application.FinalReviewResultService;
-import com.devcourse.ReviewRanger.finalReviewResult.dto.CheckFinalResultStatus;
-import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewRequest;
-import com.devcourse.ReviewRanger.finalReviewResult.dto.CreateFinalReviewResponse;
-import com.devcourse.ReviewRanger.finalReviewResult.dto.FinalReviewResultListResponse;
-import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewAnswerResponse;
-import com.devcourse.ReviewRanger.finalReviewResult.dto.GetFinalReviewResultResponse;
-import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
-import com.devcourse.ReviewRanger.finalReviewResult.dto.UpdateAnswerOfSubject;
-
+import com.devcourse.ReviewRanger.finalReviewResult.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Set;
+
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @Tag(name = "final-result", description = "최종 리뷰 결과 API")
 @RestController
@@ -71,14 +52,13 @@ public class FinalReviewResultController {
 	})
 	@GetMapping
 	@ResponseStatus(OK)
-	public RangerResponse<Slice<FinalReviewResultListResponse>> getAllFinalReviewResultsOfCursorPaging(
+	public RangerResponse<SliceResponse<FinalReviewResultListResponse>> getAllFinalReviewResultsOfCursorPaging(
 		@AuthenticationPrincipal UserPrincipal user,
 		@RequestParam(required = false) Long cursorId,
 		@RequestParam(defaultValue = "12") Integer size
 	) {
-		Pageable pageable = PageRequest.of(0, size);
-		Slice<FinalReviewResultListResponse> finalReviewResultsOfCursorPaging
-			= finalReviewResultService.getAllFinalReviewResultsOfCursorPaging(cursorId, user.getId(), pageable);
+		SliceResponse<FinalReviewResultListResponse> finalReviewResultsOfCursorPaging
+			= finalReviewResultService.getAllFinalReviewResultsOfCursorPaging(cursorId, user.getId(), size);
 
 		return RangerResponse.ok(finalReviewResultsOfCursorPaging);
 	}
@@ -94,7 +74,7 @@ public class FinalReviewResultController {
 		@RequestBody @Valid CreateFinalReviewRequest finalReviewRequest
 	) {
 		CreateFinalReviewResponse finalReviewResponse
-			= finalReviewResultService.createFinalReviewResult(finalReviewRequest);
+			= finalReviewResultService.saveFinalReviewResult(finalReviewRequest);
 
 		return RangerResponse.ok(finalReviewResponse);
 	}

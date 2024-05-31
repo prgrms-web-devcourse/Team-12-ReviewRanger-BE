@@ -1,6 +1,6 @@
-package com.devcourse.ReviewRanger.openAI;
+package com.devcourse.ReviewRanger.common.openai;
 
-import com.devcourse.ReviewRanger.openAI.constant.Command;
+import com.devcourse.ReviewRanger.common.openai.constant.Command;
 
 public class Prompt {
 
@@ -13,7 +13,7 @@ public class Prompt {
 		this.command = command;
 	}
 
-	public String generatePrompt(){
+	public String generatePrompt() {
 		return target.concat(" ").concat(command.getText());
 	}
 }

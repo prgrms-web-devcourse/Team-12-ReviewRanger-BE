@@ -1,6 +1,6 @@
 package com.devcourse.ReviewRanger.finalReviewResult.application;
 
-import static com.devcourse.ReviewRanger.FinalQuestionFixture.*;
+import static com.devcourse.ReviewRanger.finalReviewResult.FinalQuestionFixture.*;
 import static com.devcourse.ReviewRanger.ReplyTarget.ReplyTargetFixture.*;
 import static com.devcourse.ReviewRanger.finalReviewResult.domain.FinalQuestionType.*;
 import static com.devcourse.ReviewRanger.finalReviewResult.domain.FinalReviewResult.Status.*;

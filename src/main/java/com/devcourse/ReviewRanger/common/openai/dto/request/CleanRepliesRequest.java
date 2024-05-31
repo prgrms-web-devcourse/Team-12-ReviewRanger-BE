@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.openAI.dto.request;
+package com.devcourse.ReviewRanger.common.openai.dto.request;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public record CleanRepliesRequest(
 	List<String> replies
 ) {
 
-	public String generateReplies(){
+	public String generateReplies() {
 		return String.join(", ", replies);
 	}
 }

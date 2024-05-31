@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.openAI.dto.request;
+package com.devcourse.ReviewRanger.common.openai.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

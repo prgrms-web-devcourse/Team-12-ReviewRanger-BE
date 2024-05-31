@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import com.devcourse.ReviewRanger.BaseEntity;
+import com.devcourse.ReviewRanger.common.entity.BaseEntity;
 
 import lombok.Getter;
 

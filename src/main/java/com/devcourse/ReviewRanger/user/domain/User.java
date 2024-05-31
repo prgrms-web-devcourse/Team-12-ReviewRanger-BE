@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-import com.devcourse.ReviewRanger.BaseEntity;
+import com.devcourse.ReviewRanger.common.entity.BaseEntity;
 
 import lombok.Getter;
 
@@ -42,6 +42,9 @@ public class User extends BaseEntity {
 	@Column(nullable = false, length = 10)
 	private Role role;
 
+	@Column(name = "refresh_token")
+	private String refreshToken;
+
 	@Column(name = "image_url")
 	private String imageUrl;
 
@@ -66,5 +69,9 @@ public class User extends BaseEntity {
 
 	public void updateImage(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+
+	public void updateRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
 	}
 }

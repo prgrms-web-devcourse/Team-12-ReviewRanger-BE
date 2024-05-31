@@ -1,4 +1,4 @@
-package com.devcourse.ReviewRanger.slack;
+package com.devcourse.ReviewRanger.common.slack;
 
 class SlackConstant {
 
