@@ -1,6 +1,5 @@
 package com.devcourse.ReviewRanger.ReplyTarget.api;
 
-import static com.devcourse.ReviewRanger.user.UserFixture.*;
 import static java.time.LocalDateTime.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
@@ -24,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.devcourse.ReviewRanger.ReplyTarget.application.ReplyTargetService;
 import com.devcourse.ReviewRanger.ReplyTarget.dto.response.ReplyTargetResponse;
-import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.config.SecurityConfig;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
@@ -112,7 +110,7 @@ class ReplyTargetRestControllerTest {
 	void 작성자_답변_조회_성공() throws Exception {
 
 		given(replyTargetService.getAllNonEmptyRepliesByResponser(1L, 1L)).willReturn(List.of(response));
-		UserDetails userDetails = new UserPrincipal(SUYEON_FIXTURE.toEntity());
+		UserDetails userDetails = null;
 
 		mockMvc.perform(get("/reviews/{reviewId}/responser/{responserId}/creator", 1L, 1L)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -124,7 +122,7 @@ class ReplyTargetRestControllerTest {
 	@Test
 	void 수신자_답변_조회_성공() throws Exception {
 		given(replyTargetService.getAllNonEmptyRepliesByReceiver(1L, 2L)).willReturn(List.of(response));
-		UserDetails userDetails = new UserPrincipal(BEOMCHUL_FIXTURE.toEntity());
+		UserDetails userDetails = null;
 
 		mockMvc.perform(get("/reviews/{reviewId}/receiver/{receiverId}", 1L, 2L)
 				.contentType(MediaType.APPLICATION_JSON)

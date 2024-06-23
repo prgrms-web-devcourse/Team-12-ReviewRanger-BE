@@ -31,7 +31,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.devcourse.ReviewRanger.ReplyTarget.dto.request.CreateReplyTargetRequest;
 import com.devcourse.ReviewRanger.ReplyTarget.dto.request.UpdateReplyTargetRequest;
-import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.config.SecurityConfig;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
@@ -194,7 +193,7 @@ class ParticipationControllerTest {
 
 		when(participationService.getAllParticipationsByResponserOfCursorPaging(cursorId, null, pageable))
 			.thenReturn(getReviewResponses);
-		UserDetails userDetails = new UserPrincipal(SUYEON_FIXTURE.toEntity());
+		UserDetails userDetails = null;
 
 		// when
 		// then

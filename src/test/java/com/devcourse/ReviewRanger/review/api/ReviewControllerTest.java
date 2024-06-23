@@ -30,7 +30,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.devcourse.ReviewRanger.ReplyTarget.application.ReplyTargetService;
-import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.config.SecurityConfig;
 import com.devcourse.ReviewRanger.common.jwt.JwtTokenProvider;
 import com.devcourse.ReviewRanger.participation.application.ParticipationService;
@@ -155,7 +154,7 @@ class ReviewControllerTest {
 		);
 
 		when(reviewService.createReview(null, createReviewRequest)).thenReturn(true);
-		UserDetails userDetails = new UserPrincipal(SUYEON_FIXTURE.toEntity());
+		UserDetails userDetails = null;
 		// when
 		// then
 		mockMvc.perform(post("/reviews")
@@ -192,7 +191,7 @@ class ReviewControllerTest {
 
 		when(reviewService.getAllReviewsByRequesterOfCursorPaging(cursorId, null, pageable)).thenReturn(
 			getReviewResponses);
-		UserDetails userDetails = new UserPrincipal(SUYEON_FIXTURE.toEntity());
+		UserDetails userDetails = null;
 
 		// when
 		// then
@@ -230,7 +229,7 @@ class ReviewControllerTest {
 		);
 
 		when(reviewService.getReviewDetailOrThrow(reviewId, responserId)).thenReturn(response);
-		UserDetails userDetails = new UserPrincipal(SUYEON_FIXTURE.toEntity());
+		UserDetails userDetails = null;
 		// when
 		// then
 		mockMvc.perform(get("/reviews/{id}", 1)

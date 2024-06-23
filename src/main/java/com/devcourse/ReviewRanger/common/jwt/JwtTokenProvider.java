@@ -17,15 +17,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.devcourse.ReviewRanger.auth.application.CustomUserDetailsService;
-import com.devcourse.ReviewRanger.auth.domain.RefreshToken;
-import com.devcourse.ReviewRanger.auth.repository.RefreshTokenRepository;
+import com.devcourse.ReviewRanger.auth.domain.UserPrincipal;
 import com.devcourse.ReviewRanger.common.exception.RangerException;
 import com.devcourse.ReviewRanger.common.redis.RedisUtil;
+import com.devcourse.ReviewRanger.user.domain.User;
+import com.devcourse.ReviewRanger.user.repository.UserRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -44,15 +42,13 @@ public class JwtTokenProvider {
 	private static final String AUTHORITY = "auth";
 
 	private final Key key;
-	private final CustomUserDetailsService userDetailService;
 	private final RedisUtil redisUtil;
-	private final RefreshTokenRepository refreshTokenRepository;
+	private final UserRepository userRepository;
 
-	public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailsService userDetailService,
-		RedisUtil redisUtil, RefreshTokenRepository refreshTokenRepository) {
-		this.userDetailService = userDetailService;
+	public JwtTokenProvider(@Value("${jwt.secret}") String secretKey,
+		RedisUtil redisUtil, UserRepository userRepository) {
 		this.redisUtil = redisUtil;
-		this.refreshTokenRepository = refreshTokenRepository;
+		this.userRepository = userRepository;
 		byte[] secretByteKey = DatatypeConverter.parseBase64Binary(secretKey);
 		this.key = Keys.hmacShaKeyFor(secretByteKey);
 	}
@@ -86,18 +82,19 @@ public class JwtTokenProvider {
 	public Authentication getAuthentication(String accessToken) {
 		Claims claims = parseClaims(accessToken);
 
-		if (claims.get("auth") == null) {
+		if (claims.get(AUTHORITY) == null) {
 			log.error("JWT Exception Occurs : {}", LOGOUT_JWT_TOKEN);
-			throw new RangerException(NOT_AUTHORIZED_TOKEN);
+			throw new JwtException(NOT_AUTHORIZED_TOKEN.getMessage());
 		}
 
 		Collection<? extends GrantedAuthority> authorities =
-			Arrays.stream(claims.get("auth").toString().split(","))
+			Arrays.stream(claims.get(AUTHORITY).toString().split(","))
 				.map(SimpleGrantedAuthority::new)
 				.toList();
 
-		String username = claims.getSubject();
-		UserDetails user = userDetailService.loadUserByUsername(username);
+		String userEmail = claims.getSubject(); // email
+		User savedUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+		UserPrincipal user = new UserPrincipal(savedUser.getId());
 
 		return new UsernamePasswordAuthenticationToken(user, "", authorities);
 	}
@@ -138,9 +135,10 @@ public class JwtTokenProvider {
 	}
 
 	public String getRefreshToken(Long userId) {
-		RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId)
-			.orElseThrow(() -> new RangerException(INVALID_REFRESH_TOKEN));
-		return refreshToken.getRefreshToken();
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new RangerException(NOT_FOUND_USER));
+
+		return user.getRefreshToken();
 	}
 
 	private Claims parseClaims(String accessToken) {
