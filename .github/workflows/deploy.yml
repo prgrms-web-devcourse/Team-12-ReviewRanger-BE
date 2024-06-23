@@ -2,7 +2,7 @@ name: ReviewRanger Default CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "REV-000" ]
 
 env:
   RESOURCE_PATH: ./src/main/resources/application.yml
