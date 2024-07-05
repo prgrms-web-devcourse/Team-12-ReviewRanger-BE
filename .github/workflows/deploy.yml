@@ -29,20 +29,27 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.JAVA_DISTRIBUTION }}
 
-      - name: Set yml file
-        uses: microsoft/variable-substitution@v1
+      # gradle caching
+      - name: Gradle Caching
+        uses: actions/cache@v3
         with:
-          files: ${{ env.RESOURCE_PATH }}
-        env:
-          spring.datasource.url: ${{ secrets.DB_URL }}
-          spring.datasource.username: ${{ secrets.DB_NAME }}
-          spring.datasource.password: ${{ secrets.DB_PASSWORD }}
-          jasypt.encryptor.password: ${{ secrets.JASYPT_KEY }}
-          openai.api.key: ${{ secrets.OPEN_AI_KEY }}
-          cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          cloud.aws.s3.bucket: ${{ secrets.AWS_BUCKET }}
-          slack.token: ${{ secrets.SLACK_KEY }}
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # yml 파일 생성
+      - name: make application.yml
+        if: |
+          contains(github.ref, 'main')
+        run: |
+          mkdir ./src/main/resources # resources 폴더 생성
+          cd ./src/main/resources # resources 폴더로 이동
+          touch ./application.yml # application.yml 생성
+          echo "${{ secrets.YML }}" > ./application.yml
+        shell: bash
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
@@ -50,23 +57,25 @@ jobs:
       - name: Build with gradle
         run: ./gradlew clean build -x test
 
-      - name: Make Zip File
-        run: zip -qq -r ./$GITHUB_SHA.zip .
-        shell: bash
+      - name: Docker build
+        if: contains(github.ref, 'main')
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_USERNAME }}/review-ranger .
+          docker push ${{ secrets.DOCKER_USERNAME }}/review-ranger
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      ## deploy to production
+      - name: Deploy to prod
+        uses: appleboy/ssh-action@master
+        id: deploy-prod
+        if: contains(github.ref, 'main')
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
-
-      - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
-
-      - name: Code Deploy To EC2 instance
-        run: aws deploy create-deployment
-          --application-name $CODE_DEPLOY_APP_NAME
-          --deployment-config-name CodeDeployDefault.AllAtOnce
-          --deployment-group-name $DEPLOYMENT_GROUP_NAME
-          --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
+          host: ${{ secrets.WAS_HOST }} # EC2 퍼블릭 IPv4 DNS
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          envs: GITHUB_SHA
+          script: |
+            sudo docker ps
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/review-ranger
+            sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/review-ranger
+            sudo docker image prune -f
